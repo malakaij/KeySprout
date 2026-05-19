@@ -109,12 +109,11 @@ export function StudentTable({ students, classroomId: _classroomId }: StudentTab
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-xs font-medium flex-shrink-0">
-                        {student.name?.[0] ?? student.email[0].toUpperCase()}
+                        {(student.name ?? 'S')[0].toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <p className="font-medium text-slate-200">{student.name ?? 'Unknown'}</p>
-                      <p className="text-xs text-slate-500">{student.email}</p>
+                      <p className="font-medium text-slate-200">{student.name ?? 'Anonymous'}</p>
                     </div>
                   </div>
                 </td>

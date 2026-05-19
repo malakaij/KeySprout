@@ -27,7 +27,7 @@ export interface AttemptResult {
 export interface StudentProgress {
   userId: string
   name: string | null
-  email: string
+  email: string | null
   image: string | null
   totalAttempts: number
   averageWpm: number
@@ -61,7 +61,7 @@ export interface ClassroomWithMembers {
     user: {
       id: string
       name: string | null
-      email: string
+      email: string | null
       image: string | null
     }
   }>

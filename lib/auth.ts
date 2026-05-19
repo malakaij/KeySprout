@@ -9,6 +9,18 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      // Request only the opaque user ID — no email, name, or profile photo.
+      authorization: { params: { scope: 'openid' } },
+      profile(profile) {
+        // Generate a stable anonymous display name from the Google sub.
+        const suffix = profile.sub.slice(-6)
+        return {
+          id: profile.sub,
+          name: `Sprout-${suffix}`,
+          email: null,
+          image: null,
+        }
+      },
     }),
   ],
   session: {

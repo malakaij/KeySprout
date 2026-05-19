@@ -55,8 +55,8 @@ export async function GET(
       user: {
         id: member.user.id,
         name: member.user.name,
-        email: member.user.email,
-        image: member.user.image,
+        email: null,
+        image: null,
       },
       averageWpm: Math.round(avgWpm),
       lessonsCompleted: uniqueLessons,

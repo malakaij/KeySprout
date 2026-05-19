@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState } from 'react'
 import { ChevronDown, LayoutDashboard, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -27,19 +26,9 @@ export function Navbar() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors"
                 >
-                  {session.user.image ? (
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name ?? 'User'}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-medium">
-                      {session.user.name?.[0] ?? 'U'}
-                    </div>
-                  )}
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-medium">
+                    {(session.user.name ?? 'S')[0].toUpperCase()}
+                  </div>
                   <span className="text-slate-200 text-sm hidden sm:block">
                     {session.user.name}
                   </span>
