@@ -29,6 +29,7 @@ export interface StudentProgress {
   name: string | null
   email: string | null
   image: string | null
+  nameChangeRequested: boolean
   totalAttempts: number
   averageWpm: number
   averageAccuracy: number

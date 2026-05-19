@@ -4,9 +4,21 @@ import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { StatsCard } from '@/components/dashboard/StatsCard'
 import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
+import { NameCard } from '@/components/dashboard/NameCard'
 import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
+
+const DAILY_LIMIT = 3
+
+function isToday(date: Date): boolean {
+  const now = new Date()
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+  )
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -14,14 +26,26 @@ export default async function DashboardPage() {
 
   const userId = session.user.id
 
-  const [attempts, lessons] = await Promise.all([
+  const [attempts, lessons, userData, approvedMembership] = await Promise.all([
     prisma.lessonAttempt.findMany({
       where: { userId },
       include: { lesson: { select: { title: true, minWpm: true, minAccuracy: true } } },
       orderBy: { completedAt: 'desc' },
     }),
     prisma.lesson.findMany({ orderBy: { order: 'asc' } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, rerollsToday: true, lastRerollDate: true, nameChangeRequested: true },
+    }),
+    prisma.classMember.findFirst({ where: { userId, status: 'APPROVED' } }),
   ])
+
+  const usedToday =
+    userData?.lastRerollDate && isToday(userData.lastRerollDate)
+      ? userData.rerollsToday
+      : 0
+  const rerollsRemaining = Math.max(0, DAILY_LIMIT - usedToday)
+  const isInClass = !!approvedMembership
 
   const avgWpm = attempts.length > 0
     ? Math.round(attempts.reduce((s, a) => s + a.wpm, 0) / attempts.length)
@@ -71,6 +95,13 @@ export default async function DashboardPage() {
         </h1>
         <p className="text-slate-400 mt-1">Keep up the great work on your typing journey.</p>
       </div>
+
+      <NameCard
+        currentName={userData?.name ?? 'Unknown'}
+        rerollsRemaining={rerollsRemaining}
+        nameChangeRequested={userData?.nameChangeRequested ?? false}
+        isInClass={isInClass}
+      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard

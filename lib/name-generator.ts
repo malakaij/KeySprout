@@ -48,9 +48,14 @@ function hash(sub: string): number {
 
 export function generateDisplayName(googleSub: string): string {
   const h = hash(googleSub)
-  // Treat h as a mixed-radix number: ones digit selects adjective,
-  // next digit selects animal — guarantees all 5,000 pairs are reachable.
   const adj = ADJECTIVES[h % ADJECTIVES.length]
   const animal = ANIMALS[Math.floor(h / ADJECTIVES.length) % ANIMALS.length]
   return `${adj} ${animal}`
 }
+
+export function generateRandomDisplayName(): string {
+  const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)]
+  const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)]
+  return `${adj} ${animal}`
+}
+

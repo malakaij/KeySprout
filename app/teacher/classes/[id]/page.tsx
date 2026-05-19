@@ -24,7 +24,7 @@ interface ClassDetail {
     id: string
     userId: string
     joinedAt: string
-    user: { id: string; name: string | null; email: string | null; image: string | null }
+    user: { id: string; name: string | null; email: string | null; image: string | null; nameChangeRequested: boolean }
     averageWpm: number
     lessonsCompleted: number
   }>
@@ -80,6 +80,7 @@ export default function ClassDetailPage() {
     name: m.user.name,
     email: null,
     image: null,
+    nameChangeRequested: m.user.nameChangeRequested,
     totalAttempts: 0,
     averageWpm: m.averageWpm,
     averageAccuracy: 0.9,

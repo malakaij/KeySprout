@@ -21,7 +21,10 @@ export async function GET(
       members: {
         include: {
           user: {
-            include: {
+            select: {
+              id: true,
+              name: true,
+              nameChangeRequested: true,
               lessonAttempts: { orderBy: { completedAt: 'desc' }, take: 10 },
             },
           },
@@ -48,7 +51,13 @@ export async function GET(
         id: member.id,
         userId: member.userId,
         joinedAt: member.joinedAt,
-        user: { id: member.user.id, name: member.user.name, email: null, image: null },
+        user: {
+          id: member.user.id,
+          name: member.user.name,
+          email: null,
+          image: null,
+          nameChangeRequested: member.user.nameChangeRequested,
+        },
         averageWpm: Math.round(avgWpm),
         lessonsCompleted: new Set(attempts.map((a) => a.lessonId)).size,
       }
