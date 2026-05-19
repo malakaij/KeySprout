@@ -12,12 +12,14 @@ export const authOptions: AuthOptions = {
       // Request only the opaque user ID — no email, name, or profile photo.
       authorization: { params: { scope: 'openid' } },
       profile(profile) {
-        // Generate a stable anonymous display name from the Google sub.
+        // Generate a stable anonymous identity from the Google sub.
+        // NextAuth's adapter requires a non-null email string, so we derive
+        // a placeholder using the .invalid TLD (RFC 2606 — never routes).
         const suffix = profile.sub.slice(-6)
         return {
           id: profile.sub,
           name: `Sprout-${suffix}`,
-          email: null,
+          email: `${profile.sub}@keysprout.invalid`,
           image: null,
         }
       },
