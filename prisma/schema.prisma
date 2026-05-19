@@ -123,12 +123,18 @@ model Classroom {
   members     ClassMember[]
 }
 
+enum MemberStatus {
+  PENDING
+  APPROVED
+}
+
 model ClassMember {
-  id          String    @id @default(cuid())
+  id          String       @id @default(cuid())
   classroomId String
   userId      String
-  joinedAt    DateTime  @default(now())
-  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      MemberStatus @default(PENDING)
+  joinedAt    DateTime     @default(now())
+  classroom   Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([classroomId, userId])
 }

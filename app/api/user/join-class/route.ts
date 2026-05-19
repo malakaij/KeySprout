@@ -20,32 +20,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  const { code } = parsed.data
-
-  const classroom = await prisma.classroom.findUnique({ where: { code: code.toUpperCase() } })
+  const classroom = await prisma.classroom.findUnique({
+    where: { code: parsed.data.code.toUpperCase() },
+  })
   if (!classroom) {
-    return NextResponse.json({ error: 'Classroom not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Class not found. Check the code and try again.' }, { status: 404 })
   }
 
   const existing = await prisma.classMember.findUnique({
     where: {
-      classroomId_userId: {
-        classroomId: classroom.id,
-        userId: session.user.id,
-      },
+      classroomId_userId: { classroomId: classroom.id, userId: session.user.id },
     },
   })
-
   if (existing) {
-    return NextResponse.json({ error: 'Already a member' }, { status: 409 })
+    const msg = existing.status === 'PENDING'
+      ? 'Your request is already pending approval.'
+      : 'You are already a member of this class.'
+    return NextResponse.json({ error: msg }, { status: 409 })
   }
 
   const member = await prisma.classMember.create({
     data: {
       classroomId: classroom.id,
       userId: session.user.id,
+      status: 'PENDING',
     },
   })
 
-  return NextResponse.json({ member, classroom })
+  return NextResponse.json({ member, classroomName: classroom.name })
 }

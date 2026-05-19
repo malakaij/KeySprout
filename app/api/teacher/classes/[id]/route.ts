@@ -22,10 +22,7 @@ export async function GET(
         include: {
           user: {
             include: {
-              lessonAttempts: {
-                orderBy: { completedAt: 'desc' },
-                take: 10,
-              },
+              lessonAttempts: { orderBy: { completedAt: 'desc' }, take: 10 },
             },
           },
         },
@@ -36,37 +33,37 @@ export async function GET(
   if (!classroom) {
     return NextResponse.json({ error: 'Classroom not found' }, { status: 404 })
   }
-
   if (classroom.teacherId !== session.user.id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const membersWithStats = classroom.members.map((member) => {
-    const attempts = member.user.lessonAttempts
-    const avgWpm = attempts.length > 0
-      ? attempts.reduce((sum, a) => sum + a.wpm, 0) / attempts.length
-      : 0
-    const uniqueLessons = new Set(attempts.map((a) => a.lessonId)).size
+  const approved = classroom.members
+    .filter((m) => m.status === 'APPROVED')
+    .map((member) => {
+      const attempts = member.user.lessonAttempts
+      const avgWpm = attempts.length > 0
+        ? attempts.reduce((sum, a) => sum + a.wpm, 0) / attempts.length
+        : 0
+      return {
+        id: member.id,
+        userId: member.userId,
+        joinedAt: member.joinedAt,
+        user: { id: member.user.id, name: member.user.name, email: null, image: null },
+        averageWpm: Math.round(avgWpm),
+        lessonsCompleted: new Set(attempts.map((a) => a.lessonId)).size,
+      }
+    })
 
-    return {
+  const pending = classroom.members
+    .filter((m) => m.status === 'PENDING')
+    .map((member) => ({
       id: member.id,
       userId: member.userId,
       joinedAt: member.joinedAt,
-      user: {
-        id: member.user.id,
-        name: member.user.name,
-        email: null,
-        image: null,
-      },
-      averageWpm: Math.round(avgWpm),
-      lessonsCompleted: uniqueLessons,
-    }
-  })
+      user: { id: member.user.id, name: member.user.name },
+    }))
 
-  return NextResponse.json({
-    ...classroom,
-    members: membersWithStats,
-  })
+  return NextResponse.json({ ...classroom, members: approved, pendingMembers: pending })
 }
 
 export async function DELETE(

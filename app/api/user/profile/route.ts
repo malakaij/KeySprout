@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 const bodySchema = z.object({
   role: z.enum(['STUDENT', 'TEACHER']),
+  accessCode: z.string().optional(),
 })
 
 export async function PATCH(req: Request) {
@@ -20,7 +21,14 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  const { role } = parsed.data
+  const { role, accessCode } = parsed.data
+
+  if (role === 'TEACHER') {
+    const expected = process.env.TEACHER_ACCESS_CODE
+    if (!expected || accessCode !== expected) {
+      return NextResponse.json({ error: 'Invalid access code' }, { status: 403 })
+    }
+  }
 
   const user = await prisma.user.update({
     where: { id: session.user.id },

@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { StatsCard } from '@/components/dashboard/StatsCard'
+import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
 import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
@@ -151,6 +152,8 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      <JoinClassCard />
 
       {/* Games */}
       <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
