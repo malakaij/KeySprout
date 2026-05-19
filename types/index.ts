@@ -1,0 +1,68 @@
+export interface LessonWithProgress {
+  id: string
+  title: string
+  description: string | null
+  content: string
+  type: 'SCRIPTED' | 'DYNAMIC'
+  level: number
+  order: number
+  unit: string
+  targetKeys: string[]
+  minWpm: number | null
+  minAccuracy: number | null
+  attempts: number
+  bestWpm: number | null
+  bestAccuracy: number | null
+  passed: boolean
+}
+
+export interface AttemptResult {
+  wpm: number
+  accuracy: number
+  duration: number
+  errors: number
+  completedAt: Date
+}
+
+export interface StudentProgress {
+  userId: string
+  name: string | null
+  email: string
+  image: string | null
+  totalAttempts: number
+  averageWpm: number
+  averageAccuracy: number
+  lessonsCompleted: number
+  recentAttempts: Array<{
+    id: string
+    lessonId: string
+    lessonTitle: string
+    wpm: number
+    accuracy: number
+    completedAt: Date
+  }>
+}
+
+export interface WeakKeys {
+  [key: string]: number
+}
+
+export interface ClassroomWithMembers {
+  id: string
+  name: string
+  description: string | null
+  code: string
+  teacherId: string
+  createdAt: Date
+  members: Array<{
+    id: string
+    userId: string
+    joinedAt: Date
+    user: {
+      id: string
+      name: string | null
+      email: string
+      image: string | null
+    }
+  }>
+}
