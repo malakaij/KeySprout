@@ -1,36 +1,36 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
-  darkMode: 'class',
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
-        brand: {
-          bg: '#0f172a',
-          surface: '#1e293b',
-          primary: '#10b981',
-          'primary-dark': '#059669',
-          accent: '#f59e0b',
-          'text-primary': '#f1f5f9',
-          'text-muted': '#94a3b8',
-          error: '#ef4444',
-          success: '#22c55e',
-        },
+        paper: '#fff6e3',
+        ink: '#1a1a2e',
+        coral: '#ff5e5b',
+        sunny: '#ffd23f',
+        mint: '#4dd4ac',
+        sky: '#4ea8de',
+        grape: '#9b5de5',
+        berry: '#ff7eb6',
+        'paper-dark': '#f0e8d0',
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        display: ['Fredoka One', 'cursive'],
+        body: ['Nunito', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      boxShadow: {
+        ink: '4px 4px 0 #1a1a2e',
+        'ink-sm': '3px 3px 0 #1a1a2e',
+        'ink-lg': '6px 6px 0 #1a1a2e',
       },
       animation: {
         blink: 'blink 1s step-end infinite',
         fall: 'fall linear forwards',
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
+        'pulse-ring': 'pulseRing 1.5s ease-in-out infinite',
       },
       keyframes: {
         blink: {
@@ -48,6 +48,10 @@ const config: Config = {
         slideUp: {
           from: { transform: 'translateY(20px)', opacity: '0' },
           to: { transform: 'translateY(0)', opacity: '1' },
+        },
+        pulseRing: {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 94, 91, 0.4)' },
+          '50%': { boxShadow: '0 0 0 8px rgba(255, 94, 91, 0)' },
         },
       },
     },

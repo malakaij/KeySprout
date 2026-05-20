@@ -11,10 +11,13 @@ export function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 bg-slate-900 border-b border-slate-800">
+    <nav className="sticky top-0 z-50 bg-paper border-b-[3px] border-ink">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-emerald-400 hover:text-emerald-300 transition-colors">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-xl font-display text-ink hover:text-coral transition-colors"
+          >
             <span>🌱</span>
             <span>KeySprout</span>
           </Link>
@@ -24,25 +27,25 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-paper-dark transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-medium">
+                  <div className="w-8 h-8 rounded-full bg-coral border-[3px] border-ink flex items-center justify-center text-white text-sm font-display shadow-ink-sm">
                     {(session.user.name ?? 'S')[0].toUpperCase()}
                   </div>
-                  <span className="text-slate-200 text-sm hidden sm:block">
+                  <span className="text-ink text-sm font-semibold hidden sm:block">
                     {session.user.name}
                   </span>
-                  <ChevronDown className={cn('w-4 h-4 text-slate-400 transition-transform', dropdownOpen && 'rotate-180')} />
+                  <ChevronDown className={cn('w-4 h-4 text-ink/50 transition-transform', dropdownOpen && 'rotate-180')} />
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border-[3px] border-ink py-2 z-50 shadow-ink">
                     <Link
                       href="/dashboard"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-ink hover:bg-paper-dark transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <LayoutDashboard className="w-4 h-4" />
+                      <LayoutDashboard className="w-4 h-4 text-mint" />
                       Dashboard
                     </Link>
                     <button
@@ -50,9 +53,9 @@ export function Navbar() {
                         setDropdownOpen(false)
                         signOut({ callbackUrl: '/' })
                       }}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-ink hover:bg-paper-dark transition-colors"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-4 h-4 text-coral" />
                       Sign Out
                     </button>
                   </div>
@@ -61,7 +64,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors"
+                className="kq-btn px-5 py-2 bg-coral text-white font-display text-sm"
               >
                 Sign In
               </Link>
