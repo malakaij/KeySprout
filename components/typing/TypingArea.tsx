@@ -17,9 +17,10 @@ interface TypingAreaProps {
   text: string
   onComplete: (result: TypingResult) => void
   onProgress?: (wpm: number, accuracy: number) => void
+  onCurrentChar?: (char: string) => void
 }
 
-export function TypingArea({ text, onComplete, onProgress }: TypingAreaProps) {
+export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: TypingAreaProps) {
   const [typed, setTyped] = useState<string[]>([])
   const [startTime, setStartTime] = useState<number | null>(null)
   const [errors, setErrors] = useState(0)
@@ -73,7 +74,8 @@ export function TypingArea({ text, onComplete, onProgress }: TypingAreaProps) {
     if (cursorRef.current) {
       cursorRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
     }
-  }, [typed.length])
+    onCurrentChar?.(text[typed.length] ?? '')
+  }, [typed.length, text, onCurrentChar])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -142,15 +144,15 @@ export function TypingArea({ text, onComplete, onProgress }: TypingAreaProps) {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={cn(
-          'relative bg-slate-800 rounded-xl p-6 outline-none border-2 transition-colors cursor-text',
+          'relative bg-white rounded-2xl p-6 outline-none border-[3px] transition-colors cursor-text',
           'max-h-48 overflow-y-auto',
-          focused ? 'border-emerald-500' : 'border-slate-700'
+          focused ? 'border-ink' : 'border-ink/20'
         )}
         aria-label="Typing area"
       >
         {!focused && !completed && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-800/80 rounded-xl z-10">
-            <p className="text-slate-400 text-sm">Click to start typing</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-paper/80 rounded-2xl z-10">
+            <p className="text-ink/40 text-sm font-body">Click to start typing</p>
           </div>
         )}
 
@@ -167,10 +169,10 @@ export function TypingArea({ text, onComplete, onProgress }: TypingAreaProps) {
                 ref={isCurrent ? cursorRef : null}
                 className={cn(
                   'relative',
-                  !isTyped && 'text-slate-400',
-                  isCorrect && 'text-emerald-400',
-                  isError && 'text-red-400',
-                  isCurrent && 'text-white after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-white after:animate-blink'
+                  !isTyped && 'text-ink/40',
+                  isCorrect && 'text-mint',
+                  isError && 'text-coral',
+                  isCurrent && 'text-ink after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-ink after:animate-blink'
                 )}
               >
                 {char}
@@ -181,9 +183,9 @@ export function TypingArea({ text, onComplete, onProgress }: TypingAreaProps) {
       </div>
 
       {completed && (
-        <div className="bg-emerald-900/30 border border-emerald-700 rounded-xl p-4 text-center">
-          <p className="text-emerald-400 font-semibold">Lesson Complete!</p>
-          <p className="text-slate-300 text-sm mt-1">
+        <div className="kq-card p-4 text-center bg-mint/10 border-mint">
+          <p className="text-mint font-display">Lesson Complete!</p>
+          <p className="text-ink/60 text-sm mt-1 font-body">
             {liveWpm} WPM · {Math.round(liveAccuracy * 100)}% accuracy
           </p>
         </div>

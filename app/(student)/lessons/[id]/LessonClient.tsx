@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TypingArea } from '@/components/typing/TypingArea'
-import { VirtualKeyboard } from '@/components/typing/VirtualKeyboard'
 import { KeyboardHint } from '@/components/ui/KeyboardHint'
 import { Pip } from '@/components/ui/Pip'
 import { ArrowLeft, ArrowRight, RefreshCw, Sparkles, CheckCircle, XCircle } from 'lucide-react'
@@ -52,6 +51,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [key, setKey] = useState(0)
+  const [currentChar, setCurrentChar] = useState<string>(lesson.content?.[0] ?? '')
 
   const passed = result
     ? (!lesson.minWpm || result.wpm >= lesson.minWpm) &&
@@ -82,6 +82,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
     setResult(null)
     setSaved(false)
     setKey((k) => k + 1)
+    setCurrentChar(lesson.content?.[0] ?? '')
   }
 
   const handleProgress = (_wpm: number, _accuracy: number) => {
@@ -165,19 +166,14 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         text={lesson.content}
         onComplete={handleComplete}
         onProgress={handleProgress}
+        onCurrentChar={setCurrentChar}
       />
 
       {/* Keyboard Hint */}
-      <div className="kq-card p-4 flex flex-col items-center">
-        <KeyboardHint nextKey={lesson.targetKeys[0]} />
-      </div>
-
-      {/* Virtual Keyboard */}
-      {lesson.targetKeys.length > 0 && (
-        <VirtualKeyboard
-          highlightKey={lesson.targetKeys[0]}
-          fingerColors={true}
-        />
+      {!result && (
+        <div className="kq-card p-4 flex flex-col items-center">
+          <KeyboardHint nextKey={currentChar} />
+        </div>
       )}
 
       {/* Results Modal */}
