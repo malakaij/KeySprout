@@ -19,8 +19,8 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-        <div className="text-slate-400">Loading...</div>
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-paper">
+        <div className="text-ink/40 font-body">Loading...</div>
       </div>
     )
   }
@@ -50,14 +50,14 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
     }
 
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-        <div className="max-w-sm w-full bg-slate-800 rounded-2xl border border-slate-700 p-8 space-y-5">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 bg-paper">
+        <div className="max-w-sm w-full kq-card p-8 space-y-5">
           <div className="text-center space-y-3">
-            <div className="w-16 h-16 bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto">
-              <GraduationCap className="w-8 h-8 text-emerald-400" />
+            <div className="w-16 h-16 bg-sunny/30 rounded-full border-[3px] border-ink flex items-center justify-center mx-auto shadow-ink-sm">
+              <GraduationCap className="w-8 h-8 text-ink" />
             </div>
-            <h1 className="text-xl font-bold text-slate-100">Teacher Access</h1>
-            <p className="text-slate-400 text-sm">
+            <h1 className="text-xl font-display text-ink">Teacher Access</h1>
+            <p className="text-ink/50 text-sm font-body">
               Enter the access code provided by your school administrator to enable teacher mode.
             </p>
           </div>
@@ -69,15 +69,15 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               onChange={(e) => { setAccessCode(e.target.value); setError('') }}
               placeholder="Access code"
               required
-              className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2.5 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
             />
             {error && (
-              <p className="text-red-400 text-xs">{error}</p>
+              <p className="text-coral text-xs font-body">{error}</p>
             )}
             <button
               type="submit"
               disabled={switching || !accessCode.trim()}
-              className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
+              className="w-full kq-btn bg-mint text-ink px-4 py-3 font-display disabled:opacity-50"
             >
               {switching ? 'Verifying...' : 'Enable Teacher Mode'}
             </button>
@@ -85,7 +85,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
 
           <button
             onClick={() => router.push('/dashboard')}
-            className="w-full px-4 py-2 text-slate-400 hover:text-slate-200 text-sm transition-colors text-center"
+            className="w-full px-4 py-2 text-ink/40 hover:text-ink text-sm transition-colors text-center font-body"
           >
             Back to Student Dashboard
           </button>

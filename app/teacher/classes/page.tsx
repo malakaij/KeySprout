@@ -58,12 +58,12 @@ export default function TeacherClassesPage() {
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">My Classes</h1>
-          <p className="text-slate-400 mt-1">Create and manage your virtual classrooms.</p>
+          <h1 className="text-2xl font-display text-ink">My Classes</h1>
+          <p className="text-ink/50 mt-1 font-body">Create and manage your virtual classrooms.</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors text-sm"
+          className="kq-btn bg-mint text-ink flex items-center gap-2 px-4 py-2 text-sm"
         >
           <Plus className="w-4 h-4" />
           New Class
@@ -71,37 +71,37 @@ export default function TeacherClassesPage() {
       </div>
 
       {showForm && (
-        <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
+        <div className="kq-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-slate-200">Create New Class</h2>
-            <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-200">
+            <h2 className="font-display text-ink">Create New Class</h2>
+            <button onClick={() => setShowForm(false)} className="text-ink/40 hover:text-ink transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
           <form onSubmit={handleCreate} className="space-y-3">
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Class Name *</label>
+              <label className="block text-sm text-ink/60 mb-1 font-body">Class Name *</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. 5th Period Typing"
                 required
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Description (optional)</label>
+              <label className="block text-sm text-ink/60 mb-1 font-body">Description (optional)</label>
               <input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Fall 2024 Typing Class"
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
               />
             </div>
             <button
               type="submit"
               disabled={creating || !name.trim()}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors text-sm disabled:opacity-50"
+              className="kq-btn bg-mint text-ink px-4 py-2 text-sm disabled:opacity-50"
             >
               {creating ? 'Creating...' : 'Create Class'}
             </button>
@@ -110,13 +110,13 @@ export default function TeacherClassesPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-12 text-slate-400">Loading...</div>
+        <div className="text-center py-12 text-ink/40 font-body">Loading...</div>
       ) : classes.length === 0 ? (
-        <div className="bg-slate-800 rounded-xl border border-slate-700 p-8 text-center">
-          <p className="text-slate-400 mb-4">No classes yet.</p>
+        <div className="kq-card p-8 text-center">
+          <p className="text-ink/50 font-body mb-4">No classes yet.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-colors text-sm"
+            className="kq-btn bg-mint text-ink inline-flex items-center gap-2 px-4 py-2 text-sm"
           >
             <Plus className="w-4 h-4" />
             Create Your First Class

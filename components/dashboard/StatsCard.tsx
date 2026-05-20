@@ -10,17 +10,17 @@ interface StatsCardProps {
 
 export function StatsCard({ label, value, icon, trend }: StatsCardProps) {
   return (
-    <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+    <div className="kq-card p-5">
       <div className="flex items-start justify-between">
-        <div className="p-2 bg-slate-700 rounded-lg">
+        <div className="p-2 bg-paper-dark rounded-xl border-2 border-ink/20">
           {icon}
         </div>
         {trend !== undefined && (
           <div className={cn(
-            'flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full',
+            'flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full border-2',
             trend >= 0
-              ? 'bg-emerald-900/40 text-emerald-400'
-              : 'bg-red-900/40 text-red-400'
+              ? 'bg-mint/20 text-ink border-mint'
+              : 'bg-coral/20 text-ink border-coral'
           )}>
             {trend >= 0
               ? <TrendingUp className="w-3 h-3" />
@@ -30,8 +30,8 @@ export function StatsCard({ label, value, icon, trend }: StatsCardProps) {
         )}
       </div>
       <div className="mt-4">
-        <p className="text-2xl font-bold text-slate-100">{value}</p>
-        <p className="text-sm text-slate-400 mt-1">{label}</p>
+        <p className="text-2xl font-display text-ink">{value}</p>
+        <p className="text-sm text-ink/50 mt-1 font-body">{label}</p>
       </div>
     </div>
   )

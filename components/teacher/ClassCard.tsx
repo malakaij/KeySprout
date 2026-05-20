@@ -32,17 +32,17 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
   }
 
   return (
-    <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
+    <div className="kq-card p-5">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h3 className="font-semibold text-slate-100 text-lg">{classroom.name}</h3>
+          <h3 className="font-display text-ink text-lg">{classroom.name}</h3>
           {classroom.description && (
-            <p className="text-sm text-slate-400 mt-0.5">{classroom.description}</p>
+            <p className="text-sm text-ink/50 mt-0.5 font-body">{classroom.description}</p>
           )}
         </div>
         <button
           onClick={handleDelete}
-          className="text-slate-500 hover:text-red-400 transition-colors p-1"
+          className="text-ink/30 hover:text-coral transition-colors p-1"
           title={showConfirm ? 'Click again to confirm' : 'Delete class'}
         >
           <Trash2 className="w-4 h-4" />
@@ -50,29 +50,29 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-xs text-slate-400">Class Code:</span>
-        <div className="flex items-center gap-2 bg-slate-700 rounded-lg px-3 py-1.5">
-          <span className="font-mono font-bold text-amber-400 tracking-widest text-sm">
+        <span className="text-xs text-ink/50 font-body">Class Code:</span>
+        <div className="flex items-center gap-2 bg-paper-dark rounded-xl border-2 border-ink/30 px-3 py-1.5">
+          <span className="font-mono font-bold text-sunny tracking-widest text-sm" style={{ textShadow: '0 1px 0 #1a1a2e' }}>
             {classroom.code}
           </span>
           <button
             onClick={handleCopy}
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-ink/40 hover:text-ink transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-mint" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-slate-400 text-sm">
+        <div className="flex items-center gap-1.5 text-ink/50 text-sm font-body">
           <Users className="w-4 h-4" />
           <span>{memberCount} student{memberCount !== 1 ? 's' : ''}</span>
         </div>
 
         <Link
           href={`/teacher/classes/${classroom.id}`}
-          className="flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+          className="flex items-center gap-1 text-sm text-sky font-semibold hover:text-sky/70 transition-colors"
         >
           View Class
           <ChevronRight className="w-4 h-4" />
@@ -80,7 +80,7 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
       </div>
 
       {showConfirm && (
-        <div className="mt-3 p-3 bg-red-900/30 border border-red-800 rounded-lg text-sm text-red-400">
+        <div className="mt-3 p-3 bg-coral/10 border-2 border-coral rounded-xl text-sm text-coral font-body">
           Are you sure? Click the trash icon again to confirm deletion.
         </div>
       )}

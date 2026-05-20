@@ -41,12 +41,12 @@ export default async function TeacherDashboardPage() {
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Teacher Dashboard</h1>
-          <p className="text-slate-400 mt-1">Manage your classes and track student progress.</p>
+          <h1 className="text-2xl font-display text-ink">Teacher Dashboard</h1>
+          <p className="text-ink/50 mt-1 font-body">Manage your classes and track student progress.</p>
         </div>
         <Link
           href="/teacher/classes"
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors text-sm"
+          className="kq-btn bg-mint text-ink flex items-center gap-2 px-4 py-2 text-sm"
         >
           <Plus className="w-4 h-4" />
           Create Class
@@ -57,28 +57,28 @@ export default async function TeacherDashboardPage() {
         <StatsCard
           label="Total Classes"
           value={classes.length}
-          icon={<BookOpen className="w-5 h-5 text-emerald-400" />}
+          icon={<BookOpen className="w-5 h-5 text-mint" />}
         />
         <StatsCard
           label="Total Students"
           value={totalStudents}
-          icon={<Users className="w-5 h-5 text-blue-400" />}
+          icon={<Users className="w-5 h-5 text-sky" />}
         />
         <StatsCard
           label="Avg WPM (All Students)"
           value={avgWpm}
-          icon={<Zap className="w-5 h-5 text-amber-400" />}
+          icon={<Zap className="w-5 h-5 text-sunny" />}
         />
       </div>
 
       <div>
-        <h2 className="font-semibold text-slate-200 mb-4">Your Classes</h2>
+        <h2 className="font-display text-lg text-ink mb-4">Your Classes</h2>
         {classes.length === 0 ? (
-          <div className="bg-slate-800 rounded-xl border border-slate-700 p-8 text-center">
-            <p className="text-slate-400 mb-4">No classes yet. Create one to get started!</p>
+          <div className="kq-card p-8 text-center">
+            <p className="text-ink/50 font-body mb-4">No classes yet. Create one to get started!</p>
             <Link
               href="/teacher/classes"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-colors text-sm"
+              className="kq-btn bg-mint text-ink inline-flex items-center gap-2 px-4 py-2 text-sm"
             >
               <Plus className="w-4 h-4" />
               Create Your First Class
@@ -95,23 +95,23 @@ export default async function TeacherDashboardPage() {
                 <Link
                   key={c.id}
                   href={`/teacher/classes/${c.id}`}
-                  className="bg-slate-800 rounded-xl border border-slate-700 p-5 hover:border-slate-500 transition-colors"
+                  className="kq-card p-5 hover:shadow-ink-lg transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 block"
                 >
-                  <h3 className="font-semibold text-slate-100 mb-1">{c.name}</h3>
-                  {c.description && <p className="text-xs text-slate-400 mb-3">{c.description}</p>}
+                  <h3 className="font-display text-ink mb-1">{c.name}</h3>
+                  {c.description && <p className="text-xs text-ink/50 mb-3 font-body">{c.description}</p>}
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1 text-slate-400">
+                    <div className="flex items-center gap-1 text-ink/50 font-body">
                       <Users className="w-4 h-4" />
                       <span>{c.members.length} students</span>
                     </div>
-                    <div className="flex items-center gap-1 text-emerald-400">
+                    <div className="flex items-center gap-1 text-mint font-semibold">
                       <Zap className="w-4 h-4" />
                       <span>{classAvgWpm} avg WPM</span>
                     </div>
                   </div>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs text-slate-500">Code:</span>
-                    <span className="font-mono text-amber-400 font-bold tracking-widest text-xs">
+                    <span className="text-xs text-ink/40 font-body">Code:</span>
+                    <span className="font-mono text-ink font-bold tracking-widest text-xs bg-sunny/40 px-2 py-0.5 rounded-lg">
                       {c.code}
                     </span>
                   </div>

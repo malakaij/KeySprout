@@ -47,15 +47,15 @@ export default function StudentDetailPage() {
       })
   }, [params.id])
 
-  if (loading) return <div className="p-6 text-slate-400">Loading...</div>
-  if (!data || !data.student) return <div className="p-6 text-slate-400">Student not found.</div>
+  if (loading) return <div className="p-6 text-ink/40 font-body">Loading...</div>
+  if (!data || !data.student) return <div className="p-6 text-ink/40 font-body">Student not found.</div>
 
   const { student, lessonStats, chartData, weakKeys, totalAttempts } = data
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/teacher/classes" className="text-slate-400 hover:text-slate-200 transition-colors">
+        <Link href="/teacher/classes" className="text-ink/40 hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex items-center gap-4 flex-1">
@@ -65,16 +65,16 @@ export default function StudentDetailPage() {
               alt={student.name ?? 'Student'}
               width={48}
               height={48}
-              className="rounded-full"
+              className="rounded-full border-[3px] border-ink"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-slate-600 flex items-center justify-center text-lg font-bold">
+            <div className="w-12 h-12 rounded-full bg-grape border-[3px] border-ink flex items-center justify-center text-lg font-display text-white">
               {student.name?.[0] ?? student.email[0].toUpperCase()}
             </div>
           )}
           <div>
-            <h1 className="text-xl font-bold text-slate-100">{student.name ?? 'Unknown'}</h1>
-            <div className="flex items-center gap-3 text-xs text-slate-400">
+            <h1 className="text-xl font-display text-ink">{student.name ?? 'Unknown'}</h1>
+            <div className="flex items-center gap-3 text-xs text-ink/40 font-body">
               <span className="flex items-center gap-1">
                 <Mail className="w-3 h-3" /> {student.email}
               </span>
@@ -85,46 +85,46 @@ export default function StudentDetailPage() {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-emerald-400">{totalAttempts}</p>
-          <p className="text-xs text-slate-400">Total Attempts</p>
+          <p className="text-2xl font-display text-mint">{totalAttempts}</p>
+          <p className="text-xs text-ink/40 font-body">Total Attempts</p>
         </div>
       </div>
 
       {/* WPM Chart */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Progress Over Time</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Progress Over Time</h2>
         <ProgressChart attempts={chartData} />
       </div>
 
       {/* Lesson Stats */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Lesson Performance</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Lesson Performance</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-xs text-slate-500 border-b border-slate-700">
-                <th className="text-left pb-2 font-medium">Lesson</th>
-                <th className="text-left pb-2 font-medium">Unit</th>
-                <th className="text-right pb-2 font-medium">Attempts</th>
-                <th className="text-right pb-2 font-medium">Best WPM</th>
-                <th className="text-right pb-2 font-medium">Best Acc</th>
-                <th className="text-right pb-2 font-medium">Status</th>
+              <tr className="text-xs text-ink/40 border-b-2 border-ink/10">
+                <th className="text-left pb-2 font-semibold font-body">Lesson</th>
+                <th className="text-left pb-2 font-semibold font-body">Unit</th>
+                <th className="text-right pb-2 font-semibold font-body">Attempts</th>
+                <th className="text-right pb-2 font-semibold font-body">Best WPM</th>
+                <th className="text-right pb-2 font-semibold font-body">Best Acc</th>
+                <th className="text-right pb-2 font-semibold font-body">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-ink/10">
               {lessonStats.map((ls) => (
-                <tr key={ls.lessonId}>
-                  <td className="py-2 text-slate-300">{ls.title}</td>
-                  <td className="py-2 text-slate-400 text-xs">{ls.unit}</td>
-                  <td className="py-2 text-right text-slate-400">{ls.attemptsCount}</td>
-                  <td className="py-2 text-right font-medium text-emerald-400">{Math.round(ls.bestWpm)}</td>
-                  <td className="py-2 text-right text-blue-400">{Math.round(ls.bestAccuracy * 100)}%</td>
+                <tr key={ls.lessonId} className="hover:bg-paper-dark transition-colors">
+                  <td className="py-2 text-ink font-body">{ls.title}</td>
+                  <td className="py-2 text-ink/50 text-xs font-body">{ls.unit}</td>
+                  <td className="py-2 text-right text-ink/50 font-body">{ls.attemptsCount}</td>
+                  <td className="py-2 text-right font-display text-mint">{Math.round(ls.bestWpm)}</td>
+                  <td className="py-2 text-right text-sky font-semibold font-body">{Math.round(ls.bestAccuracy * 100)}%</td>
                   <td className="py-2 text-right">
                     <span className={cn(
-                      'text-xs px-2 py-0.5 rounded-full',
+                      'text-xs px-2 py-0.5 rounded-full border-2 font-semibold font-body',
                       ls.passed
-                        ? 'bg-emerald-900/50 text-emerald-400'
-                        : 'bg-red-900/50 text-red-400'
+                        ? 'bg-mint/20 text-ink border-mint'
+                        : 'bg-coral/20 text-ink border-coral'
                     )}>
                       {ls.passed ? 'Passed' : 'In Progress'}
                     </span>
@@ -133,7 +133,7 @@ export default function StudentDetailPage() {
               ))}
               {lessonStats.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-6 text-center text-slate-500">No lessons attempted yet.</td>
+                  <td colSpan={6} className="py-6 text-center text-ink/30 font-body">No lessons attempted yet.</td>
                 </tr>
               )}
             </tbody>
@@ -142,9 +142,9 @@ export default function StudentDetailPage() {
       </div>
 
       {/* Weak Keys Heatmap */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-2">Weak Keys Heatmap</h2>
-        <p className="text-xs text-slate-400 mb-4">Keys with higher error rates are shown in red.</p>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-2">Weak Keys Heatmap</h2>
+        <p className="text-xs text-ink/40 mb-4 font-body">Keys with higher error rates are shown in red.</p>
         <VirtualKeyboard errorKeys={weakKeys} />
       </div>
     </div>

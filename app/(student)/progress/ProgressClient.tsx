@@ -3,7 +3,6 @@
 import { ProgressChart } from '@/components/dashboard/ProgressChart'
 import { VirtualKeyboard } from '@/components/typing/VirtualKeyboard'
 import { formatDate } from '@/lib/utils'
-import { cn } from '@/lib/utils'
 
 interface AttemptData {
   date: string
@@ -34,21 +33,15 @@ interface ProgressClientProps {
   recentAttempts: RecentAttempt[]
 }
 
-const COLOR_CLASSES: Record<string, string> = {
-  emerald: 'bg-emerald-900/50 border-emerald-800 text-emerald-400',
-  blue: 'bg-blue-900/50 border-blue-800 text-blue-400',
-  purple: 'bg-purple-900/50 border-purple-800 text-purple-400',
-  amber: 'bg-amber-900/50 border-amber-800 text-amber-400',
-  red: 'bg-red-900/50 border-red-800 text-red-400',
-}
-
-const PROGRESS_BAR_COLORS: Record<string, string> = {
-  emerald: 'bg-emerald-500',
-  blue: 'bg-blue-500',
-  purple: 'bg-purple-500',
-  amber: 'bg-amber-500',
-  red: 'bg-red-500',
-}
+const SECTION_BAR_COLORS = ['bg-mint', 'bg-sky', 'bg-sunny', 'bg-grape', 'bg-coral', 'bg-berry']
+const SECTION_BADGE_COLORS = [
+  'bg-mint/20 border-mint text-ink',
+  'bg-sky/20 border-sky text-ink',
+  'bg-sunny/20 border-sunny text-ink',
+  'bg-grape/20 border-grape text-ink',
+  'bg-coral/20 border-coral text-ink',
+  'bg-berry/20 border-berry text-ink',
+]
 
 export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts }: ProgressClientProps) {
   const topWeakKeys = Object.entries(weakKeys)
@@ -59,35 +52,35 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">Your Progress</h1>
-        <p className="text-slate-400 mt-1">Track your typing improvement over time.</p>
+        <h1 className="text-2xl font-display text-ink">Your Progress</h1>
+        <p className="text-ink/50 mt-1 font-body">Track your typing improvement over time.</p>
       </div>
 
       {/* WPM Chart */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">WPM Over Time</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">WPM Over Time</h2>
         <ProgressChart attempts={chartData} />
       </div>
 
       {/* Unit Progress */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Curriculum Progress</h2>
-        <div className="space-y-3">
-          {unitStats.map((unit) => {
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Curriculum Progress</h2>
+        <div className="space-y-4">
+          {unitStats.map((unit, i) => {
             const pct = unit.total > 0 ? (unit.passed / unit.total) * 100 : 0
-            const colorClass = COLOR_CLASSES[unit.color] ?? COLOR_CLASSES.emerald
-            const barColor = PROGRESS_BAR_COLORS[unit.color] ?? 'bg-emerald-500'
+            const barColor = SECTION_BAR_COLORS[i % SECTION_BAR_COLORS.length]
+            const badgeColor = SECTION_BADGE_COLORS[i % SECTION_BADGE_COLORS.length]
             return (
               <div key={unit.name}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className={cn('text-sm font-medium px-2 py-0.5 rounded border', colorClass)}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`text-sm font-semibold px-3 py-0.5 rounded-full border-2 font-body ${badgeColor}`}>
                     {unit.name}
                   </span>
-                  <span className="text-xs text-slate-400">{unit.passed}/{unit.total}</span>
+                  <span className="text-xs text-ink/40 font-body">{unit.passed}/{unit.total} passed</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2">
+                <div className="w-full bg-paper-dark rounded-full h-3 border-2 border-ink/10 overflow-hidden">
                   <div
-                    className={cn('h-2 rounded-full transition-all', barColor)}
+                    className={`h-full rounded-full transition-all ${barColor}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -98,57 +91,57 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
       </div>
 
       {/* Weak Keys */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-2">Weak Keys Heatmap</h2>
-        <p className="text-xs text-slate-400 mb-4">
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-2">Weak Keys Heatmap</h2>
+        <p className="text-xs text-ink/40 mb-4 font-body">
           Keys colored red are your most challenging. Practice them with personalized exercises.
         </p>
         <VirtualKeyboard errorKeys={weakKeys} fingerColors={false} />
         {topWeakKeys.length > 0 && (
           <div className="mt-4">
-            <p className="text-xs text-slate-400 mb-2">Your most challenging keys:</p>
+            <p className="text-xs text-ink/40 mb-2 font-body">Your most challenging keys:</p>
             <div className="flex flex-wrap gap-2">
               {topWeakKeys.map(([key, rate]) => (
-                <div key={key} className="flex items-center gap-1.5 bg-red-900/30 border border-red-800 rounded-lg px-3 py-1">
-                  <span className="font-mono font-bold text-red-400">{key}</span>
-                  <span className="text-xs text-red-300">{Math.round(rate * 100)}% error</span>
+                <div key={key} className="flex items-center gap-1.5 bg-coral/10 border-2 border-coral rounded-full px-3 py-1">
+                  <span className="font-mono font-bold text-ink">{key}</span>
+                  <span className="text-xs text-coral font-body">{Math.round(rate * 100)}% error</span>
                 </div>
               ))}
             </div>
           </div>
         )}
         {topWeakKeys.length === 0 && (
-          <p className="text-sm text-slate-400 mt-4 text-center">
+          <p className="text-sm text-ink/40 mt-4 text-center font-body">
             Complete some lessons to see your weak key analysis!
           </p>
         )}
       </div>
 
       {/* Recent Attempts */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Recent Attempts</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Recent Attempts</h2>
         {recentAttempts.length === 0 ? (
-          <p className="text-slate-400 text-sm text-center py-4">No attempts yet. Start a lesson!</p>
+          <p className="text-ink/40 text-sm text-center py-4 font-body">No attempts yet. Start a lesson!</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-xs text-slate-500 border-b border-slate-700">
-                  <th className="text-left pb-2 font-medium">Lesson</th>
-                  <th className="text-right pb-2 font-medium">WPM</th>
-                  <th className="text-right pb-2 font-medium">Accuracy</th>
-                  <th className="text-right pb-2 font-medium">Errors</th>
-                  <th className="text-right pb-2 font-medium">Date</th>
+                <tr className="text-xs text-ink/40 border-b-2 border-ink/10">
+                  <th className="text-left pb-2 font-semibold font-body">Lesson</th>
+                  <th className="text-right pb-2 font-semibold font-body">WPM</th>
+                  <th className="text-right pb-2 font-semibold font-body">Accuracy</th>
+                  <th className="text-right pb-2 font-semibold font-body">Errors</th>
+                  <th className="text-right pb-2 font-semibold font-body">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-ink/10">
                 {recentAttempts.map((a) => (
-                  <tr key={a.id}>
-                    <td className="py-2 text-slate-300">{a.lessonTitle}</td>
-                    <td className="py-2 text-right font-medium text-emerald-400">{Math.round(a.wpm)}</td>
-                    <td className="py-2 text-right text-blue-400">{Math.round(a.accuracy * 100)}%</td>
-                    <td className="py-2 text-right text-red-400">{a.errors}</td>
-                    <td className="py-2 text-right text-slate-500 text-xs">{formatDate(new Date(a.completedAt))}</td>
+                  <tr key={a.id} className="hover:bg-paper-dark transition-colors">
+                    <td className="py-2 text-ink font-body">{a.lessonTitle}</td>
+                    <td className="py-2 text-right font-display text-mint">{Math.round(a.wpm)}</td>
+                    <td className="py-2 text-right text-sky font-semibold font-body">{Math.round(a.accuracy * 100)}%</td>
+                    <td className="py-2 text-right text-coral font-body">{a.errors}</td>
+                    <td className="py-2 text-right text-ink/30 text-xs font-body">{formatDate(new Date(a.completedAt))}</td>
                   </tr>
                 ))}
               </tbody>

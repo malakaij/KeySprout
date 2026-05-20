@@ -70,9 +70,9 @@ export default function ClassDetailPage() {
     }
   }
 
-  if (loading) return <div className="p-6 text-slate-400">Loading...</div>
+  if (loading) return <div className="p-6 text-ink/40 font-body">Loading...</div>
   if (!classroom || ('error' in (classroom as unknown as Record<string, unknown>))) {
-    return <div className="p-6 text-slate-400">Class not found.</div>
+    return <div className="p-6 text-ink/40 font-body">Class not found.</div>
   }
 
   const students: StudentProgress[] = classroom.members.map((m) => ({
@@ -95,27 +95,27 @@ export default function ClassDetailPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/teacher/classes" className="text-slate-400 hover:text-slate-200 transition-colors">
+        <Link href="/teacher/classes" className="text-ink/40 hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-100">{classroom.name}</h1>
-          {classroom.description && <p className="text-slate-400 mt-0.5">{classroom.description}</p>}
+          <h1 className="text-2xl font-display text-ink">{classroom.name}</h1>
+          {classroom.description && <p className="text-ink/50 mt-0.5 font-body">{classroom.description}</p>}
         </div>
       </div>
 
       {/* Join Code */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <p className="text-sm text-slate-400 mb-2">Join Code — Share with students</p>
+      <div className="kq-card p-5">
+        <p className="text-sm text-ink/50 mb-2 font-body">Join Code — Share with students</p>
         <div className="flex items-center gap-4">
-          <div className="text-4xl font-mono font-bold text-amber-400 tracking-widest">
+          <div className="text-4xl font-mono font-bold text-ink tracking-widest bg-sunny/40 px-4 py-2 rounded-xl border-2 border-ink/30">
             {classroom.code}
           </div>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors"
+            className="kq-btn bg-paper-dark text-ink flex items-center gap-2 px-3 py-2 text-sm"
           >
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="w-4 h-4 text-mint" /> : <Copy className="w-4 h-4" />}
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
@@ -123,10 +123,10 @@ export default function ClassDetailPage() {
 
       {/* Pending Requests */}
       {classroom.pendingMembers.length > 0 && (
-        <div className="bg-amber-950/30 rounded-xl border border-amber-800/50 p-5">
+        <div className="kq-card p-5 border-sunny bg-sunny/5">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4 text-amber-400" />
-            <h2 className="font-semibold text-amber-300">
+            <Clock className="w-4 h-4 text-ink" />
+            <h2 className="font-display text-ink">
               Pending Requests ({classroom.pendingMembers.length})
             </h2>
           </div>
@@ -134,13 +134,13 @@ export default function ClassDetailPage() {
             {classroom.pendingMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between bg-slate-800/60 rounded-lg px-4 py-3"
+                className="flex items-center justify-between bg-paper-dark rounded-xl px-4 py-3 border-2 border-ink/10"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-xs font-medium text-slate-300">
+                  <div className="w-8 h-8 rounded-full bg-sunny border-[3px] border-ink flex items-center justify-center text-xs font-display text-ink">
                     {(member.user.name ?? 'S')[0].toUpperCase()}
                   </div>
-                  <span className="text-slate-200 text-sm font-medium">
+                  <span className="text-ink text-sm font-semibold">
                     {member.user.name ?? 'Anonymous'}
                   </span>
                 </div>
@@ -148,7 +148,7 @@ export default function ClassDetailPage() {
                   <button
                     onClick={() => handleMemberAction(member.id, 'approve')}
                     disabled={processingId === member.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                    className="kq-btn bg-mint text-ink flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:opacity-50"
                   >
                     <UserCheck className="w-3.5 h-3.5" />
                     Approve
@@ -156,7 +156,7 @@ export default function ClassDetailPage() {
                   <button
                     onClick={() => handleMemberAction(member.id, 'reject')}
                     disabled={processingId === member.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-red-900/60 text-slate-300 hover:text-red-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                    className="kq-btn bg-paper-dark text-ink/60 flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:opacity-50"
                   >
                     <UserX className="w-3.5 h-3.5" />
                     Reject
@@ -170,35 +170,35 @@ export default function ClassDetailPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-800 rounded-xl border border-slate-700 p-4 text-center">
-          <Users className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-100">{students.length}</p>
-          <p className="text-xs text-slate-400">Students</p>
+        <div className="kq-card p-4 text-center">
+          <Users className="w-5 h-5 text-sky mx-auto mb-2" />
+          <p className="text-2xl font-display text-ink">{students.length}</p>
+          <p className="text-xs text-ink/50 font-body">Students</p>
         </div>
-        <div className="bg-slate-800 rounded-xl border border-slate-700 p-4 text-center">
-          <Zap className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-100">{avgWpm}</p>
-          <p className="text-xs text-slate-400">Avg WPM</p>
+        <div className="kq-card p-4 text-center">
+          <Zap className="w-5 h-5 text-mint mx-auto mb-2" />
+          <p className="text-2xl font-display text-ink">{avgWpm}</p>
+          <p className="text-xs text-ink/50 font-body">Avg WPM</p>
         </div>
-        <div className="bg-slate-800 rounded-xl border border-slate-700 p-4 text-center">
-          <BookOpen className="w-5 h-5 text-amber-400 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-100">
+        <div className="kq-card p-4 text-center">
+          <BookOpen className="w-5 h-5 text-sunny mx-auto mb-2" />
+          <p className="text-2xl font-display text-ink">
             {students.length > 0
               ? Math.round(students.reduce((s, st) => s + st.lessonsCompleted, 0) / students.length)
               : 0}
           </p>
-          <p className="text-xs text-slate-400">Avg Lessons</p>
+          <p className="text-xs text-ink/50 font-body">Avg Lessons</p>
         </div>
       </div>
 
       {/* Students Table */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Students</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Students</h2>
         <StudentTable students={students} classroomId={classroom.id} />
       </div>
 
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h2 className="font-semibold text-slate-200 mb-4">Class Progress Over Time</h2>
+      <div className="kq-card p-5">
+        <h2 className="font-display text-ink mb-4">Class Progress Over Time</h2>
         <ProgressChart attempts={[]} />
       </div>
 
@@ -209,7 +209,7 @@ export default function ClassDetailPage() {
               .then(() => router.push('/teacher/classes'))
           }
         }}
-        className="text-sm text-red-400 hover:text-red-300 transition-colors"
+        className="text-sm text-coral hover:text-coral/70 transition-colors font-body"
       >
         Delete this class
       </button>
