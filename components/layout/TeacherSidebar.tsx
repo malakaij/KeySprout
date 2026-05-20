@@ -16,9 +16,9 @@ export function TeacherSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-56 flex-shrink-0 bg-ink min-h-screen flex flex-col">
-      <div className="p-5 border-b border-white/10">
-        <p className="text-xs font-display text-white/40 uppercase tracking-widest">Teacher Portal</p>
+    <aside className="w-56 flex-shrink-0 bg-paper border-r-[3px] border-ink min-h-screen flex flex-col">
+      <div className="p-5 border-b-[3px] border-ink">
+        <p className="text-xs font-display text-ink/40 uppercase tracking-widest">Teacher Portal</p>
       </div>
       <nav className="p-3 space-y-1 flex-1">
         {navItems.map((item) => {
@@ -31,8 +31,8 @@ export function TeacherSidebar() {
               className={cn(
                 'flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-100',
                 isActive
-                  ? `${item.accent} text-ink border-2 border-white/20`
-                  : 'text-white/60 hover:text-white hover:bg-white/10'
+                  ? `${item.accent} border-[3px] border-ink text-ink shadow-ink-sm`
+                  : 'text-ink/60 hover:text-ink hover:bg-paper-dark'
               )}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
@@ -42,8 +42,8 @@ export function TeacherSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/10">
-        <p className="text-xs text-white/30 font-body text-center">KeySprout v1.0</p>
+      <div className="p-4 border-t-[3px] border-ink">
+        <p className="text-xs text-ink/40 font-body text-center">KeySprout v1.0</p>
       </div>
     </aside>
   )

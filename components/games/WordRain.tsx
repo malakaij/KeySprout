@@ -231,7 +231,7 @@ export function WordRain({ onComplete }: WordRainProps) {
           onChange={handleInput}
           onKeyDown={handleKeyDown}
           placeholder="Type the falling word..."
-          className="w-full max-w-2xl bg-white border-[3px] border-ink rounded-2xl px-4 py-3 text-ink font-mono text-lg placeholder-ink/30 focus:outline-none shadow-ink-sm"
+          className="w-full max-w-2xl bg-paper border-[3px] border-ink rounded-2xl px-4 py-3 text-ink font-mono text-lg placeholder-ink/30 focus:outline-none shadow-ink-sm"
         />
       )}
     </div>

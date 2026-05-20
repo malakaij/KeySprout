@@ -39,7 +39,7 @@ export function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border-[3px] border-ink py-2 z-50 shadow-ink">
+                  <div className="absolute right-0 mt-2 w-48 bg-paper rounded-2xl border-[3px] border-ink py-2 z-50 shadow-ink">
                     <Link
                       href="/dashboard"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-ink hover:bg-paper-dark transition-colors"

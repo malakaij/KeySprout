@@ -14,7 +14,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
 
   return (
     <div className="grid grid-cols-4 gap-3 mb-4">
-      <div className="bg-white rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
+      <div className="bg-paper-dark rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
         <div className="p-1.5 bg-mint/20 rounded-lg">
           <Zap className="w-4 h-4 text-mint" />
         </div>
@@ -24,7 +24,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
+      <div className="bg-paper-dark rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
         <div className="p-1.5 bg-sky/20 rounded-lg">
           <Target className="w-4 h-4 text-sky" />
         </div>
@@ -34,7 +34,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
+      <div className="bg-paper-dark rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
         <div className="p-1.5 bg-sunny/20 rounded-lg">
           <Clock className="w-4 h-4 text-sunny" />
         </div>
@@ -44,7 +44,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
+      <div className="bg-paper-dark rounded-xl border-2 border-ink/10 p-3 flex items-center gap-3">
         <div className="p-1.5 bg-coral/20 rounded-lg">
           <AlertCircle className="w-4 h-4 text-coral" />
         </div>

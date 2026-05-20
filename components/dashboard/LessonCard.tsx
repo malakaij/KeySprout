@@ -19,8 +19,8 @@ export function LessonCard({ lesson, sectionTitle: _sectionTitle, locked, onClic
         locked
           ? 'bg-paper-dark border-ink/10 opacity-60 cursor-not-allowed'
           : lesson.passed
-            ? 'bg-white border-mint cursor-pointer hover:shadow-ink-sm hover:translate-x-0.5 hover:translate-y-0.5'
-            : 'bg-white border-ink cursor-pointer hover:shadow-ink-sm hover:translate-x-0.5 hover:translate-y-0.5'
+            ? 'bg-paper border-mint cursor-pointer hover:shadow-ink-sm hover:translate-x-0.5 hover:translate-y-0.5'
+            : 'bg-paper border-ink cursor-pointer hover:shadow-ink-sm hover:translate-x-0.5 hover:translate-y-0.5'
       )}
     >
       <div className="flex items-start gap-3">
