@@ -7,6 +7,7 @@ export const SECTION_PALETTE = [
   { bg: 'bg-berry/20', solid: 'bg-berry', border: 'border-berry', badgeClass: 'bg-berry/20 border-berry text-ink', accentText: 'text-ink', hex: '#ff7eb6' },
 ]
 
+/** Returns the palette entry for a given section index, wrapping cyclically. */
 export function sectionColor(index: number) {
   return SECTION_PALETTE[index % SECTION_PALETTE.length]
 }

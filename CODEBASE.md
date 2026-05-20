@@ -273,7 +273,7 @@ Creates and verifies HMAC-SHA256 tokens stored in an HTTP-only cookie (`admin_to
 
 ### `lib/seed-db.ts`
 
-A large data file that defines the full curriculum. `seedDatabase()` is idempotent — it checks whether a course with the same title already exists before inserting. The five sections and their lesson progressions are:
+A large data file that defines the full curriculum. `seedDatabase()` **clears all lesson attempts, lessons, sections, and courses before recreating them** — it is destructive and will erase student progress if run against a live database. The five sections and their lesson progressions are:
 
 | Section | Lessons | Keys introduced | WPM range |
 |---------|---------|-----------------|-----------|

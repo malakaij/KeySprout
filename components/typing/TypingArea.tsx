@@ -16,7 +16,9 @@ interface TypingResult {
 interface TypingAreaProps {
   text: string
   onComplete: (result: TypingResult) => void
+  /** Fired every 500ms during active typing; use for live HUD updates. */
   onProgress?: (wpm: number, accuracy: number) => void
+  /** Fired on every keystroke with the next expected character; used to drive KeyboardHint. */
   onCurrentChar?: (char: string) => void
 }
 
@@ -103,6 +105,8 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
 
       totalKeystrokesRef.current++
 
+      // errors counts total wrong keystrokes and is never decremented on backspace —
+      // it represents raw mistakes made, not the current number of incorrect characters.
       if (typedChar !== expectedChar) {
         setErrors((prev) => prev + 1)
         const key = expectedChar.toLowerCase()
@@ -125,6 +129,8 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
           wpm: finalWpm,
           accuracy: finalAccuracy,
           duration: Math.round(elapsed),
+          // `errors` state may not yet reflect the current keystroke (React batches updates),
+          // so the final count is computed directly rather than reading state.
           errors: errors + (typedChar !== expectedChar ? 1 : 0),
           charErrors: charErrorsRef.current,
         })

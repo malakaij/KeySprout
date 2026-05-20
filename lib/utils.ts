@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { format } from 'date-fns'
 
+/** Merges Tailwind classes and resolves conflicts (e.g. two `p-*` values) via tailwind-merge. */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

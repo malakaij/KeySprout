@@ -8,12 +8,18 @@ function secret() {
   return process.env.NEXTAUTH_SECRET ?? 'dev-secret'
 }
 
+/** Produces a `{timestampMs}.{hmac_hex}` token signed with NEXTAUTH_SECRET. */
 export function createAdminToken(): string {
   const ts = Date.now().toString()
   const sig = createHmac('sha256', secret()).update(`admin:${ts}`).digest('hex')
   return `${ts}.${sig}`
 }
 
+/**
+ * Validates a token by checking both its HMAC signature and its age.
+ * Checking age before the HMAC would leak timing info about valid-but-expired tokens,
+ * so age is checked first only as a fast-reject; the HMAC check always runs.
+ */
 export function verifyAdminToken(token: string): boolean {
   const dot = token.lastIndexOf('.')
   if (dot === -1) return false

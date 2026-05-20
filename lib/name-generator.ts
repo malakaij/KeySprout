@@ -38,6 +38,8 @@ const ANIMALS = [
 
 // ADJECTIVES.length = 50, ANIMALS.length = 100 → 5,000 unique combinations
 
+// Math.imul gives correct 32-bit integer multiplication without overflow.
+// | 0 truncates the result back to a signed int32 after the addition.
 function hash(sub: string): number {
   let h = 0
   for (let i = 0; i < sub.length; i++) {
@@ -46,6 +48,11 @@ function hash(sub: string): number {
   return Math.abs(h)
 }
 
+/**
+ * Deterministically maps a Google `sub` to an adjective-animal nickname.
+ * The same sub always produces the same name so the student's nickname
+ * survives across sessions without being stored in plain text.
+ */
 export function generateDisplayName(googleSub: string): string {
   const h = hash(googleSub)
   const adj = ADJECTIVES[h % ADJECTIVES.length]

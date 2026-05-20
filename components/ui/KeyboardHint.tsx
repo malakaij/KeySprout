@@ -10,6 +10,7 @@ const ROWS = [
 ]
 
 interface KeyboardHintProps {
+  /** Character to highlight on the layout. Pass an empty string or omit to show the guide with no target. */
   nextKey?: string
 }
 

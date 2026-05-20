@@ -7,7 +7,9 @@ import { Shuffle, Clock } from 'lucide-react'
 interface NameCardProps {
   currentName: string
   rerollsRemaining: number
+  /** Whether the student has already submitted a pending name-change request. Used as initial local state. */
   nameChangeRequested: boolean
+  /** When true, name changes are routed through the teacher rather than applied immediately. */
   isInClass: boolean
 }
 

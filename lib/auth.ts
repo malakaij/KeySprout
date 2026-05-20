@@ -16,6 +16,8 @@ export const authOptions: AuthOptions = {
         return {
           id: profile.sub,
           name: generateDisplayName(profile.sub),
+          // NextAuth requires an email field; we synthesise one from the opaque sub
+          // rather than storing the user's real address.
           email: `${profile.sub}@keysprout.invalid`,
           image: null,
         }

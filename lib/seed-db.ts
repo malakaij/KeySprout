@@ -267,6 +267,7 @@ const speedBuilding = [
   { order: 49, title: 'Graduation Passage II', description: 'You have completed the course — type this final passage with pride!', targetKeys: [], minWpm: 50, targetWpm: 65, content: 'Congratulations. You have completed the full typing curriculum. From your very first key press on the home row to this final passage, you have built one of the most useful skills a person can have. Your fingers know the keyboard now. Your hands move with confidence. Go out and type the world.' },
 ].map(l => ({ ...l, type: S, minAccuracy: 0.9 }))
 
+/** Clears all curriculum data and recreates it. Destructive — erases student progress. */
 export async function seedDatabase() {
   await prisma.lessonAttempt.deleteMany()
   await prisma.lesson.deleteMany()

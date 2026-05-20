@@ -29,8 +29,11 @@ const WORDS = [
 interface FallingWord {
   id: number
   word: string
+  /** Horizontal spawn position as a percentage of the game area width. */
   x: number
+  /** Time in milliseconds for the word to traverse the full 400px game area height. */
   duration: number
+  /** Date.now() at spawn; vertical position is computed at render time as (elapsed/duration)*400. */
   startTime: number
 }
 
@@ -121,6 +124,8 @@ export function WordRain({ onComplete }: WordRainProps) {
       const typed = currentInput.trim().toLowerCase()
       if (!typed) return
       const now = Date.now()
+      // Among duplicate words on screen, destroy the one closest to the bottom
+      // (highest elapsed time) so the most dangerous word is removed first.
       const matchIdx = words.reduce<number>((best, w, i) => {
         if (w.word === typed) {
           if (best === -1) return i

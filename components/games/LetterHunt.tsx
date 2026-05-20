@@ -27,6 +27,9 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const getNextKey = useCallback((freq: Record<string, number>): string => {
+    // Inverse-frequency weighting: a key typed N times gets weight 1/(N+1),
+    // so letters the player has seen less often are more likely to be chosen next.
+    // This keeps all 26 keys roughly balanced over a session without forcing strict rotation.
     const weights = LETTERS.map((l) => ({ letter: l, weight: 1 / ((freq[l] ?? 0) + 1) }))
     const total = weights.reduce((s, w) => s + w.weight, 0)
     let rand = Math.random() * total
@@ -92,6 +95,8 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
         setCombo((c) => c + 1)
         setScore((s) => Math.max(0, s + Math.max(1, combo + 1)))
         setKeyFrequency((prev) => ({ ...prev, [key]: (prev[key] ?? 0) + 1 }))
+        // Second functional update reads the just-incremented freq so getNextKey
+        // sees the current counts — a closure over the state variable would be stale.
         setKeyFrequency((freq) => {
           const next = getNextKey(freq)
           setTargetKey(next)

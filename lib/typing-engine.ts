@@ -1,13 +1,25 @@
+/**
+ * Net WPM using the standard 5-characters-per-word definition.
+ * Returns 0 when seconds is 0 to avoid division-by-zero during the pre-start countdown.
+ */
 export function calculateWpm(chars: number, seconds: number): number {
   if (seconds === 0) return 0
   return Math.round((chars / 5) / (seconds / 60))
 }
 
+/**
+ * Keystroke accuracy as a ratio from 0 to 1.
+ * Returns 1.0 when total is 0 so a student who hasn't typed yet shows 100%, not an error.
+ */
 export function calculateAccuracy(correct: number, total: number): number {
   if (total === 0) return 1
   return Math.min(1, Math.max(0, correct / total))
 }
 
+/**
+ * Returns a per-character error rate map (0–1) for all non-whitespace characters in targetText.
+ * Only analyses positions up to the length of typedText — untyped characters are not penalised.
+ */
 export function analyzeWeakKeys(
   targetText: string,
   typedText: string
@@ -68,6 +80,11 @@ const WORD_BANK: Record<string, string[]> = {
   z: ['zero', 'zone', 'zoom', 'zeal', 'zinc', 'zap', 'zip', 'zen', 'zest', 'zing', 'zone', 'zoo', 'zoned', 'zones', 'zoom', 'zooms', 'zappy', 'zippy', 'zincy', 'zesty'],
 }
 
+/**
+ * Builds a practice passage biased toward a student's weakest keys.
+ * The top 3 weak keys supply 60% of the word pool; the remaining 40% is drawn
+ * randomly across all letters to maintain readable variety.
+ */
 export function generateDynamicText(
   weakKeys: string[],
   targetLength: number
@@ -92,6 +109,7 @@ export function generateDynamicText(
     words.push(bank[Math.floor(Math.random() * bank.length)])
   }
 
+  // Fisher-Yates shuffle so weak-key words don't cluster at the front.
   for (let i = words.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[words[i], words[j]] = [words[j], words[i]]

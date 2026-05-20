@@ -1,9 +1,13 @@
 import { cn } from '@/lib/utils'
 
 interface VirtualKeyboardProps {
+  /** Key to highlight with a pulsing ring — pass the current expected character. */
   highlightKey?: string
+  /** Key to show as briefly pressed; cleared by the caller after ~150ms. */
   pressedKey?: string
+  /** When true, tints each key by its touch-typing finger zone. Disabled when errorKeys is active. */
   fingerColors?: boolean
+  /** Map of key → error rate (0–1) from analyzeWeakKeys; tints keys from green to red by difficulty. */
   errorKeys?: Record<string, number>
 }
 
@@ -38,6 +42,7 @@ const FINGER_COLORS: Record<string, string> = {
   '=': 'bg-berry/40', '\\': 'bg-berry/40',
 }
 
+// Four heat-map tiers: >50% error = critical, >25% = poor, >10% = needs work, else = good.
 function getErrorColor(rate: number | undefined): string {
   if (rate === undefined) return ''
   if (rate > 0.5) return 'bg-coral border-coral text-white'

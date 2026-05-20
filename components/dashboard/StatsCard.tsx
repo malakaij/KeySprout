@@ -5,6 +5,7 @@ interface StatsCardProps {
   label: string
   value: string | number
   icon: React.ReactNode
+  /** Optional percentage-point change shown as an up/down badge. Positive = improvement. */
   trend?: number
 }
 
