@@ -20,7 +20,7 @@ export async function GET(
     where: { id: params.id },
     include: {
       lessonAttempts: {
-        include: { lesson: true },
+        include: { lesson: { include: { section: true } } },
         orderBy: { completedAt: 'asc' },
       },
     },
@@ -51,7 +51,7 @@ export async function GET(
     return {
       lessonId,
       title: lesson.title,
-      unit: lesson.unit,
+      unit: lesson.section.title,
       attemptsCount: attempts.length,
       bestWpm,
       bestAccuracy,
