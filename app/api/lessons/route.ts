@@ -9,40 +9,75 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const lessons = await prisma.lesson.findMany({
+  const course = await prisma.course.findFirst({
+    where: { isPublic: true },
     orderBy: { order: 'asc' },
+    include: {
+      sections: {
+        orderBy: { order: 'asc' },
+        include: {
+          lessons: {
+            orderBy: { order: 'asc' },
+          },
+        },
+      },
+    },
   })
 
-  const attempts = await prisma.lessonAttempt.findMany({
-    where: { userId: session.user.id },
-  })
-
-  const lessonMap = new Map<string, typeof attempts>()
-  for (const attempt of attempts) {
-    if (!lessonMap.has(attempt.lessonId)) {
-      lessonMap.set(attempt.lessonId, [])
-    }
-    lessonMap.get(attempt.lessonId)!.push(attempt)
+  if (!course) {
+    return NextResponse.json({ error: 'No course found' }, { status: 404 })
   }
 
-  const result = lessons.map((lesson) => {
-    const lessonAttempts = lessonMap.get(lesson.id) ?? []
-    const bestWpm = lessonAttempts.length > 0 ? Math.max(...lessonAttempts.map((a) => a.wpm)) : null
-    const bestAccuracy = lessonAttempts.length > 0 ? Math.max(...lessonAttempts.map((a) => a.accuracy)) : null
-    const passed = lessonAttempts.some((a) => {
-      const wpmOk = !lesson.minWpm || a.wpm >= lesson.minWpm
-      const accOk = !lesson.minAccuracy || a.accuracy >= lesson.minAccuracy
-      return wpmOk && accOk
-    })
-
-    return {
-      ...lesson,
-      attempts: lessonAttempts.length,
-      bestWpm,
-      bestAccuracy,
-      passed,
-    }
+  // Fetch all lesson attempts for this user
+  const allLessonIds = course.sections.flatMap((s) => s.lessons.map((l) => l.id))
+  const attempts = await prisma.lessonAttempt.findMany({
+    where: { userId: session.user.id, lessonId: { in: allLessonIds } },
   })
 
-  return NextResponse.json(result)
+  const attemptMap = new Map<string, typeof attempts>()
+  for (const attempt of attempts) {
+    if (!attemptMap.has(attempt.lessonId)) {
+      attemptMap.set(attempt.lessonId, [])
+    }
+    attemptMap.get(attempt.lessonId)!.push(attempt)
+  }
+
+  const sections = course.sections.map((section) => ({
+    id: section.id,
+    title: section.title,
+    description: section.description,
+    order: section.order,
+    lessons: section.lessons.map((lesson) => {
+      const lessonAttempts = attemptMap.get(lesson.id) ?? []
+      const bestWpm = lessonAttempts.length > 0 ? Math.max(...lessonAttempts.map((a) => a.wpm)) : null
+      const bestAccuracy = lessonAttempts.length > 0 ? Math.max(...lessonAttempts.map((a) => a.accuracy)) : null
+      const passed = lessonAttempts.some((a) => {
+        const wpmOk = !lesson.minWpm || a.wpm >= lesson.minWpm
+        const accOk = !lesson.minAccuracy || a.accuracy >= lesson.minAccuracy
+        return wpmOk && accOk
+      })
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        description: lesson.description,
+        order: lesson.order,
+        type: lesson.type,
+        sectionId: lesson.sectionId,
+        targetKeys: lesson.targetKeys,
+        minWpm: lesson.minWpm,
+        targetWpm: lesson.targetWpm,
+        minAccuracy: lesson.minAccuracy,
+        attempts: lessonAttempts.length,
+        bestWpm,
+        bestAccuracy,
+        passed,
+      }
+    }),
+  }))
+
+  return NextResponse.json({
+    courseId: course.id,
+    courseTitle: course.title,
+    sections,
+  })
 }

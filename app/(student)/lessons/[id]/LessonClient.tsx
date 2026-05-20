@@ -8,22 +8,22 @@ import { ArrowLeft, ArrowRight, RefreshCw, Sparkles, CheckCircle, XCircle } from
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-interface Lesson {
+interface LessonData {
   id: string
   title: string
   description: string | null
-  content: string
-  unit: string
+  content: string | null
+  sectionTitle: string
+  courseTitle: string
   targetKeys: string[]
   minWpm: number | null
   minAccuracy: number | null
-  level: number
   order: number
 }
 
 interface LessonClientProps {
-  lesson: Lesson
-  nextLesson: Lesson | null
+  lesson: LessonData
+  nextLesson: { id: string; title: string } | null
   bestWpm: number
   previouslyPassed: boolean
 }
@@ -36,7 +36,7 @@ interface TypingResult {
   charErrors: Record<string, number>
 }
 
-const UNIT_COLORS: Record<string, string> = {
+const SECTION_COLORS: Record<string, string> = {
   'Home Row': 'bg-emerald-900/50 text-emerald-400',
   'Top Row': 'bg-blue-900/50 text-blue-400',
   'Bottom Row': 'bg-purple-900/50 text-purple-400',
@@ -49,7 +49,6 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
   const [result, setResult] = useState<TypingResult | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [currentKey, setCurrentKey] = useState<string | undefined>()
   const [key, setKey] = useState(0)
 
   const passed = result
@@ -94,7 +93,15 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         .map(([k]) => k)
     : []
 
-  const unitColor = UNIT_COLORS[lesson.unit] ?? 'bg-slate-700 text-slate-400'
+  const sectionColor = SECTION_COLORS[lesson.sectionTitle] ?? 'bg-slate-700 text-slate-400'
+
+  if (!lesson.content) {
+    return (
+      <div className="p-6 max-w-3xl mx-auto">
+        <p className="text-slate-400">This lesson has no content yet.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
@@ -105,10 +112,10 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className={cn('text-xs px-2 py-0.5 rounded-full', unitColor)}>
-              {lesson.unit}
+            <span className={cn('text-xs px-2 py-0.5 rounded-full', sectionColor)}>
+              {lesson.sectionTitle}
             </span>
-            <span className="text-xs text-slate-500">Lesson {lesson.order}</span>
+            <span className="text-xs text-slate-500">Lesson {lesson.order + 1}</span>
             {previouslyPassed && (
               <span className="text-xs text-emerald-400 flex items-center gap-1">
                 <CheckCircle className="w-3 h-3" /> Passed
@@ -161,7 +168,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
       {/* Virtual Keyboard */}
       {lesson.targetKeys.length > 0 && (
         <VirtualKeyboard
-          highlightKey={currentKey ?? lesson.targetKeys[0]}
+          highlightKey={lesson.targetKeys[0]}
           fingerColors={true}
         />
       )}
@@ -177,7 +184,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
             )}
             <div>
               <h2 className="text-lg font-bold text-slate-100">
-                {passed ? 'Lesson Passed! 🎉' : 'Not quite — keep trying!'}
+                {passed ? 'Lesson Passed!' : 'Not quite — keep trying!'}
               </h2>
               <p className="text-sm text-slate-400">
                 {passed ? 'Great job! You met the requirements.' : `Keep practicing to reach ${lesson.minWpm} WPM and ${Math.round((lesson.minAccuracy ?? 0.9) * 100)}% accuracy.`}

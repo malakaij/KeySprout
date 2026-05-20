@@ -14,6 +14,15 @@ export async function GET(
 
   const lesson = await prisma.lesson.findUnique({
     where: { id: params.id },
+    include: {
+      section: {
+        include: {
+          course: {
+            select: { id: true, title: true },
+          },
+        },
+      },
+    },
   })
 
   if (!lesson) {

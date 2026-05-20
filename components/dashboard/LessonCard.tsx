@@ -4,11 +4,12 @@ import type { LessonWithProgress } from '@/types'
 
 interface LessonCardProps {
   lesson: LessonWithProgress
+  sectionTitle: string
   locked: boolean
   onClick: () => void
 }
 
-const UNIT_COLORS: Record<string, string> = {
+const SECTION_COLORS: Record<string, string> = {
   'Home Row': 'bg-emerald-900/50 text-emerald-400 border-emerald-800',
   'Top Row': 'bg-blue-900/50 text-blue-400 border-blue-800',
   'Bottom Row': 'bg-purple-900/50 text-purple-400 border-purple-800',
@@ -16,8 +17,8 @@ const UNIT_COLORS: Record<string, string> = {
   'Speed Building': 'bg-red-900/50 text-red-400 border-red-800',
 }
 
-export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
-  const unitColor = UNIT_COLORS[lesson.unit] ?? 'bg-slate-700 text-slate-400 border-slate-600'
+export function LessonCard({ lesson, sectionTitle, locked, onClick }: LessonCardProps) {
+  const sectionColor = SECTION_COLORS[sectionTitle] ?? 'bg-slate-700 text-slate-400 border-slate-600'
 
   return (
     <button
@@ -45,8 +46,8 @@ export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className={cn('text-xs px-2 py-0.5 rounded-full border', unitColor)}>
-              {lesson.unit}
+            <span className={cn('text-xs px-2 py-0.5 rounded-full border', sectionColor)}>
+              {sectionTitle}
             </span>
           </div>
           <h3 className="font-semibold text-slate-100 text-sm">{lesson.title}</h3>

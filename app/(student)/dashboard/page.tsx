@@ -29,10 +29,14 @@ export default async function DashboardPage() {
   const [attempts, lessons, userData, approvedMembership] = await Promise.all([
     prisma.lessonAttempt.findMany({
       where: { userId },
-      include: { lesson: { select: { title: true, minWpm: true, minAccuracy: true } } },
+      include: { lesson: { select: { title: true, minWpm: true, minAccuracy: true, section: { select: { title: true } } } } },
       orderBy: { completedAt: 'desc' },
     }),
-    prisma.lesson.findMany({ orderBy: { order: 'asc' } }),
+    prisma.lesson.findMany({
+      where: { section: { course: { isPublic: true } } },
+      include: { section: { select: { title: true } } },
+      orderBy: [{ section: { order: 'asc' } }, { order: 'asc' }],
+    }),
     prisma.user.findUnique({
       where: { id: userId },
       select: { name: true, rerollsToday: true, lastRerollDate: true, nameChangeRequested: true },
@@ -91,7 +95,7 @@ export default async function DashboardPage() {
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-100">
-          Welcome back, {session.user.name?.split(' ')[0] ?? 'Learner'}! 👋
+          Welcome back, {session.user.name?.split(' ')[0] ?? 'Learner'}!
         </h1>
         <p className="text-slate-400 mt-1">Keep up the great work on your typing journey.</p>
       </div>
@@ -138,7 +142,7 @@ export default async function DashboardPage() {
           <div className="space-y-3">
             {nextLessons.length === 0 ? (
               <p className="text-slate-400 text-sm py-4 text-center">
-                🎉 You&apos;ve completed all lessons!
+                You&apos;ve completed all lessons!
               </p>
             ) : (
               nextLessons.map((lesson) => (
@@ -149,7 +153,7 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="text-sm font-medium text-slate-200">{lesson.title}</p>
-                    <p className="text-xs text-slate-400">{lesson.unit}</p>
+                    <p className="text-xs text-slate-400">{lesson.section.title}</p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-slate-400" />
                 </Link>

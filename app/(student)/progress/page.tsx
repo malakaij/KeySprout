@@ -4,7 +4,6 @@ import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { ProgressClient } from './ProgressClient'
 import { analyzeWeakKeys } from '@/lib/typing-engine'
-import { UNITS } from '@/lib/curriculum'
 
 export default async function ProgressPage() {
   const session = await getServerSession(authOptions)
@@ -12,13 +11,17 @@ export default async function ProgressPage() {
 
   const userId = session.user.id
 
-  const [attempts, lessons] = await Promise.all([
+  const [attempts, sections] = await Promise.all([
     prisma.lessonAttempt.findMany({
       where: { userId },
       include: { lesson: true },
       orderBy: { completedAt: 'asc' },
     }),
-    prisma.lesson.findMany({ orderBy: { order: 'asc' } }),
+    prisma.section.findMany({
+      where: { course: { isPublic: true } },
+      include: { lessons: { select: { id: true, minWpm: true, minAccuracy: true } } },
+      orderBy: { order: 'asc' },
+    }),
   ])
 
   const chartData = attempts.map((a) => ({
@@ -27,24 +30,29 @@ export default async function ProgressPage() {
     accuracy: a.accuracy,
   }))
 
-  const unitStats = UNITS.map((unit) => {
-    const unitLessons = lessons.filter((l) => l.unit === unit.name)
-    const passedCount = unitLessons.filter((l) => {
-      return attempts.some((a) => {
+  const SECTION_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444']
+  const unitStats = sections.map((section, i) => {
+    const passedCount = section.lessons.filter((l) =>
+      attempts.some((a) => {
         if (a.lessonId !== l.id) return false
         const wpmOk = !l.minWpm || a.wpm >= l.minWpm
         const accOk = !l.minAccuracy || a.accuracy >= l.minAccuracy
         return wpmOk && accOk
       })
-    }).length
-    return { name: unit.name, total: unitLessons.length, passed: passedCount, color: unit.color }
+    ).length
+    return {
+      name: section.title,
+      total: section.lessons.length,
+      passed: passedCount,
+      color: SECTION_COLORS[i % SECTION_COLORS.length],
+    }
   })
 
-  // Aggregate weak keys from all attempts
   const keyErrorMap: Record<string, number[]> = {}
   for (const attempt of attempts) {
-    if (attempt.lesson) {
-      const errors = analyzeWeakKeys(attempt.lesson.content, attempt.lesson.content.slice(0, Math.floor(attempt.lesson.content.length * attempt.accuracy)))
+    if (attempt.lesson?.content) {
+      const typed = attempt.lesson.content.slice(0, Math.floor(attempt.lesson.content.length * attempt.accuracy))
+      const errors = analyzeWeakKeys(attempt.lesson.content, typed)
       for (const [key, rate] of Object.entries(errors)) {
         if (!keyErrorMap[key]) keyErrorMap[key] = []
         keyErrorMap[key].push(rate)

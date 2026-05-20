@@ -2,18 +2,33 @@ export interface LessonWithProgress {
   id: string
   title: string
   description: string | null
-  content: string
+  content: string | null
   type: 'SCRIPTED' | 'DYNAMIC'
-  level: number
   order: number
-  unit: string
+  sectionId: string
   targetKeys: string[]
   minWpm: number | null
+  targetWpm: number | null
   minAccuracy: number | null
   attempts: number
   bestWpm: number | null
   bestAccuracy: number | null
   passed: boolean
+}
+
+export interface SectionWithLessons {
+  id: string
+  title: string
+  description: string | null
+  order: number
+  lessons: LessonWithProgress[]
+}
+
+export interface CourseWithSections {
+  id: string
+  title: string
+  description: string | null
+  sections: SectionWithLessons[]
 }
 
 export interface AttemptResult {

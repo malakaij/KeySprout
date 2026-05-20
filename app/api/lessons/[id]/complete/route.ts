@@ -28,7 +28,27 @@ export async function POST(
 
   const { wpm, accuracy, duration, errors } = parsed.data
 
-  const lesson = await prisma.lesson.findUnique({ where: { id: params.id } })
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: params.id },
+    include: {
+      section: {
+        include: {
+          course: {
+            include: {
+              sections: {
+                orderBy: { order: 'asc' },
+                include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   if (!lesson) {
     return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
   }
@@ -44,10 +64,27 @@ export async function POST(
     },
   })
 
-  const nextLesson = await prisma.lesson.findFirst({
-    where: { order: lesson.order + 1 },
-    orderBy: { order: 'asc' },
-  })
+  // Find next lesson: next in same section by order, or first lesson of next section
+  const currentSection = lesson.section
+  const currentSectionLessons = currentSection.lessons
+  const currentLessonIndex = currentSectionLessons.findIndex((l) => l.id === lesson.id)
+
+  let nextLesson = null
+
+  if (currentLessonIndex < currentSectionLessons.length - 1) {
+    // Next lesson in the same section
+    nextLesson = currentSectionLessons[currentLessonIndex + 1]
+  } else {
+    // Find next section
+    const allSections = currentSection.course.sections
+    const currentSectionIndex = allSections.findIndex((s) => s.id === currentSection.id)
+    if (currentSectionIndex < allSections.length - 1) {
+      const nextSection = allSections[currentSectionIndex + 1]
+      if (nextSection.lessons.length > 0) {
+        nextLesson = nextSection.lessons[0]
+      }
+    }
+  }
 
   return NextResponse.json({ attempt, nextLesson })
 }

@@ -8,13 +8,46 @@ export default async function LessonPage({ params }: { params: { id: string } })
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
 
-  const lesson = await prisma.lesson.findUnique({ where: { id: params.id } })
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: params.id },
+    include: {
+      section: {
+        include: {
+          course: {
+            include: {
+              sections: {
+                orderBy: { order: 'asc' },
+                include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   if (!lesson) notFound()
 
-  const nextLesson = await prisma.lesson.findFirst({
-    where: { order: lesson.order + 1 },
-    orderBy: { order: 'asc' },
-  })
+  const currentSection = lesson.section
+  const allSections = currentSection.course.sections
+  const currentSectionLessons = currentSection.lessons
+  const currentLessonIndex = currentSectionLessons.findIndex((l) => l.id === lesson.id)
+
+  let nextLesson: { id: string; title: string } | null = null
+  if (currentLessonIndex < currentSectionLessons.length - 1) {
+    nextLesson = currentSectionLessons[currentLessonIndex + 1]
+  } else {
+    const currentSectionIndex = allSections.findIndex((s) => s.id === currentSection.id)
+    if (currentSectionIndex < allSections.length - 1) {
+      const nextSection = allSections[currentSectionIndex + 1]
+      if (nextSection.lessons.length > 0) {
+        nextLesson = nextSection.lessons[0]
+      }
+    }
+  }
 
   const userAttempts = await prisma.lessonAttempt.findMany({
     where: { userId: session.user.id, lessonId: lesson.id },
@@ -30,7 +63,18 @@ export default async function LessonPage({ params }: { params: { id: string } })
 
   return (
     <LessonClient
-      lesson={lesson}
+      lesson={{
+        id: lesson.id,
+        title: lesson.title,
+        description: lesson.description,
+        content: lesson.content,
+        sectionTitle: currentSection.title,
+        courseTitle: currentSection.course.title,
+        targetKeys: lesson.targetKeys,
+        minWpm: lesson.minWpm,
+        minAccuracy: lesson.minAccuracy,
+        order: lesson.order,
+      }}
       nextLesson={nextLesson}
       bestWpm={bestWpm}
       previouslyPassed={passed}
