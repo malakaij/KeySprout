@@ -33,7 +33,7 @@ export default async function LessonPage({ params }: { params: { id: string } })
 
   const currentSection = lesson.section
   const allSections = currentSection.course.sections
-  const currentSectionLessons = currentSection.lessons
+  const currentSectionLessons = allSections.find((s) => s.id === currentSection.id)?.lessons ?? []
   const currentLessonIndex = currentSectionLessons.findIndex((l) => l.id === lesson.id)
 
   let nextLesson: { id: string; title: string } | null = null
