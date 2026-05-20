@@ -66,7 +66,8 @@ export async function POST(
 
   // Find next lesson: next in same section by order, or first lesson of next section
   const currentSection = lesson.section
-  const currentSectionLessons = currentSection.lessons
+  const allSections = currentSection.course.sections
+  const currentSectionLessons = allSections.find((s) => s.id === currentSection.id)?.lessons ?? []
   const currentLessonIndex = currentSectionLessons.findIndex((l) => l.id === lesson.id)
 
   let nextLesson = null
@@ -76,7 +77,6 @@ export async function POST(
     nextLesson = currentSectionLessons[currentLessonIndex + 1]
   } else {
     // Find next section
-    const allSections = currentSection.course.sections
     const currentSectionIndex = allSections.findIndex((s) => s.id === currentSection.id)
     if (currentSectionIndex < allSections.length - 1) {
       const nextSection = allSections[currentSectionIndex + 1]
