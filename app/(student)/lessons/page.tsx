@@ -28,7 +28,7 @@ export default async function LessonsPage() {
   if (!course) {
     return (
       <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-slate-100">No courses available yet.</h1>
+        <h1 className="text-2xl font-display text-ink">No courses available yet.</h1>
       </div>
     )
   }

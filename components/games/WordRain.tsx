@@ -24,7 +24,6 @@ const WORDS = [
   'stay', 'stop', 'talk', 'tree', 'true', 'town', 'walk', 'warm', 'week',
   'wide', 'wild', 'wind', 'wish', 'wood', 'word', 'year', 'able', 'best',
   'blue', 'boat', 'born', 'care', 'case', 'cool', 'cost', 'dark', 'dead',
-  'deal', 'deep', 'door', 'drop', 'dust', 'easy', 'edge', 'else', 'ever',
 ]
 
 interface FallingWord {
@@ -75,10 +74,7 @@ export function WordRain({ onComplete }: WordRainProps) {
     if (gameState !== 'playing') return
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setGameState('gameover')
-          return 0
-        }
+        if (prev <= 1) { setGameState('gameover'); return 0 }
         return prev - 1
       })
     }, 1000)
@@ -94,10 +90,7 @@ export function WordRain({ onComplete }: WordRainProps) {
         if (expired.length > 0) {
           setLives((l) => {
             const newLives = l - expired.length
-            if (newLives <= 0) {
-              setGameState('gameover')
-              return 0
-            }
+            if (newLives <= 0) { setGameState('gameover'); return 0 }
             return newLives
           })
           return prev.filter((w) => now - w.startTime < w.duration)
@@ -115,9 +108,7 @@ export function WordRain({ onComplete }: WordRainProps) {
   }, [score, level])
 
   useEffect(() => {
-    if (gameState === 'gameover') {
-      onComplete(score)
-    }
+    if (gameState === 'gameover') onComplete(score)
   }, [gameState, score, onComplete])
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,18 +120,14 @@ export function WordRain({ onComplete }: WordRainProps) {
       e.preventDefault()
       const typed = currentInput.trim().toLowerCase()
       if (!typed) return
-
       const now = Date.now()
       const matchIdx = words.reduce<number>((best, w, i) => {
         if (w.word === typed) {
           if (best === -1) return i
-          const bestElapsed = now - words[best].startTime
-          const thisElapsed = now - w.startTime
-          return thisElapsed > bestElapsed ? i : best
+          return now - w.startTime > now - words[best].startTime ? i : best
         }
         return best
       }, -1)
-
       if (matchIdx !== -1) {
         const matched = words[matchIdx]
         setFlashId(matched.id)
@@ -165,53 +152,51 @@ export function WordRain({ onComplete }: WordRainProps) {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      {/* HUD */}
       <div className="flex items-center justify-between w-full max-w-2xl">
         <div className="flex items-center gap-1">
           {[...Array(3)].map((_, i) => (
             <Heart
               key={i}
-              className={cn('w-5 h-5', i < lives ? 'text-red-500 fill-red-500' : 'text-slate-600')}
+              className={cn('w-5 h-5', i < lives ? 'text-coral fill-coral' : 'text-ink/20')}
             />
           ))}
         </div>
         <div className="text-center">
-          <span className="text-2xl font-bold text-emerald-400">{score}</span>
-          <span className="text-slate-400 text-sm ml-2">pts</span>
+          <span className="text-2xl font-display text-mint">{score}</span>
+          <span className="text-ink/40 text-sm ml-2 font-body">pts</span>
         </div>
         <div className="text-right">
-          <span className="text-amber-400 font-mono">{timeLeft}s</span>
-          <span className="text-slate-400 text-sm ml-2">Lv.{level}</span>
+          <span className={cn('font-mono font-bold', timeLeft <= 10 ? 'text-coral' : 'text-ink')}>
+            {timeLeft}s
+          </span>
+          <span className="text-ink/40 text-sm ml-2 font-body">Lv.{level}</span>
         </div>
       </div>
 
+      {/* Game area */}
       <div
         ref={gameAreaRef}
-        className="relative w-full max-w-2xl bg-slate-900 rounded-xl border border-slate-700 overflow-hidden"
+        className="relative w-full max-w-2xl bg-ink rounded-2xl border-[3px] border-ink overflow-hidden"
         style={{ height: '400px' }}
       >
         {gameState === 'idle' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <h2 className="text-2xl font-bold text-slate-100">Word Rain</h2>
-            <p className="text-slate-400 text-center max-w-xs">
+            <h2 className="text-2xl font-display text-paper">Word Rain</h2>
+            <p className="text-paper/60 text-center max-w-xs font-body text-sm">
               Words fall from the sky. Type the word and press Space or Enter to destroy it!
             </p>
-            <button
-              onClick={startGame}
-              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors"
-            >
+            <button onClick={startGame} className="kq-btn bg-mint text-ink px-6 py-3">
               Start Game
             </button>
           </div>
         )}
 
         {gameState === 'gameover' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-900/95">
-            <h2 className="text-2xl font-bold text-slate-100">Game Over!</h2>
-            <p className="text-4xl font-bold text-emerald-400">{score} pts</p>
-            <button
-              onClick={startGame}
-              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors"
-            >
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-ink/95">
+            <h2 className="text-2xl font-display text-paper">Game Over!</h2>
+            <p className="text-4xl font-display text-mint">{score} pts</p>
+            <button onClick={startGame} className="kq-btn bg-mint text-ink px-6 py-3">
               Play Again
             </button>
           </div>
@@ -222,21 +207,16 @@ export function WordRain({ onComplete }: WordRainProps) {
             const elapsed = Date.now() - w.startTime
             const progress = elapsed / w.duration
             const top = progress * 400 - 30
-
             return (
               <div
                 key={w.id}
                 className={cn(
-                  'absolute px-3 py-1 rounded-lg text-sm font-mono font-bold transition-all',
+                  'absolute px-3 py-1 rounded-lg text-sm font-mono font-bold transition-all border-2',
                   flashId === w.id
-                    ? 'bg-emerald-500 text-white scale-125 opacity-0'
-                    : 'bg-slate-700 text-slate-200 border border-slate-600'
+                    ? 'bg-mint border-mint text-ink scale-125 opacity-0'
+                    : 'bg-paper border-ink/30 text-ink'
                 )}
-                style={{
-                  left: `${w.x}%`,
-                  top: `${Math.max(0, top)}px`,
-                  transform: 'translateX(-50%)',
-                }}
+                style={{ left: `${w.x}%`, top: `${Math.max(0, top)}px`, transform: 'translateX(-50%)' }}
               >
                 {w.word}
               </div>
@@ -251,7 +231,7 @@ export function WordRain({ onComplete }: WordRainProps) {
           onChange={handleInput}
           onKeyDown={handleKeyDown}
           placeholder="Type the falling word..."
-          className="w-full max-w-2xl bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 font-mono text-lg placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+          className="w-full max-w-2xl bg-white border-[3px] border-ink rounded-2xl px-4 py-3 text-ink font-mono text-lg placeholder-ink/30 focus:outline-none shadow-ink-sm"
         />
       )}
     </div>

@@ -33,7 +33,7 @@ export function ProgressChart({ attempts }: ProgressChartProps) {
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48 text-slate-400 text-sm">
+      <div className="flex items-center justify-center h-48 text-ink/40 text-sm font-body">
         No data yet. Complete some lessons to see your progress!
       </div>
     )
@@ -42,35 +42,37 @@ export function ProgressChart({ attempts }: ProgressChartProps) {
   return (
     <ResponsiveContainer width="100%" height={280}>
       <LineChart data={data} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-        <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 12 }} />
-        <YAxis yAxisId="wpm" stroke="#10b981" tick={{ fontSize: 12 }} label={{ value: 'WPM', angle: -90, position: 'insideLeft', fill: '#10b981', fontSize: 12 }} />
-        <YAxis yAxisId="acc" orientation="right" stroke="#3b82f6" tick={{ fontSize: 12 }} domain={[0, 100]} label={{ value: 'Acc%', angle: 90, position: 'insideRight', fill: '#3b82f6', fontSize: 12 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#1a1a2e18" />
+        <XAxis dataKey="date" stroke="#1a1a2e60" tick={{ fontSize: 12, fontFamily: 'Nunito' }} />
+        <YAxis yAxisId="wpm" stroke="#4dd4ac" tick={{ fontSize: 12, fontFamily: 'Nunito' }} label={{ value: 'WPM', angle: -90, position: 'insideLeft', fill: '#4dd4ac', fontSize: 12 }} />
+        <YAxis yAxisId="acc" orientation="right" stroke="#4ea8de" tick={{ fontSize: 12, fontFamily: 'Nunito' }} domain={[0, 100]} label={{ value: 'Acc%', angle: 90, position: 'insideRight', fill: '#4ea8de', fontSize: 12 }} />
         <Tooltip
           contentStyle={{
-            backgroundColor: '#1e293b',
-            border: '1px solid #334155',
-            borderRadius: '8px',
-            color: '#f1f5f9',
+            backgroundColor: '#fff6e3',
+            border: '3px solid #1a1a2e',
+            borderRadius: '12px',
+            color: '#1a1a2e',
+            fontFamily: 'Nunito',
+            boxShadow: '4px 4px 0 #1a1a2e',
           }}
         />
-        <Legend />
+        <Legend wrapperStyle={{ fontFamily: 'Nunito', fontSize: 12 }} />
         <Line
           yAxisId="wpm"
           type="monotone"
           dataKey="wpm"
-          stroke="#10b981"
-          strokeWidth={2}
-          dot={{ fill: '#10b981', r: 3 }}
+          stroke="#4dd4ac"
+          strokeWidth={2.5}
+          dot={{ fill: '#4dd4ac', r: 4, stroke: '#1a1a2e', strokeWidth: 2 }}
           name="WPM"
         />
         <Line
           yAxisId="acc"
           type="monotone"
           dataKey="accuracy"
-          stroke="#3b82f6"
-          strokeWidth={2}
-          dot={{ fill: '#3b82f6', r: 3 }}
+          stroke="#4ea8de"
+          strokeWidth={2.5}
+          dot={{ fill: '#4ea8de', r: 4, stroke: '#1a1a2e', strokeWidth: 2 }}
           name="Accuracy %"
         />
       </LineChart>

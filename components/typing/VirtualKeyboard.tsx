@@ -14,36 +14,36 @@ const ROWS = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'],
 ]
 
+// Left hand = mint tones, right hand = sky/coral tones, by finger
 const FINGER_COLORS: Record<string, string> = {
   // Left pinky
-  '`': 'bg-slate-600', '1': 'bg-slate-600', a: 'bg-slate-600', q: 'bg-slate-600',
-  z: 'bg-slate-600',
+  '`': 'bg-grape/20', '1': 'bg-grape/20', a: 'bg-grape/20', q: 'bg-grape/20', z: 'bg-grape/20',
   // Left ring
-  '2': 'bg-blue-800', s: 'bg-blue-800', w: 'bg-blue-800', x: 'bg-blue-800',
+  '2': 'bg-sky/25', s: 'bg-sky/25', w: 'bg-sky/25', x: 'bg-sky/25',
   // Left middle
-  '3': 'bg-purple-800', d: 'bg-purple-800', e: 'bg-purple-800', c: 'bg-purple-800',
+  '3': 'bg-mint/25', d: 'bg-mint/25', e: 'bg-mint/25', c: 'bg-mint/25',
   // Left index
-  '4': 'bg-indigo-800', '5': 'bg-indigo-800', f: 'bg-indigo-800', r: 'bg-indigo-800',
-  v: 'bg-indigo-800', t: 'bg-indigo-800', g: 'bg-indigo-800', b: 'bg-indigo-800',
+  '4': 'bg-mint/40', '5': 'bg-mint/40', f: 'bg-mint/40', r: 'bg-mint/40',
+  v: 'bg-mint/40', t: 'bg-mint/40', g: 'bg-mint/40', b: 'bg-mint/40',
   // Right index
-  '6': 'bg-green-800', '7': 'bg-green-800', j: 'bg-green-800', u: 'bg-green-800',
-  m: 'bg-green-800', y: 'bg-green-800', h: 'bg-green-800', n: 'bg-green-800',
+  '6': 'bg-coral/25', '7': 'bg-coral/25', j: 'bg-coral/25', u: 'bg-coral/25',
+  m: 'bg-coral/25', y: 'bg-coral/25', h: 'bg-coral/25', n: 'bg-coral/25',
   // Right middle
-  '8': 'bg-teal-800', k: 'bg-teal-800', i: 'bg-teal-800', ',': 'bg-teal-800',
+  '8': 'bg-coral/35', k: 'bg-coral/35', i: 'bg-coral/35', ',': 'bg-coral/35',
   // Right ring
-  '9': 'bg-cyan-800', l: 'bg-cyan-800', o: 'bg-cyan-800', '.': 'bg-cyan-800',
+  '9': 'bg-berry/25', l: 'bg-berry/25', o: 'bg-berry/25', '.': 'bg-berry/25',
   // Right pinky
-  '0': 'bg-sky-800', ';': 'bg-sky-800', p: 'bg-sky-800', '/': 'bg-sky-800',
-  '-': 'bg-sky-800', "'": 'bg-sky-800', '[': 'bg-sky-800', ']': 'bg-sky-800',
-  '=': 'bg-sky-800', '\\': 'bg-sky-800',
+  '0': 'bg-berry/40', ';': 'bg-berry/40', p: 'bg-berry/40', '/': 'bg-berry/40',
+  '-': 'bg-berry/40', "'": 'bg-berry/40', '[': 'bg-berry/40', ']': 'bg-berry/40',
+  '=': 'bg-berry/40', '\\': 'bg-berry/40',
 }
 
 function getErrorColor(rate: number | undefined): string {
   if (rate === undefined) return ''
-  if (rate > 0.5) return 'bg-red-700'
-  if (rate > 0.25) return 'bg-orange-700'
-  if (rate > 0.1) return 'bg-yellow-700'
-  return 'bg-green-800'
+  if (rate > 0.5) return 'bg-coral border-coral text-white'
+  if (rate > 0.25) return 'bg-coral/60 border-coral/60'
+  if (rate > 0.1) return 'bg-sunny/60 border-sunny'
+  return 'bg-mint/40 border-mint/60'
 }
 
 interface KeyProps {
@@ -56,19 +56,21 @@ interface KeyProps {
 }
 
 function Key({ label, highlight, pressed, fingerColors, errorRate, wide }: KeyProps) {
-  const baseFingerColor = fingerColors && !errorRate ? (FINGER_COLORS[label.toLowerCase()] ?? 'bg-slate-700') : ''
+  const baseFingerColor = fingerColors && errorRate === undefined
+    ? (FINGER_COLORS[label.toLowerCase()] ?? 'bg-paper-dark')
+    : ''
   const errorColor = errorRate !== undefined ? getErrorColor(errorRate) : ''
 
   return (
     <div
       className={cn(
-        'flex items-center justify-center rounded-md text-xs font-mono font-medium',
-        'min-h-[36px] transition-all duration-75 select-none',
+        'flex items-center justify-center rounded-lg text-xs font-mono font-medium',
+        'min-h-[34px] transition-all duration-75 select-none border-2',
         wide ? 'px-3 flex-1' : 'w-9',
-        baseFingerColor || errorColor || 'bg-slate-700',
-        'text-slate-200 border border-slate-600',
-        highlight && 'ring-2 ring-amber-400 scale-110 bg-amber-500/20 text-amber-300 z-10',
-        pressed && 'scale-90 brightness-150'
+        errorColor || baseFingerColor || 'bg-paper-dark',
+        'text-ink border-ink/20',
+        highlight && 'ring-2 ring-sunny border-ink scale-110 bg-sunny z-10 text-ink font-bold shadow-ink-sm animate-pulse-ring',
+        pressed && 'scale-90 opacity-70'
       )}
     >
       {label}
@@ -78,7 +80,7 @@ function Key({ label, highlight, pressed, fingerColors, errorRate, wide }: KeyPr
 
 export function VirtualKeyboard({ highlightKey, pressedKey, fingerColors = false, errorKeys }: VirtualKeyboardProps) {
   return (
-    <div className="bg-slate-900 rounded-xl p-4 space-y-1.5 select-none">
+    <div className="bg-paper-dark rounded-2xl border-[3px] border-ink/20 p-4 space-y-1.5 select-none">
       {ROWS.map((row, rowIdx) => (
         <div key={rowIdx} className="flex gap-1 justify-center">
           {rowIdx === 1 && <div className="w-6" />}
@@ -99,7 +101,7 @@ export function VirtualKeyboard({ highlightKey, pressedKey, fingerColors = false
         </div>
       ))}
       <div className="flex gap-1 justify-center">
-        <div className="flex-1 max-w-xs bg-slate-700 border border-slate-600 rounded-md min-h-[36px] flex items-center justify-center text-xs text-slate-400 font-mono">
+        <div className="flex-1 max-w-xs bg-paper-dark border-2 border-ink/20 rounded-lg min-h-[34px] flex items-center justify-center text-xs text-ink/40 font-mono">
           space
         </div>
       </div>

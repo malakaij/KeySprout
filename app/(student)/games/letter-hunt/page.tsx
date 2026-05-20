@@ -28,26 +28,26 @@ export default function LetterHuntPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/games" className="text-slate-400 hover:text-slate-200 transition-colors">
+        <Link href="/games" className="text-ink/40 hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-100">🎯 Letter Hunt</h1>
-          <p className="text-slate-400 text-sm">Press the highlighted key as fast as you can!</p>
+          <h1 className="text-2xl font-display text-ink">🎯 Letter Hunt</h1>
+          <p className="text-ink/50 text-sm font-body">Press the highlighted key as fast as you can!</p>
         </div>
         {personalBest !== null && (
-          <div className="flex items-center gap-2 text-amber-400">
+          <div className="flex items-center gap-2 text-sunny">
             <Trophy className="w-5 h-5" />
-            <span className="font-bold">{personalBest} pts</span>
+            <span className="font-display text-ink">{personalBest} pts</span>
           </div>
         )}
       </div>
 
       {lastScore !== null && (
-        <div className="bg-slate-800 rounded-xl border border-slate-700 px-4 py-2 text-sm flex items-center gap-2">
-          <span className="text-slate-400">Last score:</span>
-          <span className="font-bold text-emerald-400">{lastScore} pts</span>
-          {personalBest === lastScore && <span className="text-amber-400 text-xs">🏆 New best!</span>}
+        <div className="kq-card px-4 py-2 text-sm flex items-center gap-2">
+          <span className="text-ink/50 font-body">Last score:</span>
+          <span className="font-display text-mint">{lastScore} pts</span>
+          {personalBest === lastScore && <span className="text-sunny text-xs font-body">🏆 New best!</span>}
         </div>
       )}
 
