@@ -85,10 +85,6 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
     setCurrentChar(lesson.content?.[0] ?? '')
   }
 
-  const handleProgress = (_wpm: number, _accuracy: number) => {
-    // Could update live stats here if needed
-  }
-
   const weakKeys = result
     ? Object.entries(result.charErrors)
         .sort((a, b) => b[1] - a[1])
@@ -96,7 +92,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         .map(([k]) => k)
     : []
 
-  const sectionColor = SECTION_COLORS[lesson.sectionTitle] ?? 'bg-slate-700 text-slate-400'
+  const sectionColor = SECTION_COLORS[lesson.sectionTitle] ?? 'bg-paper-dark text-ink border-ink/20'
 
   if (!lesson.content) {
     return (
@@ -165,7 +161,6 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         key={key}
         text={lesson.content}
         onComplete={handleComplete}
-        onProgress={handleProgress}
         onCurrentChar={setCurrentChar}
       />
 

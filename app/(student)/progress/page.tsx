@@ -30,8 +30,7 @@ export default async function ProgressPage() {
     accuracy: a.accuracy,
   }))
 
-  const SECTION_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444']
-  const unitStats = sections.map((section, i) => {
+  const unitStats = sections.map((section) => {
     const passedCount = section.lessons.filter((l) =>
       attempts.some((a) => {
         if (a.lessonId !== l.id) return false
@@ -44,7 +43,6 @@ export default async function ProgressPage() {
       name: section.title,
       total: section.lessons.length,
       passed: passedCount,
-      color: SECTION_COLORS[i % SECTION_COLORS.length],
     }
   })
 

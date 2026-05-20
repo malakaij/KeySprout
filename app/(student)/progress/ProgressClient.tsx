@@ -3,6 +3,7 @@
 import { ProgressChart } from '@/components/dashboard/ProgressChart'
 import { VirtualKeyboard } from '@/components/typing/VirtualKeyboard'
 import { formatDate } from '@/lib/utils'
+import { sectionColor } from '@/lib/section-colors'
 
 interface AttemptData {
   date: string
@@ -14,7 +15,6 @@ interface UnitStat {
   name: string
   total: number
   passed: number
-  color: string
 }
 
 interface RecentAttempt {
@@ -32,16 +32,6 @@ interface ProgressClientProps {
   weakKeys: Record<string, number>
   recentAttempts: RecentAttempt[]
 }
-
-const SECTION_BAR_COLORS = ['bg-mint', 'bg-sky', 'bg-sunny', 'bg-grape', 'bg-coral', 'bg-berry']
-const SECTION_BADGE_COLORS = [
-  'bg-mint/20 border-mint text-ink',
-  'bg-sky/20 border-sky text-ink',
-  'bg-sunny/20 border-sunny text-ink',
-  'bg-grape/20 border-grape text-ink',
-  'bg-coral/20 border-coral text-ink',
-  'bg-berry/20 border-berry text-ink',
-]
 
 export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts }: ProgressClientProps) {
   const topWeakKeys = Object.entries(weakKeys)
@@ -68,19 +58,18 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
         <div className="space-y-4">
           {unitStats.map((unit, i) => {
             const pct = unit.total > 0 ? (unit.passed / unit.total) * 100 : 0
-            const barColor = SECTION_BAR_COLORS[i % SECTION_BAR_COLORS.length]
-            const badgeColor = SECTION_BADGE_COLORS[i % SECTION_BADGE_COLORS.length]
+            const c = sectionColor(i)
             return (
               <div key={unit.name}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className={`text-sm font-semibold px-3 py-0.5 rounded-full border-2 font-body ${badgeColor}`}>
+                  <span className={`text-sm font-semibold px-3 py-0.5 rounded-full border-2 font-body ${c.badgeClass}`}>
                     {unit.name}
                   </span>
                   <span className="text-xs text-ink/40 font-body">{unit.passed}/{unit.total} passed</span>
                 </div>
                 <div className="w-full bg-paper-dark rounded-full h-3 border-2 border-ink/10 overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all ${barColor}`}
+                    className={`h-full rounded-full transition-all ${c.solid}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>

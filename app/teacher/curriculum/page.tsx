@@ -3,15 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { BookOpen, Layers, Zap } from 'lucide-react'
-
-const SECTION_COLORS = [
-  { bg: 'bg-mint/20', border: 'border-mint', badge: 'bg-mint text-ink', dot: 'bg-mint' },
-  { bg: 'bg-sky/20', border: 'border-sky', badge: 'bg-sky text-white', dot: 'bg-sky' },
-  { bg: 'bg-sunny/20', border: 'border-sunny', badge: 'bg-sunny text-ink', dot: 'bg-sunny' },
-  { bg: 'bg-grape/20', border: 'border-grape', badge: 'bg-grape text-white', dot: 'bg-grape' },
-  { bg: 'bg-coral/20', border: 'border-coral', badge: 'bg-coral text-white', dot: 'bg-coral' },
-  { bg: 'bg-berry/20', border: 'border-berry', badge: 'bg-berry text-ink', dot: 'bg-berry' },
-]
+import { sectionColor } from '@/lib/section-colors'
 
 const DIFFICULTY_LABELS: Record<number, { label: string; color: string }> = {
   0: { label: 'Beginner', color: 'bg-mint/30 text-ink border-mint' },
@@ -74,7 +66,7 @@ export default async function CurriculumPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {course.sections.map((section, si) => {
-                const color = SECTION_COLORS[si % SECTION_COLORS.length]
+                const color = sectionColor(si)
                 const difficultyIndex = Math.min(si, 4)
                 const diff = DIFFICULTY_LABELS[difficultyIndex]
                 const avgWpm = section.lessons
@@ -112,7 +104,7 @@ export default async function CurriculumPage() {
                       {section.lessons.slice(0, 20).map((_, li) => (
                         <div
                           key={li}
-                          className={`w-2 h-2 rounded-full ${color.dot} border border-ink/20`}
+                          className={`w-2 h-2 rounded-full ${color.solid} border border-ink/20`}
                         />
                       ))}
                       {section.lessons.length > 20 && (

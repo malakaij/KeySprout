@@ -9,6 +9,7 @@ import { Pip } from '@/components/ui/Pip'
 import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2, CheckCircle, Lock } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
+import { sectionColor } from '@/lib/section-colors'
 
 const DAILY_LIMIT = 3
 
@@ -33,15 +34,6 @@ function getWeekDots(attempts: { completedAt: Date }[]): boolean[] {
   }
   return dots
 }
-
-const SECTION_ACCENT_COLORS = [
-  { bg: 'bg-mint', border: 'border-mint', text: 'text-ink' },
-  { bg: 'bg-sky', border: 'border-sky', text: 'text-white' },
-  { bg: 'bg-sunny', border: 'border-sunny', text: 'text-ink' },
-  { bg: 'bg-grape', border: 'border-grape', text: 'text-white' },
-  { bg: 'bg-coral', border: 'border-coral', text: 'text-white' },
-  { bg: 'bg-berry', border: 'border-berry', text: 'text-ink' },
-]
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
@@ -212,11 +204,11 @@ export default async function DashboardPage() {
         </div>
         <div className="space-y-6">
           {sections.map((section, si) => {
-            const accent = SECTION_ACCENT_COLORS[si % SECTION_ACCENT_COLORS.length]
+            const c = sectionColor(si)
             return (
               <div key={section.id}>
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border-[3px] border-ink mb-3 ${accent.bg}`}>
-                  <span className={`font-display text-sm ${accent.text}`}>{section.title}</span>
+                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border-[3px] border-ink mb-3 ${c.solid}`}>
+                  <span className={`font-display text-sm ${c.accentText}`}>{section.title}</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {section.lessons.map((lesson, li) => {

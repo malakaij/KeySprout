@@ -5,15 +5,7 @@ import { LessonCard } from '@/components/dashboard/LessonCard'
 import type { LessonWithProgress, SectionWithLessons } from '@/types'
 import { Sparkles } from 'lucide-react'
 import Link from 'next/link'
-
-const SECTION_COLORS = [
-  'bg-mint/20 border-mint text-ink',
-  'bg-sky/20 border-sky text-ink',
-  'bg-sunny/20 border-sunny text-ink',
-  'bg-grape/20 border-grape text-ink',
-  'bg-coral/20 border-coral text-ink',
-  'bg-berry/20 border-berry text-ink',
-]
+import { sectionColor } from '@/lib/section-colors'
 
 interface LessonsClientProps {
   courseTitle: string
@@ -62,12 +54,12 @@ export function LessonsClient({ courseTitle, sections }: LessonsClientProps) {
       </div>
 
       {sections.map((section, sectionIndex) => {
-        const colorClass = SECTION_COLORS[sectionIndex % SECTION_COLORS.length]
+        const c = sectionColor(sectionIndex)
         const completedCount = section.lessons.filter((l) => l.passed).length
 
         return (
           <div key={section.id}>
-            <div className={`rounded-2xl border-[3px] p-4 mb-4 ${colorClass}`}>
+            <div className={`rounded-2xl border-[3px] p-4 mb-4 ${c.bg} ${c.border} text-ink`}>
               <h2 className="text-lg font-display text-ink">{section.title}</h2>
               {section.description && (
                 <p className="text-sm text-ink/60 mt-0.5 font-body">{section.description}</p>
