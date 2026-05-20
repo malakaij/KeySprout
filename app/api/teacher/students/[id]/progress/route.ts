@@ -69,7 +69,7 @@ export async function GET(
   const allTotal: Record<string, number> = {}
 
   for (const attempt of student.lessonAttempts) {
-    const errors = analyzeWeakKeys(attempt.lesson.content, '')
+    const errors = analyzeWeakKeys(attempt.lesson.content ?? '', '')
     for (const [key, rate] of Object.entries(errors)) {
       if (!allErrors[key]) allErrors[key] = 0
       if (!allTotal[key]) allTotal[key] = 0
