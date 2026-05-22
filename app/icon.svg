@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="KeySprout icon">
+  <rect width="512" height="512" rx="112" fill="#16a34a"/>
+  <path d="M150 306c0-67 54-121 121-121h66c14 0 25 11 25 25v66c0 67-54 121-121 121h-66c-14 0-25-11-25-25v-66Z" fill="#dcfce7"/>
+  <path d="M214 331c51-11 90-50 101-101" stroke="#166534" stroke-width="28" stroke-linecap="round" fill="none"/>
+  <path d="M151 164h210" stroke="#f0fdf4" stroke-width="34" stroke-linecap="round"/>
+  <path d="M181 119h150" stroke="#bbf7d0" stroke-width="28" stroke-linecap="round"/>
+</svg>
