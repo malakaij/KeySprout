@@ -42,3 +42,6 @@ next-env.d.ts
 # prisma
 prisma/*.db
 prisma/*.db-journal
+
+# Test coverage output
+coverage/

@@ -1,5 +1,6 @@
 # KeySprout
 
+[![CI](https://img.shields.io/github/actions/workflow/status/malakaij/keysprout/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/malakaij/keysprout/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-ffd23f.svg?style=flat-square)](LICENSE)
 [![Status: Alpha](https://img.shields.io/badge/Status-Alpha-ff5e5b.svg?style=flat-square)](ROADMAP.md)
 [![Made for K-5](https://img.shields.io/badge/Made_for-K--5-4dd4ac.svg?style=flat-square)](#what-it-does)
