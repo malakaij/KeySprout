@@ -141,7 +141,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
       <div
         ref={containerRef}
         tabIndex={-1}
-        className="w-full max-w-2xl kq-card p-6 focus:outline-none focus:shadow-ink-lg"
+        className="w-full max-w-2xl kq-card p-6 focus:outline-hidden focus:shadow-ink-lg"
       >
         {gameState === 'idle' && (
           <div className="flex flex-col items-center gap-4 py-8">

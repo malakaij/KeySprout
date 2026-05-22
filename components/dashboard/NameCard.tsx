@@ -54,7 +54,7 @@ export function NameCard({
 
       {requested ? (
         <div className="flex items-center gap-2 text-sunny text-sm font-body">
-          <Clock className="w-4 h-4 flex-shrink-0" />
+          <Clock className="w-4 h-4 shrink-0" />
           <span>Name change requested — your teacher will assign a new one soon.</span>
         </div>
       ) : (

@@ -12,7 +12,7 @@ export default function StudentDetailLoading() {
       {/* Student info card */}
       <SkeletonCard>
         <div className="flex items-center gap-4">
-          <Skeleton className="h-14 w-14 rounded-full flex-shrink-0" />
+          <Skeleton className="h-14 w-14 rounded-full shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-6 w-36" />
             <Skeleton className="h-4 w-24" />

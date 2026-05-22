@@ -39,7 +39,7 @@ export default function InsightsLoading() {
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3">
-              <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+              <Skeleton className="h-8 w-8 rounded-full shrink-0" />
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-4 w-16 ml-auto" />
               <Skeleton className="h-4 w-16" />

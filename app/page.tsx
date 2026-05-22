@@ -138,7 +138,7 @@ export default function LandingPage() {
               <div key={t.name} className="kq-card p-5">
                 <p className="text-ink/70 text-sm italic mb-4 font-body">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 ${t.color} rounded-full border-[3px] border-ink flex items-center justify-center text-white text-sm font-display flex-shrink-0`}>
+                  <div className={`w-8 h-8 ${t.color} rounded-full border-[3px] border-ink flex items-center justify-center text-white text-sm font-display shrink-0`}>
                     {t.avatar}
                   </div>
                   <div>

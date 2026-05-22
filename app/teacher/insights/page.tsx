@@ -220,9 +220,9 @@ export default async function InsightsPage() {
               </div>
             </div>
             <div className="flex items-center gap-6 mt-4 text-xs text-ink/40 font-body justify-center">
-              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-mint/40 border border-ink/30 inline-block" /> Easy</span>
-              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-sunny/50 border border-ink/40 inline-block" /> Medium</span>
-              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-coral border border-ink inline-block" /> Hard</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-mint/40 border border-ink/30 inline-block" /> Easy</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-sunny/50 border border-ink/40 inline-block" /> Medium</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-coral border border-ink inline-block" /> Hard</span>
             </div>
           </div>
 

@@ -78,10 +78,10 @@ export default async function CurriculumPage() {
                   <div key={section.id} className={`kq-card p-4 ${color.bg} border-[3px] ${color.border} space-y-3`}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-ink/60 flex-shrink-0" />
+                        <Layers className="w-4 h-4 text-ink/60 shrink-0" />
                         <h3 className="font-display text-ink text-sm leading-tight">{section.title}</h3>
                       </div>
-                      <span className={`kq-chip text-xs flex-shrink-0 ${diff.color} border-2`}>
+                      <span className={`kq-chip text-xs shrink-0 ${diff.color} border-2`}>
                         {diff.label}
                       </span>
                     </div>

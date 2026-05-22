@@ -86,7 +86,7 @@ export default function TeacherClassesPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. 5th Period Typing"
                 required
-                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
               />
             </div>
             <div>
@@ -95,7 +95,7 @@ export default function TeacherClassesPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. Fall 2024 Typing Class"
-                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+                className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
               />
             </div>
             <button

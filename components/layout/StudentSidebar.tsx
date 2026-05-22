@@ -19,7 +19,7 @@ export function StudentSidebar() {
   const initial = name[0]?.toUpperCase() ?? 'S'
 
   return (
-    <aside className="w-56 flex-shrink-0 bg-paper border-r-[3px] border-ink min-h-screen flex flex-col">
+    <aside className="w-56 shrink-0 bg-paper border-r-[3px] border-ink min-h-screen flex flex-col">
       {/* Avatar / Name */}
       <div className="p-5 border-b-[3px] border-ink">
         <div className="flex items-center gap-3">
@@ -49,7 +49,7 @@ export function StudentSidebar() {
                   : 'text-ink/60 hover:text-ink hover:bg-paper-dark'
               )}
             >
-              <Icon className="w-4 h-4 flex-shrink-0" />
+              <Icon className="w-4 h-4 shrink-0" />
               {item.label}
             </Link>
           )

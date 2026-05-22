@@ -1,70 +1,85 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  --paper: #fff6e3;
-  --paper-dark: #f0e8d0;
-  --ink: #1a1a2e;
-  --coral: #ff5e5b;
-  --sunny: #ffd23f;
-  --mint: #4dd4ac;
-  --sky: #4ea8de;
-  --grape: #9b5de5;
-  --berry: #ff7eb6;
-}
+@theme {
+  --color-paper: #fff6e3;
+  --color-ink: #1a1a2e;
+  --color-coral: #ff5e5b;
+  --color-sunny: #ffd23f;
+  --color-mint: #4dd4ac;
+  --color-sky: #4ea8de;
+  --color-grape: #9b5de5;
+  --color-berry: #ff7eb6;
+  --color-paper-dark: #f0e8d0;
 
-html, body {
-  background-color: var(--paper);
-  color: var(--ink);
-  font-family: 'Nunito', sans-serif;
-}
+  --font-display: 'Fredoka One', cursive;
+  --font-body: 'Nunito', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-@layer components {
-  .kq-card {
-    @apply bg-white border-[3px] border-ink rounded-2xl;
-    box-shadow: 4px 4px 0 #1a1a2e;
-  }
-  .kq-btn {
-    @apply border-[3px] border-ink rounded-full font-display cursor-pointer transition-all duration-100;
-    box-shadow: 3px 3px 0 #1a1a2e;
-  }
-  .kq-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 #1a1a2e;
-  }
-  .kq-chip {
-    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full border-2 border-ink text-sm font-semibold;
-    box-shadow: 2px 2px 0 #1a1a2e;
-  }
-}
+  --shadow-ink: 4px 4px 0 #1a1a2e;
+  --shadow-ink-sm: 3px 3px 0 #1a1a2e;
+  --shadow-ink-lg: 6px 6px 0 #1a1a2e;
 
-@layer utilities {
-  .animate-blink {
-    animation: blink 1s step-end infinite;
-  }
+  --animate-blink: blink 1s step-end infinite;
+  --animate-fall: fall linear forwards;
+  --animate-fade-in: fadeIn 0.3s ease-in-out;
+  --animate-slide-up: slideUp 0.3s ease-out;
+  --animate-pulse-ring: pulseRing 1.5s ease-in-out infinite;
 
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
-
-  .animate-fall {
-    animation: fall linear forwards;
-  }
-
   @keyframes fall {
     from { transform: translateY(-60px); }
     to { transform: translateY(440px); }
   }
-
-  .animate-pulse-ring {
-    animation: pulseRing 1.5s ease-in-out infinite;
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
-
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
   @keyframes pulseRing {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 94, 91, 0.4); }
     50% { box-shadow: 0 0 0 8px rgba(255, 94, 91, 0); }
   }
+}
+
+/*
+  Tailwind v4 changed the default border color to currentcolor. This shim
+  preserves v3 behavior: elements without an explicit border-color class get
+  a subtle ink tint rather than the full text color.
+*/
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    border-color: color-mix(in srgb, var(--color-ink) 20%, transparent);
+  }
+}
+
+html, body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: 'Nunito', sans-serif;
+}
+
+@utility kq-card {
+  @apply bg-white border-[3px] border-ink rounded-2xl;
+  box-shadow: 4px 4px 0 #1a1a2e;
+}
+
+@utility kq-btn {
+  @apply border-[3px] border-ink rounded-full font-display cursor-pointer transition-all duration-100;
+  box-shadow: 3px 3px 0 #1a1a2e;
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #1a1a2e;
+  }
+}
+
+@utility kq-chip {
+  @apply inline-flex items-center gap-1 px-3 py-1 rounded-full border-2 border-ink text-sm font-semibold;
+  box-shadow: 2px 2px 0 #1a1a2e;
 }

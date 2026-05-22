@@ -130,7 +130,7 @@ export default async function DashboardPage() {
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       {/* Header with Pip */}
       <div className="flex items-center gap-4">
-        <Pip size="md" variant="wave" className="flex-shrink-0" />
+        <Pip size="md" variant="wave" className="shrink-0" />
         <div>
           <h1 className="text-2xl font-display text-ink">
             Welcome back, {session.user.name?.split(' ')[0] ?? 'Learner'}!
@@ -299,7 +299,7 @@ export default async function DashboardPage() {
                     <p className="text-ink font-semibold truncate">{attempt.lesson.title}</p>
                     <p className="text-xs text-ink/40 font-body">{formatDate(attempt.completedAt)}</p>
                   </div>
-                  <div className="flex gap-3 ml-3 flex-shrink-0">
+                  <div className="flex gap-3 ml-3 shrink-0">
                     <span className="text-mint font-bold">{Math.round(attempt.wpm)} WPM</span>
                     <span className="text-sky font-semibold">{Math.round(attempt.accuracy * 100)}%</span>
                   </div>
@@ -321,7 +321,7 @@ export default async function DashboardPage() {
         <div className="grid sm:grid-cols-2 gap-4">
           <Link
             href="/games/word-rain"
-            className="p-4 bg-gradient-to-br from-sky/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
+            className="p-4 bg-linear-to-br from-sky/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
           >
             <div className="text-2xl mb-2">🌧️</div>
             <h3 className="font-display text-ink">Word Rain</h3>
@@ -329,7 +329,7 @@ export default async function DashboardPage() {
           </Link>
           <Link
             href="/games/letter-hunt"
-            className="p-4 bg-gradient-to-br from-sunny/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
+            className="p-4 bg-linear-to-br from-sunny/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
           >
             <div className="text-2xl mb-2">🎯</div>
             <h3 className="font-display text-ink">Letter Hunt</h3>

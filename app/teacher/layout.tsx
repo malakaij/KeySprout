@@ -69,7 +69,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               onChange={(e) => { setAccessCode(e.target.value); setError('') }}
               placeholder="Access code"
               required
-              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2.5 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2.5 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
             />
             {error && (
               <p className="text-coral text-xs font-body">{error}</p>

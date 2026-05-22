@@ -24,7 +24,7 @@ export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex-shrink-0">
+        <div className="mt-0.5 shrink-0">
           {locked ? (
             <Lock className="w-5 h-5 text-ink/20" />
           ) : lesson.passed ? (
@@ -50,7 +50,7 @@ export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
         </div>
 
         {!locked && (
-          <ChevronRight className="w-4 h-4 text-ink/30 flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-ink/30 shrink-0 mt-1" />
         )}
       </div>
     </button>
