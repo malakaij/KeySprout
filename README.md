@@ -107,11 +107,6 @@ ADMIN_PASSWORD="choose-a-strong-password"
 
 # Log verbosity: error | warn | info | debug (default: info)
 LOG_LEVEL="info"
-
-# Sentry error monitoring — leave blank to disable.
-# Get your DSN from sentry.io → Settings → Projects → [project] → Client Keys.
-SENTRY_DSN=""
-NEXT_PUBLIC_SENTRY_DSN=""
 ```
 
 ### Step 5 — Initialize the database
