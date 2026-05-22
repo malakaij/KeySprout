@@ -52,7 +52,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 ### Known gaps (to address in upcoming sprints)
 
-- **No migration system** — schema changes happen via `prisma db push`, which is fine for development but risky for production updates (Sprint 5)
+- **Production database needs one-time baseline** — the live Vercel database was created with `prisma db push` before Sprint 5. Once baselined via `prisma migrate resolve --applied 0_init` (see `prisma/migrations/README.md`), every subsequent deploy uses `prisma migrate deploy`
 - **No rate limiting** — all API routes are unthrottled (Sprint 8)
 - **No physical keyboard detection** — students on touch-only devices can attempt lessons with a virtual keyboard, which defeats the purpose of a touch-typing curriculum (Sprint 7)
 - **No accessibility audit** — keyboard nav works but ARIA labels and screen reader behaviour haven't been verified (Sprint 6)
@@ -63,7 +63,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 | Horizon | Theme |
 |---------|-------|
-| **Now** | Sprint 4.1: Next.js 15 / React 19 / ESLint 9 upgrade → Sprint 5: database migrations |
+| **Now** | Sprint 5: database migrations |
 | **Next 2 weeks** | Sprint 6: accessibility audit; Sprint 7: physical keyboard detection |
 | **Next month** | Production hardening: rate limiting, keyboard detection, security |
 | **Next 3 months** | Teacher tools, engagement features, custom lessons |
@@ -149,14 +149,17 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** Build, lint, and tests green; visual QA confirms no regressions.
 
-### Sprint 5 — Database migrations
+### Sprint 5 — Database migrations 🟡 in progress
 *Week 5*
 
-- Switch from `prisma db push` to `prisma migrate dev` workflow
-- Generate the initial migration from current schema (`prisma migrate dev --name initial`)
-- Update README and CODEBASE.md migration paths
-- Add `npm run db:migrate` script for production deploys
-- Document the migration → review → apply → deploy flow
+- [x] Generate initial migration (`prisma/migrations/0_init/migration.sql`) from current schema using `prisma migrate diff` (no live database required)
+- [x] Add `migration_lock.toml` to pin the database provider
+- [x] Switch production `build` script from `prisma db push` to `prisma migrate deploy`
+- [x] Add `db:migrate`, `db:migrate:deploy`, `db:migrate:status` npm scripts
+- [x] Remove the dangerous `db:push` script entirely (use `db:migrate` instead)
+- [x] Document the schema-change workflow in `CONTRIBUTING.md`
+- [x] Update README, CODEBASE.md, and add `prisma/migrations/README.md` with baseline + recovery instructions
+- [ ] **Baseline the production database** (one-time manual step before merging — see `prisma/migrations/README.md`)
 
 **Done when:** Schema changes require a versioned migration file. The build script applies migrations safely without destructive `db push`.
 

@@ -111,14 +111,14 @@ LOG_LEVEL="info"
 
 ### Step 5 — Initialize the database
 
-This creates all the tables and loads the full 250-lesson curriculum:
+This applies all migrations (creating the tables) and loads the full 250-lesson curriculum:
 
 ```bash
-npm run db:push
+npm run db:migrate:deploy
 npm run db:seed
 ```
 
-`db:push` creates the database tables. `db:seed` fills them with the curriculum — this may take 30–60 seconds.
+`db:migrate:deploy` runs every migration in `prisma/migrations/` against your database. `db:seed` fills the tables with the curriculum — this may take 30–60 seconds.
 
 ### Step 6 — Start the app
 
@@ -193,8 +193,7 @@ You are responsible for complying with applicable laws (e.g., COPPA, FERPA, GDPR
 ```bash
 git pull
 npm install
-npm run db:push   # applies any schema changes
-npm run build
+npm run build   # runs `prisma migrate deploy` before building
 npm start
 ```
 
