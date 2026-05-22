@@ -1,5 +1,11 @@
 # KeySprout
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-ffd23f.svg?style=flat-square)](LICENSE)
+[![Status: Alpha](https://img.shields.io/badge/Status-Alpha-ff5e5b.svg?style=flat-square)](ROADMAP.md)
+[![Made for K-5](https://img.shields.io/badge/Made_for-K--5-4dd4ac.svg?style=flat-square)](#what-it-does)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14-1a1a2e.svg?style=flat-square)](https://nextjs.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-9b5de5.svg?style=flat-square)](CONTRIBUTING.md)
+
 A free, open-source typing curriculum for K–5 students. Students work through a structured 250-lesson course — home row, top row, bottom row, common words, speed building — while teachers track progress and identify which keys each student struggles with most.
 
 **No subscription. No ads. Host it yourself.**
