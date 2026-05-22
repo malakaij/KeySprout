@@ -14,7 +14,7 @@ interface StudentTableProps {
 
 type SortKey = 'name' | 'lessonsCompleted' | 'averageWpm' | 'averageAccuracy'
 
-export function StudentTable({ students, classroomId: _classroomId }: StudentTableProps) {
+export function StudentTable({ students }: StudentTableProps) {
   const router = useRouter()
   const [sortKey, setSortKey] = useState<SortKey>('averageWpm')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
@@ -145,7 +145,7 @@ export function StudentTable({ students, classroomId: _classroomId }: StudentTab
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
-                              isExpanded ? closePanel() : openPanel(student.userId)
+                              if (isExpanded) { closePanel() } else { openPanel(student.userId) }
                             }}
                             title="Student requested a name change"
                             className="flex items-center gap-1 px-1.5 py-0.5 bg-sunny/30 hover:bg-sunny/50 border-2 border-sunny/60 rounded-full text-ink text-xs transition-colors font-body"

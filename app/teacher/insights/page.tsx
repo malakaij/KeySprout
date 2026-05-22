@@ -10,7 +10,6 @@ const KEYBOARD_ROWS = [
   ['z','x','c','v','b','n','m'],
 ]
 
-const LEFT_KEYS = new Set(['q','w','e','r','t','a','s','d','f','g','z','x','c','v','b'])
 
 function getKeyHeatColor(rate: number): string {
   if (rate === 0) return 'bg-paper-dark border-ink/20 text-ink/40'

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-import * as Sentry from '@sentry/nextjs'
 import { Pip } from '@/components/ui/Pip'
 import { logger } from '@/lib/logger'
 
@@ -13,7 +12,6 @@ interface ErrorProps {
 
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
-    Sentry.captureException(error)
     // digest is a stable server-side hash safe to log; the message is only
     // shown in the UI in development, never sent to a log aggregator.
     logger.error({ digest: error.digest }, 'unhandled route error')

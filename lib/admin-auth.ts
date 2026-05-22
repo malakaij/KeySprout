@@ -30,7 +30,7 @@ export function verifyAdminToken(token: string): boolean {
   return sig === expected
 }
 
-export function isAdminAuthenticated(): boolean {
-  const token = cookies().get(ADMIN_COOKIE)?.value
+export async function isAdminAuthenticated(): Promise<boolean> {
+  const token = (await cookies()).get(ADMIN_COOKIE)?.value
   return !!token && verifyAdminToken(token)
 }

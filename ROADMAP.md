@@ -49,7 +49,6 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 - Custom error boundary pages (`app/error.tsx`, `app/global-error.tsx`) with friendly recovery UI
 - `loading.tsx` skeleton screens on all slow server-rendered routes (dashboard, lessons, progress, teacher insights, class detail, student detail)
 - Structured request logging via `pino` with request IDs injected through Next.js middleware
-- Optional Sentry integration (disabled by default; enabled by setting `SENTRY_DSN`)
 
 ### Known gaps (to address in upcoming sprints)
 
@@ -64,7 +63,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 | Horizon | Theme |
 |---------|-------|
-| **Now** | Sprint 5: database migrations |
+| **Now** | Sprint 4.1: Next.js 15 / React 19 / ESLint 9 upgrade → Sprint 5: database migrations |
 | **Next 2 weeks** | Sprint 6: accessibility audit; Sprint 7: physical keyboard detection |
 | **Next month** | Production hardening: rate limiting, keyboard detection, security |
 | **Next 3 months** | Teacher tools, engagement features, custom lessons |
@@ -117,9 +116,23 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 - [x] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
 - [x] Add `loading.tsx` to slow routes (dashboard, lessons, progress, teacher insights, class detail, student detail) ([#14](https://github.com/malakaij/KeySprout/issues/14))
 - [x] Wire up structured logging (`pino`) with request IDs via Next.js middleware ([#15](https://github.com/malakaij/KeySprout/issues/15))
-- [x] Optional Sentry integration behind `SENTRY_DSN` env flag ([#16](https://github.com/malakaij/KeySprout/issues/16))
+- [x] ~~Optional Sentry integration~~ removed in Sprint 4.1 — `pino` logger covers structured error capture; will revisit closer to launch ([#16](https://github.com/malakaij/KeySprout/issues/16))
 
 **Done when:** A thrown error in any route shows a friendly screen with a "Go home" button. Server logs include request IDs for debugging.
+
+### Sprint 4.1 — Dependency upgrade: Next.js 15, React 19, ESLint 9 🟡 in progress
+*Between sprints 4 and 5*
+
+- [x] Upgrade Next.js 14 → 15 (async `params`/`cookies` migration)
+- [x] Upgrade React 18 → React 19 and matching `@types/react`
+- [x] Upgrade ESLint 8 → 9 and `eslint-config-next` 14 → 15
+- [x] Migrate lint config from legacy `.eslintrc.json` to flat `eslint.config.mjs`
+- [x] Switch `npm run lint` from deprecated `next lint` to `eslint .`
+- [x] Resolve all pre-existing lint warnings surfaced by stricter rules
+- [x] Close Dependabot PR #22 (ESLint 10 — not yet supported by `eslint-config-next`)
+- [x] Remove `@sentry/nextjs` — premature for an app with zero users; will re-add closer to launch
+
+**Done when:** Build, lint, and tests are all green on the upgraded stack.
 
 ### Sprint 5 — Database migrations
 *Week 5*

@@ -10,8 +10,9 @@ const bodySchema = z.object({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string; memberId: string } }
+  { params }: { params: Promise<{ id: string; memberId: string }> }
 ) {
+  const { id, memberId } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -20,7 +21,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const classroom = await prisma.classroom.findUnique({ where: { id: params.id } })
+  const classroom = await prisma.classroom.findUnique({ where: { id: id } })
   if (!classroom || classroom.teacherId !== session.user.id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -32,20 +33,20 @@ export async function PATCH(
   }
 
   const member = await prisma.classMember.findUnique({
-    where: { id: params.memberId },
+    where: { id: memberId },
   })
-  if (!member || member.classroomId !== params.id) {
+  if (!member || member.classroomId !== id) {
     return NextResponse.json({ error: 'Member not found' }, { status: 404 })
   }
 
   if (parsed.data.action === 'approve') {
     const updated = await prisma.classMember.update({
-      where: { id: params.memberId },
+      where: { id: memberId },
       data: { status: 'APPROVED' },
     })
     return NextResponse.json({ member: updated })
   } else {
-    await prisma.classMember.delete({ where: { id: params.memberId } })
+    await prisma.classMember.delete({ where: { id: memberId } })
     return NextResponse.json({ success: true })
   }
 }

@@ -6,8 +6,9 @@ import { analyzeWeakKeys } from '@/lib/typing-engine'
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -17,7 +18,7 @@ export async function GET(
   }
 
   const student = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       lessonAttempts: {
         include: { lesson: { include: { section: true } } },
