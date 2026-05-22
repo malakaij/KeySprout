@@ -9,7 +9,7 @@ By participating in this project, you agree to abide by the [Code of Conduct](CO
 1. **Fork** the repository and clone your fork locally
 2. **Install dependencies**: `npm install`
 3. **Set up the database**: copy `.env.example` to `.env` and fill in `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `TEACHER_ACCESS_CODE`, `ADMIN_PASSWORD`
-4. **Push the schema**: `npx prisma db push`
+4. **Apply migrations**: `npm run db:migrate:deploy` — creates all tables from existing migrations
 5. **Seed the curriculum** (destructive — clears all data): visit `/admin` and click "Seed Database", or call `seedDatabase()` from `lib/seed-db.ts`
 6. **Run the dev server**: `npm run dev`
 
@@ -30,9 +30,24 @@ See `README.md` for a non-technical setup walkthrough and `CODEBASE.md` for an a
 
 ## Code Style
 
+### Schema changes — always create a migration
+
+Schema changes (anything in `prisma/schema.prisma`) **must** ship with a migration. Never use `prisma db push` against a real database — it has no version history and silently destroys data on certain schema changes.
+
+The workflow:
+
+1. Edit `prisma/schema.prisma`
+2. Run `npm run db:migrate -- --name short_description` (e.g. `--name add_lesson_difficulty`)
+3. Prisma generates a new file in `prisma/migrations/YYYYMMDDHHMMSS_short_description/migration.sql` and applies it to your local database
+4. Review the generated SQL — make sure the column types, defaults, and `NOT NULL` decisions match what you intended
+5. Commit both the schema change and the new migration file together
+6. CI runs `prisma generate` and the build; production deploys run `prisma migrate deploy` automatically via `npm run build`
+
+If a migration needs hand-editing (e.g. to add a backfill `UPDATE` statement, or to split a destructive change into two safe steps), edit the `migration.sql` directly before applying it. Once a migration has been committed and applied anywhere, treat it as immutable — make a new migration instead.
+
 ### Design tokens — never use raw Tailwind colors
 
-KeySprout has a warm cream design system. Always use the design tokens defined in `tailwind.config.ts`:
+KeySprout has a warm cream design system. Always use the design tokens defined in `app/globals.css` (via the `@theme` directive):
 
 - `paper`, `paper-dark`, `ink`
 - `coral`, `sunny`, `mint`, `sky`, `grape`, `berry`

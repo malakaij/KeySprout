@@ -75,11 +75,12 @@ keysprout/
 │   ├── seed-db.ts              # Full curriculum seed data (250 lessons)
 │   └── utils.ts                # cn(), formatDate(), formatDuration()
 ├── prisma/
-│   └── schema.prisma           # Database schema (single source of truth)
+│   ├── schema.prisma           # Database schema (single source of truth)
+│   └── migrations/             # SQL migrations applied in order on every deploy
 ├── types/
 │   └── index.ts                # Shared TypeScript interfaces
 ├── .env.example                # Required environment variables with comments
-└── tailwind.config.ts          # Design tokens (colors, fonts, shadows, animations)
+└── app/globals.css             # Design tokens (colors, fonts, shadows, animations) via @theme
 ```
 
 ---
@@ -287,7 +288,7 @@ A large data file that defines the full curriculum. `seedDatabase()` **clears al
 
 ## Design system
 
-All design tokens are defined in `tailwind.config.ts`. The application does not use an external component library.
+All design tokens are defined in `app/globals.css` via the `@theme` directive (Tailwind v4). The application does not use an external component library.
 
 ### Color palette
 
@@ -368,12 +369,14 @@ Nothing. The application makes no external API calls except to Google during sig
 ### Running locally
 
 ```bash
-cp .env.example .env   # fill in your values
+cp .env.example .env         # fill in your values
 npm install
-npm run db:push         # creates tables
-npm run db:seed         # loads curriculum
-npm run dev             # starts at localhost:3000
+npm run db:migrate:deploy    # applies migrations from prisma/migrations/
+npm run db:seed              # loads curriculum
+npm run dev                  # starts at localhost:3000
 ```
+
+For schema changes, see the *Schema changes — always create a migration* section in `CONTRIBUTING.md`. Never run `prisma db push` against a real database.
 
 ### Code conventions
 
