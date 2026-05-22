@@ -32,18 +32,27 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 - Inline comment schema (JSDoc on lib exports, props comments on shared components)
 - Dead code removal and de-duplication pass complete
 
+**Open-source infrastructure**
+- `LICENSE` (MIT), `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`
+- GitHub issue templates (bug, feature, docs) and PR template with design-token + PII checks
+- Repository tagged `v0.1.0-alpha`
+
+**Testing & CI**
+- Vitest configured with v8 coverage (80% line/function, 70% branch thresholds, scoped to `lib/`)
+- 64 unit tests covering `typing-engine`, `name-generator`, `admin-auth`, `section-colors`, and `utils`
+- GitHub Actions workflow running lint, test (with coverage), and build on every PR and push to `main`
+- Coverage HTML uploaded as a CI artifact
+
 ### In progress
 
-- **Branch `claude/typing-curriculum-app-LLbIc`** — awaiting review and merge to `main`
+- **Branch `claude/dev`** — active development branch, branched off `main` after the v0.1.0-alpha release
 
 ### Known gaps (to address in early sprints)
 
-- **No tests of any kind** — no unit, integration, or e2e suite exists
-- **No CI** — no `.github/workflows`, no automated typecheck or build on PRs
-- **No LICENSE file** — README declares MIT but the file is missing
 - **No migration system** — schema changes happen via `prisma db push`, which is fine for development but not for production updates
 - **No rate limiting** — all API routes are unthrottled
 - **No error boundaries or 404/500 pages** — uncaught errors show the default Next.js stack
+- **No structured logging** — only ad-hoc `console.log` calls
 - **Mobile responsive is partial** — typing interface works but games and dashboards have rough edges on phones
 - **No accessibility audit** — keyboard nav works but ARIA labels and screen reader behaviour haven't been verified
 
@@ -64,12 +73,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 ## Tomorrow
 
-A short checklist before the next work session:
-
-1. Pull the branch locally, run `npm install && npm run dev`, click through every page as student, teacher, and admin. Confirm the seed works against a clean database.
-2. Add `LICENSE` (MIT) to the repo root.
-3. Create the GitHub project board and file issues for everything in [Sprint 1](#sprint-1--open-source-readiness) so contributors have somewhere to start.
-4. Tag a `v0.1.0-alpha` release once `main` is updated.
+This section has been retired — the initial release shipped as `v0.1.0-alpha`. Sprints 1–3 are complete. Next active work is Sprint 4 (error handling & observability).
 
 ---
 
@@ -77,7 +81,7 @@ A short checklist before the next work session:
 
 Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjacent items can swap in if priorities change. Sprints 1–3 are firm; everything from Sprint 7 onward is directional.
 
-### Sprint 1 — Open-source readiness
+### Sprint 1 — Open-source readiness ✅ shipped
 *Week 1*
 
 - Add `LICENSE` (MIT) and `CODE_OF_CONDUCT.md` (Contributor Covenant)
@@ -89,7 +93,7 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** A first-time visitor to the repo can find license, conduct expectations, contribution guide, and security policy without scrolling.
 
-### Sprint 2 — Testing foundation
+### Sprint 2 — Testing foundation ✅ shipped
 *Week 2*
 
 - Add Vitest for unit tests; configure with Next.js path aliases
@@ -100,25 +104,24 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** `npm test` runs the suite, every `lib/` function has at least one happy-path test and one boundary test.
 
-### Sprint 3 — CI/CD
+### Sprint 3 — CI/CD ✅ shipped
 *Week 3*
 
-- GitHub Actions workflow: typecheck (`tsc --noEmit`), lint (`next lint`), test (`npm test`), build (`npm run build`)
-- Run on every PR and push to `main`
-- Set up Vercel deploy preview for PRs
-- Branch protection on `main`: require passing checks + 1 review
-- Add Dependabot config for npm + GitHub Actions
+- [x] GitHub Actions workflow: lint, test (with coverage), build on every PR and push to `main`
+- [x] Vercel deploy preview for PRs (built-in via Vercel Git integration)
+- [x] Branch protection on `main`: linear history, squash-only merge, required PR review, conversation resolution
+- [x] Add Dependabot config for npm + GitHub Actions ([#11](https://github.com/malakaij/KeySprout/issues/11))
 
-**Done when:** Every PR shows green checks before merge. A failing typecheck blocks the merge.
+**Done when:** Every PR shows green checks before merge. Dependabot opens weekly update PRs.
 
 ### Sprint 4 — Error handling & observability
 *Week 4*
 
-- Custom `app/not-found.tsx` (Pip-themed 404)
-- Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery)
-- Add `loading.tsx` to slow routes (dashboard, teacher insights)
-- Wire up structured logging (`pino` or similar) with request IDs
-- Optional: integrate Sentry behind an env flag for self-hosters who want it
+- [ ] Custom `app/not-found.tsx` (Pip-themed 404) ([#12](https://github.com/malakaij/KeySprout/issues/12))
+- [ ] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
+- [ ] Add `loading.tsx` to slow routes (dashboard, teacher insights) ([#14](https://github.com/malakaij/KeySprout/issues/14))
+- [ ] Wire up structured logging (`pino` or similar) with request IDs ([#15](https://github.com/malakaij/KeySprout/issues/15))
+- [ ] Optional: integrate Sentry behind an env flag for self-hosters who want it ([#16](https://github.com/malakaij/KeySprout/issues/16))
 
 **Done when:** A thrown error in any route shows a friendly screen with a "Go home" button. Server logs include request IDs for debugging.
 
