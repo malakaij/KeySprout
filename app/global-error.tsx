@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import * as Sentry from '@sentry/nextjs'
 import { logger } from '@/lib/logger'
 
 interface GlobalErrorProps {
@@ -12,6 +13,7 @@ interface GlobalErrorProps {
 // <html> and <body> tags and cannot rely on any layout components.
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
+    Sentry.captureException(error)
     logger.error({ digest: error.digest }, 'unhandled global error')
   }, [error])
 
