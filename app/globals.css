@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #fff6e3;
+  --paper-dark: #f0e8d0;
+  --ink: #1a1a2e;
+  --coral: #ff5e5b;
+  --sunny: #ffd23f;
+  --mint: #4dd4ac;
+  --sky: #4ea8de;
+  --grape: #9b5de5;
+  --berry: #ff7eb6;
+}
+
+html, body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+}
+
+@layer components {
+  .kq-card {
+    @apply bg-white border-[3px] border-ink rounded-2xl;
+    box-shadow: 4px 4px 0 #1a1a2e;
+  }
+  .kq-btn {
+    @apply border-[3px] border-ink rounded-full font-display cursor-pointer transition-all duration-100;
+    box-shadow: 3px 3px 0 #1a1a2e;
+  }
+  .kq-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #1a1a2e;
+  }
+  .kq-chip {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full border-2 border-ink text-sm font-semibold;
+    box-shadow: 2px 2px 0 #1a1a2e;
+  }
+}
+
+@layer utilities {
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .animate-fall {
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    from { transform: translateY(-60px); }
+    to { transform: translateY(440px); }
+  }
+
+  .animate-pulse-ring {
+    animation: pulseRing 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseRing {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 94, 91, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 94, 91, 0); }
+  }
+}

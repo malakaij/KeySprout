@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  emailVerified       DateTime?
+  name                String?
+  image               String?
+  role                Role      @default(STUDENT)
+  rerollsToday        Int       @default(0)
+  lastRerollDate      DateTime?
+  nameChangeRequested Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  lessonAttempts LessonAttempt[]
+  gameScores     GameScore[]
+  classMembers   ClassMember[]
+  classes        Classroom[]     @relation("TeacherClasses")
+  courses        Course[]        @relation("CourseAuthor")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+enum LessonType {
+  SCRIPTED    // Fixed text passage — student types the provided content
+  DYNAMIC     // Adaptive text generated from weak-key analysis
+}
+
+model Course {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  createdById String?
+  isPublic    Boolean   @default(true)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   User?     @relation("CourseAuthor", fields: [createdById], references: [id])
+  sections    Section[]
+  classrooms  ClassroomCourse[]
+}
+
+model Section {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  description String?
+  order       Int
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  sectionId   String
+  title       String
+  description String?
+  order       Int
+  type        LessonType @default(SCRIPTED)
+  content     String?    @db.Text
+  targetKeys  String[]
+  minWpm      Int?
+  targetWpm   Int?
+  minAccuracy Float?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  section     Section         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  attempts    LessonAttempt[]
+}
+
+model ClassroomCourse {
+  id          String    @id @default(cuid())
+  classroomId String
+  courseId    String
+  assignedAt  DateTime  @default(now())
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@unique([classroomId, courseId])
+}
+
+model LessonAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  wpm         Float
+  accuracy    Float
+  duration    Int
+  errors      Int
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+}
+
+model GameScore {
+  id          String   @id @default(cuid())
+  userId      String
+  gameType    GameType
+  score       Int
+  level       Int?
+  duration    Int?
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum GameType {
+  WORD_RAIN
+  LETTER_HUNT
+}
+
+model Classroom {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  code        String        @unique
+  teacherId   String
+  createdAt   DateTime      @default(now())
+  teacher     User          @relation("TeacherClasses", fields: [teacherId], references: [id])
+  members     ClassMember[]
+  courses     ClassroomCourse[]
+}
+
+enum MemberStatus {
+  PENDING
+  APPROVED
+}
+
+model ClassMember {
+  id          String       @id @default(cuid())
+  classroomId String
+  userId      String
+  status      MemberStatus @default(PENDING)
+  joinedAt    DateTime     @default(now())
+  classroom   Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([classroomId, userId])
+}
