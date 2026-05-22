@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma db push && prisma generate && next build",
+    "build:ci": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",

@@ -70,6 +70,8 @@ If a comment would just restate the code, delete it.
 - [ ] `npm test` passes
 - [ ] `npm run build` succeeds
 - [ ] `npm run lint` passes
+
+CI runs the same three checks (lint, test, build) on every PR and push to `main`.
 - [ ] Manually test the change in the browser (golden path + one edge case)
 - [ ] No raw Tailwind color scales added
 - [ ] No real student PII (names, emails, photos) committed in fixtures or tests
