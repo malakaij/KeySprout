@@ -67,6 +67,7 @@ If a comment would just restate the code, delete it.
 
 ### Before opening a PR
 
+- [ ] `npm test` passes
 - [ ] `npm run build` succeeds
 - [ ] `npm run lint` passes
 - [ ] Manually test the change in the browser (golden path + one edge case)
@@ -96,6 +97,16 @@ KeySprout is built for children. Be paranoid about PII:
 - Never log or commit a real Google `sub`, email, or display name
 - Never add a third-party analytics SDK without a maintainer's explicit go-ahead
 - See the privacy audit table in `CODEBASE.md` for what data is stored where
+
+## Running tests
+
+```bash
+npm test              # run all tests once
+npm run test:watch    # re-run on file changes
+npm run test:coverage # generate coverage report (output in coverage/)
+```
+
+Tests live in `tests/`. Coverage is scoped to `lib/` with an 80% line/function and 70% branch threshold. The `coverage/` directory is gitignored — don't commit HTML output.
 
 ## Questions
 
