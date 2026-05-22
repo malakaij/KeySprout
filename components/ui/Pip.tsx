@@ -2,7 +2,8 @@
 
 interface PipProps {
   size?: 'sm' | 'md' | 'lg'
-  variant?: 'wave' | 'celebrate' | 'default'
+  /** wave — right arm raised; celebrate — stars; worried — frown + sweat drop */
+  variant?: 'wave' | 'celebrate' | 'worried' | 'default'
   className?: string
 }
 
@@ -45,14 +46,24 @@ export function Pip({ size = 'md', variant = 'default', className = '' }: PipPro
       <circle cx="41" cy="47" r="1.2" fill="white" />
       <circle cx="65" cy="47" r="1.2" fill="white" />
 
-      {/* Smile */}
-      <path
-        d="M 38 62 Q 50 72 62 62"
-        stroke="#1a1a2e"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-      />
+      {/* Smile (or frown when worried) */}
+      {variant === 'worried' ? (
+        <path
+          d="M 38 68 Q 50 60 62 68"
+          stroke="#1a1a2e"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          fill="none"
+        />
+      ) : (
+        <path
+          d="M 38 62 Q 50 72 62 62"
+          stroke="#1a1a2e"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          fill="none"
+        />
+      )}
 
       {/* Cheek blush */}
       <ellipse cx="28" cy="60" rx="6" ry="4" fill="#ff7eb6" opacity="0.5" />
@@ -75,6 +86,11 @@ export function Pip({ size = 'md', variant = 'default', className = '' }: PipPro
           <text x="78" y="22" fontSize="16" fill="#ffd23f" stroke="#1a1a2e" strokeWidth="0.5">✦</text>
           <text x="6" y="26" fontSize="12" fill="#ffd23f" stroke="#1a1a2e" strokeWidth="0.5">✦</text>
         </>
+      )}
+
+      {/* Sweat drop for worried */}
+      {variant === 'worried' && (
+        <ellipse cx="74" cy="36" rx="4" ry="6" fill="#4ea8de" stroke="#1a1a2e" strokeWidth="1.5" />
       )}
     </svg>
   )
