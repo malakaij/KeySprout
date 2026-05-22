@@ -35,26 +35,28 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 **Open-source infrastructure**
 - `LICENSE` (MIT), `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`
 - GitHub issue templates (bug, feature, docs) and PR template with design-token + PII checks
+- Dependabot configured for weekly npm and GitHub Actions updates
 - Repository tagged `v0.1.0-alpha`
 
 **Testing & CI**
 - Vitest configured with v8 coverage (80% line/function, 70% branch thresholds, scoped to `lib/`)
 - 64 unit tests covering `typing-engine`, `name-generator`, `admin-auth`, `section-colors`, and `utils`
 - GitHub Actions workflow running lint, test (with coverage), and build on every PR and push to `main`
-- Coverage HTML uploaded as a CI artifact
+- Coverage HTML uploaded as a CI artifact on every run
 
-### In progress
+**Error handling & observability**
+- Custom Pip-themed 404 page (`app/not-found.tsx`) with role-aware home link
+- Custom error boundary pages (`app/error.tsx`, `app/global-error.tsx`) with friendly recovery UI
+- `loading.tsx` skeleton screens on all slow server-rendered routes (dashboard, lessons, progress, teacher insights, class detail, student detail)
+- Structured request logging via `pino` with request IDs injected through Next.js middleware
+- Optional Sentry integration (disabled by default; enabled by setting `SENTRY_DSN`)
 
-- **Branch `claude/dev`** — active development branch, branched off `main` after the v0.1.0-alpha release
+### Known gaps (to address in upcoming sprints)
 
-### Known gaps (to address in early sprints)
-
-- **No migration system** — schema changes happen via `prisma db push`, which is fine for development but not for production updates
-- **No rate limiting** — all API routes are unthrottled
-- **No error boundaries or 404/500 pages** — uncaught errors show the default Next.js stack
-- **No structured logging** — only ad-hoc `console.log` calls
-- **Mobile responsive is partial** — typing interface works but games and dashboards have rough edges on phones
-- **No accessibility audit** — keyboard nav works but ARIA labels and screen reader behaviour haven't been verified
+- **No migration system** — schema changes happen via `prisma db push`, which is fine for development but risky for production updates (Sprint 5)
+- **No rate limiting** — all API routes are unthrottled (Sprint 8)
+- **No physical keyboard detection** — students on touch-only devices can attempt lessons with a virtual keyboard, which defeats the purpose of a touch-typing curriculum (Sprint 7)
+- **No accessibility audit** — keyboard nav works but ARIA labels and screen reader behaviour haven't been verified (Sprint 6)
 
 ---
 
@@ -62,24 +64,18 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 | Horizon | Theme |
 |---------|-------|
-| **Tomorrow** | Smoke-test the merge candidate, add LICENSE, file the initial issue list |
-| **Next 2 weeks** | Open-source readiness: tests, CI, contribution guide |
-| **Next month** | Production hardening: migrations, rate limiting, error handling, accessibility |
+| **Now** | Sprint 5: database migrations |
+| **Next 2 weeks** | Sprint 6: accessibility audit; Sprint 7: physical keyboard detection |
+| **Next month** | Production hardening: rate limiting, keyboard detection, security |
 | **Next 3 months** | Teacher tools, engagement features, custom lessons |
-| **Next 6 months** | New games, expanded curriculum, mobile PWA |
+| **Next 6 months** | New games, expanded curriculum, PWA |
 | **Next year** | Internationalisation, alternate keyboard layouts, community curriculum sharing |
-
----
-
-## Tomorrow
-
-This section has been retired — the initial release shipped as `v0.1.0-alpha`. Sprints 1–3 are complete. Next active work is Sprint 4 (error handling & observability).
 
 ---
 
 ## Sprint plan
 
-Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjacent items can swap in if priorities change. Sprints 1–3 are firm; everything from Sprint 7 onward is directional.
+Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjacent items can swap in if priorities change. Sprints 1–4 are firm; everything from Sprint 8 onward is directional.
 
 ### Sprint 1 — Open-source readiness ✅ shipped
 *Week 1*
@@ -110,18 +106,18 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 - [x] GitHub Actions workflow: lint, test (with coverage), build on every PR and push to `main`
 - [x] Vercel deploy preview for PRs (built-in via Vercel Git integration)
 - [x] Branch protection on `main`: linear history, squash-only merge, required PR review, conversation resolution
-- [x] Add Dependabot config for npm + GitHub Actions ([#11](https://github.com/malakaij/KeySprout/issues/11))
+- [x] Dependabot config for npm + GitHub Actions ([#11](https://github.com/malakaij/KeySprout/issues/11))
 
 **Done when:** Every PR shows green checks before merge. Dependabot opens weekly update PRs.
 
-### Sprint 4 — Error handling & observability
+### Sprint 4 — Error handling & observability ✅ shipped
 *Week 4*
 
-- [ ] Custom `app/not-found.tsx` (Pip-themed 404) ([#12](https://github.com/malakaij/KeySprout/issues/12))
-- [ ] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
-- [ ] Add `loading.tsx` to slow routes (dashboard, teacher insights) ([#14](https://github.com/malakaij/KeySprout/issues/14))
-- [ ] Wire up structured logging (`pino` or similar) with request IDs ([#15](https://github.com/malakaij/KeySprout/issues/15))
-- [ ] Optional: integrate Sentry behind an env flag for self-hosters who want it ([#16](https://github.com/malakaij/KeySprout/issues/16))
+- [x] Custom `app/not-found.tsx` (Pip-themed 404) ([#12](https://github.com/malakaij/KeySprout/issues/12))
+- [x] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
+- [x] Add `loading.tsx` to slow routes (dashboard, lessons, progress, teacher insights, class detail, student detail) ([#14](https://github.com/malakaij/KeySprout/issues/14))
+- [x] Wire up structured logging (`pino`) with request IDs via Next.js middleware ([#15](https://github.com/malakaij/KeySprout/issues/15))
+- [x] Optional Sentry integration behind `SENTRY_DSN` env flag ([#16](https://github.com/malakaij/KeySprout/issues/16))
 
 **Done when:** A thrown error in any route shows a friendly screen with a "Go home" button. Server logs include request IDs for debugging.
 
@@ -137,7 +133,7 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 **Done when:** Schema changes require a versioned migration file. The build script applies migrations safely without destructive `db push`.
 
 ### Sprint 6 — Accessibility audit
-*Weeks 6*
+*Week 6*
 
 - Run axe-core against every page; fix all critical and serious findings
 - Verify all interactive elements have visible focus styles (already partially done)
@@ -148,19 +144,22 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** axe-core reports zero serious issues. A screen reader can complete a full lesson.
 
-### Sprint 7 — Mobile & responsive polish
-*Weeks 7*
+### Sprint 7 — Physical keyboard detection
+*Week 7*
 
-- Audit every page at 360px, 768px, 1024px breakpoints
-- Refactor Quest map to stack vertically on mobile (currently overflows)
-- Make Word Rain playable with on-screen keyboard
-- Add a mobile-friendly virtual keyboard for tablets without physical keyboards
-- Test landscape orientation specifically (a real K-5 use case on Chromebooks)
+KeySprout is a touch-typing curriculum — practicing on a virtual keyboard is counterproductive. This sprint adds detection and warnings for students who don't have a physical keyboard connected.
 
-**Done when:** A teacher can demo the full app from a phone. Every dashboard fits without horizontal scroll on a 360px viewport.
+- Detect touch-only devices using `pointer: coarse` media query + `navigator.maxTouchPoints`
+- Show a blocking warning on lesson and game pages when no physical keyboard is detected
+- Auto-dismiss the warning on first physical keypress (`keydown` with a non-synthetic key)
+- "I have a keyboard connected" override that persists to `localStorage` so confirmed students aren't re-prompted
+- Graceful handling of Bluetooth keyboards on iPads (a common K-5 Chromebook/tablet setup)
+- Display a clear, Pip-illustrated message explaining *why* a physical keyboard is required
+
+**Done when:** A student on a phone or touch-only tablet sees a friendly warning before any lesson or game. A student with a Bluetooth keyboard on an iPad is not blocked.
 
 ### Sprint 8 — Rate limiting & security hardening
-*Weeks 8*
+*Week 8*
 
 - Add rate limiting to `/api/lessons/*/complete` and `/api/games/score` (Upstash Redis or in-memory + warning for self-hosters)
 - Add CSRF tokens on state-changing routes (currently relying on session cookies + same-origin)
@@ -172,7 +171,7 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 **Done when:** A scripted attacker can't flood the database with fake lesson attempts. Admin login is constant-time.
 
 ### Sprint 9 — Teacher data export
-*Weeks 9*
+*Week 9*
 
 - "Export class progress as CSV" button on the classroom page (WPM, accuracy, completion per student)
 - PDF progress reports for individual students (printable for parent-teacher meetings)
@@ -225,10 +224,10 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 - Add `manifest.json` with KeySprout icons and install prompt
 - Service worker for offline lesson caching (lessons work without network once loaded)
-- "Install KeySprout" prompt on mobile
 - Background sync for posting lesson results when connection returns
+- Ensure PWA install prompt only appears on devices with a physical keyboard connected (pairs with Sprint 7)
 
-**Done when:** A student can complete a lesson on an iPad in airplane mode and the result syncs when they reconnect.
+**Done when:** A student with a physical keyboard can complete a lesson without a network connection and the result syncs when they reconnect.
 
 ### Sprint 15 — Internationalisation infrastructure
 *Week 15*
@@ -296,14 +295,13 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 These don't fit a sprint yet but are worth keeping visible:
 
-- **Native mobile apps** (React Native / Capacitor wrapper)
 - **AI-generated remediation** — LLM produces personalised practice passages, layered on top of the existing weak-key system
 - **Voice feedback** for visually impaired learners
 - **SSO integrations** (Clever, ClassLink, Google Classroom)
 - **White-label hosting** option for school districts
 - **Curriculum analytics for districts** — anonymised aggregates across many classrooms
 - **Self-grading writing prompts** — combine typing with composition (older students)
-- **Hardware integrations** — Bluetooth keyboard pairing prompts, dyslexia-friendly fonts
+- **Dyslexia-friendly font option** — OpenDyslexic or similar, toggle in user settings
 
 ---
 
@@ -313,4 +311,4 @@ These don't fit a sprint yet but are worth keeping visible:
 - **Self-hosters**: track the "Production hardening" sprints (4–8) before deploying to real classrooms.
 - **Teachers/parents**: the Engagement (10), Custom lessons (11), and Parent portal (18) sprints are the ones most likely to matter for daily classroom use — let us know which you want sooner.
 
-Updates to this roadmap happen via PR. If you think the priority order is wrong, open an issue with the proposed change and reasoning.
+The roadmap is updated at least once per sprint, before each PR to `main`. If you think the priority order is wrong, open an issue with the proposed change and reasoning.
