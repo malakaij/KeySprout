@@ -49,7 +49,6 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 ### Known gaps (to address in early sprints)
 
-- **No Dependabot** — npm and Actions versions don't auto-update yet
 - **No migration system** — schema changes happen via `prisma db push`, which is fine for development but not for production updates
 - **No rate limiting** — all API routes are unthrottled
 - **No error boundaries or 404/500 pages** — uncaught errors show the default Next.js stack
@@ -74,7 +73,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 ## Tomorrow
 
-This section has been retired — the initial release shipped as `v0.1.0-alpha`. Sprints 1–3 are largely complete (see status snapshot above). Next active work is finishing Sprint 3 (Dependabot) and starting Sprint 4 (error handling & observability).
+This section has been retired — the initial release shipped as `v0.1.0-alpha`. Sprints 1–3 are complete. Next active work is Sprint 4 (error handling & observability).
 
 ---
 
@@ -105,13 +104,13 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** `npm test` runs the suite, every `lib/` function has at least one happy-path test and one boundary test.
 
-### Sprint 3 — CI/CD 🟡 mostly shipped
+### Sprint 3 — CI/CD ✅ shipped
 *Week 3*
 
 - [x] GitHub Actions workflow: lint, test (with coverage), build on every PR and push to `main`
 - [x] Vercel deploy preview for PRs (built-in via Vercel Git integration)
 - [x] Branch protection on `main`: linear history, squash-only merge, required PR review, conversation resolution
-- [ ] Add Dependabot config for npm + GitHub Actions ([#11](https://github.com/malakaij/KeySprout/issues/11))
+- [x] Add Dependabot config for npm + GitHub Actions ([#11](https://github.com/malakaij/KeySprout/issues/11))
 
 **Done when:** Every PR shows green checks before merge. Dependabot opens weekly update PRs.
 
