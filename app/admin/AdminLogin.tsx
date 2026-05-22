@@ -49,7 +49,7 @@ export function AdminLogin() {
               onChange={(e) => setUsername(e.target.value)}
               required
               autoComplete="username"
-              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
             />
             <input
               type="password"
@@ -58,7 +58,7 @@ export function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+              className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
             />
           </div>
           {error && <p className="text-sm text-coral font-body">{error}</p>}

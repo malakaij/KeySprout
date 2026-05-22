@@ -30,7 +30,7 @@ export default async function GamesPage() {
 
       <div className="grid sm:grid-cols-2 gap-6">
         <div className="kq-card overflow-hidden">
-          <div className="bg-gradient-to-br from-sky/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
+          <div className="bg-linear-to-br from-sky/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
             <div className="text-4xl mb-3">🌧️</div>
             <h2 className="text-xl font-display text-ink">Word Rain</h2>
             <p className="text-sm text-ink/50 mt-2 font-body">
@@ -55,7 +55,7 @@ export default async function GamesPage() {
         </div>
 
         <div className="kq-card overflow-hidden">
-          <div className="bg-gradient-to-br from-sunny/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
+          <div className="bg-linear-to-br from-sunny/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
             <div className="text-4xl mb-3">🎯</div>
             <h2 className="text-xl font-display text-ink">Letter Hunt</h2>
             <p className="text-sm text-ink/50 mt-2 font-body">

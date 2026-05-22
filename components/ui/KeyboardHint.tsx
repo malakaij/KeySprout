@@ -54,9 +54,9 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
         </div>
       </div>
       <div className="flex items-center justify-center gap-4 mt-2 text-xs text-ink/40 font-body">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-mint/40 border border-ink/30 inline-block" /> Left hand</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-coral/30 border border-ink/30 inline-block" /> Right hand</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-sunny border border-ink inline-block" /> Next key</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-mint/40 border border-ink/30 inline-block" /> Left hand</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-coral/30 border border-ink/30 inline-block" /> Right hand</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-sunny border border-ink inline-block" /> Next key</span>
       </div>
     </div>
   )

@@ -176,9 +176,9 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         <div className="kq-card p-6 space-y-4">
           <div className="flex items-center gap-4">
             {passed ? (
-              <Pip size="md" variant="celebrate" className="flex-shrink-0" />
+              <Pip size="md" variant="celebrate" className="shrink-0" />
             ) : (
-              <XCircle className="w-10 h-10 text-coral flex-shrink-0" />
+              <XCircle className="w-10 h-10 text-coral shrink-0" />
             )}
             <div>
               <h2 className="text-lg font-display text-ink">

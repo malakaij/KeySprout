@@ -136,7 +136,7 @@ export function StudentTable({ students }: StudentTableProps) {
                 >
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-mint border-[3px] border-ink flex items-center justify-center text-xs font-display text-ink flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-mint border-[3px] border-ink flex items-center justify-center text-xs font-display text-ink shrink-0">
                         {(student.name ?? 'S')[0].toUpperCase()}
                       </div>
                       <div className="flex items-center gap-2">
@@ -193,7 +193,7 @@ export function StudentTable({ students }: StudentTableProps) {
                             value={customName}
                             onChange={(e) => setCustomName(e.target.value)}
                             placeholder="Enter a name…"
-                            className="flex-1 bg-paper border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-none focus:border-ink text-sm font-body"
+                            className="flex-1 bg-paper border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
                           />
                           <button
                             onClick={fetchSuggestion}

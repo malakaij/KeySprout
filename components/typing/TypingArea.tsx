@@ -150,7 +150,7 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={cn(
-          'relative bg-paper rounded-2xl p-6 outline-none border-[3px] transition-colors cursor-text',
+          'relative bg-paper rounded-2xl p-6 outline-hidden border-[3px] transition-colors cursor-text',
           'max-h-48 overflow-y-auto',
           focused ? 'border-ink' : 'border-ink/20'
         )}
@@ -162,7 +162,7 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
           </div>
         )}
 
-        <p className="font-mono text-lg leading-relaxed select-none break-words">
+        <p className="font-mono text-lg leading-relaxed select-none wrap-break-word">
           {text.split('').map((char, i) => {
             const isTyped = i < typed.length
             const isCurrent = i === typed.length

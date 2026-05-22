@@ -134,6 +134,21 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** Build, lint, and tests are all green on the upgraded stack.
 
+### Sprint 4.2 — Tailwind CSS v4 + tailwind-merge v3 migration 🟡 in progress
+*Between sprints 4.1 and 5*
+
+- [x] Run official `@tailwindcss/upgrade` codemod — renamed utilities across 23 files
+- [x] Migrate design tokens from `tailwind.config.ts` → `@theme` directive in `globals.css`
+- [x] Migrate `.kq-card`, `.kq-btn`, `.kq-chip` from `@layer components` → `@utility`
+- [x] Swap PostCSS plugin: `tailwindcss` → `@tailwindcss/postcss`; remove `autoprefixer`
+- [x] Fix codemod artefacts: broken Google Fonts import, duplicate `:root` vars, stale `@layer utilities` keyframes
+- [x] Update border-color shim to use `color-mix(in srgb, var(--color-ink) 20%, transparent)` (design-system-aware)
+- [x] Upgrade `tailwind-merge` 2 → 3 (v3 is designed for Tailwind v4)
+- [x] Delete `tailwind.config.ts` — config now lives entirely in CSS
+- [ ] Visual QA pass across all pages
+
+**Done when:** Build, lint, and tests green; visual QA confirms no regressions.
+
 ### Sprint 5 — Database migrations
 *Week 5*
 
