@@ -44,16 +44,17 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 - GitHub Actions workflow running lint, test (with coverage), and build on every PR and push to `main`
 - Coverage HTML uploaded as a CI artifact on every run
 
-### In progress
-
-- **Sprint 4 (branch `claude/sprint-4`)** — error handling & observability: custom 404/error pages, loading skeletons, structured logging, optional Sentry integration
+**Error handling & observability**
+- Custom Pip-themed 404 page (`app/not-found.tsx`) with role-aware home link
+- Custom error boundary pages (`app/error.tsx`, `app/global-error.tsx`) with friendly recovery UI
+- `loading.tsx` skeleton screens on all slow server-rendered routes (dashboard, lessons, progress, teacher insights, class detail, student detail)
+- Structured request logging via `pino` with request IDs injected through Next.js middleware
+- Optional Sentry integration (disabled by default; enabled by setting `SENTRY_DSN`)
 
 ### Known gaps (to address in upcoming sprints)
 
 - **No migration system** — schema changes happen via `prisma db push`, which is fine for development but risky for production updates (Sprint 5)
 - **No rate limiting** — all API routes are unthrottled (Sprint 8)
-- **No error boundaries or 404/500 pages** — in progress in Sprint 4
-- **No structured logging** — in progress in Sprint 4
 - **No physical keyboard detection** — students on touch-only devices can attempt lessons with a virtual keyboard, which defeats the purpose of a touch-typing curriculum (Sprint 7)
 - **No accessibility audit** — keyboard nav works but ARIA labels and screen reader behaviour haven't been verified (Sprint 6)
 
@@ -63,8 +64,8 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 | Horizon | Theme |
 |---------|-------|
-| **Now** | Sprint 4: error handling & observability |
-| **Next 2 weeks** | Sprint 5: database migrations; Sprint 6: accessibility audit |
+| **Now** | Sprint 5: database migrations |
+| **Next 2 weeks** | Sprint 6: accessibility audit; Sprint 7: physical keyboard detection |
 | **Next month** | Production hardening: rate limiting, keyboard detection, security |
 | **Next 3 months** | Teacher tools, engagement features, custom lessons |
 | **Next 6 months** | New games, expanded curriculum, PWA |
@@ -109,14 +110,14 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 
 **Done when:** Every PR shows green checks before merge. Dependabot opens weekly update PRs.
 
-### Sprint 4 — Error handling & observability 🟡 in progress
+### Sprint 4 — Error handling & observability ✅ shipped
 *Week 4*
 
-- [ ] Custom `app/not-found.tsx` (Pip-themed 404) ([#12](https://github.com/malakaij/KeySprout/issues/12))
-- [ ] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
-- [ ] Add `loading.tsx` to slow routes (dashboard, teacher insights) ([#14](https://github.com/malakaij/KeySprout/issues/14))
-- [ ] Wire up structured logging (`pino` or similar) with request IDs ([#15](https://github.com/malakaij/KeySprout/issues/15))
-- [ ] Optional: integrate Sentry behind an env flag for self-hosters who want it ([#16](https://github.com/malakaij/KeySprout/issues/16))
+- [x] Custom `app/not-found.tsx` (Pip-themed 404) ([#12](https://github.com/malakaij/KeySprout/issues/12))
+- [x] Custom `app/error.tsx` and `app/global-error.tsx` (friendly recovery) ([#13](https://github.com/malakaij/KeySprout/issues/13))
+- [x] Add `loading.tsx` to slow routes (dashboard, lessons, progress, teacher insights, class detail, student detail) ([#14](https://github.com/malakaij/KeySprout/issues/14))
+- [x] Wire up structured logging (`pino`) with request IDs via Next.js middleware ([#15](https://github.com/malakaij/KeySprout/issues/15))
+- [x] Optional Sentry integration behind `SENTRY_DSN` env flag ([#16](https://github.com/malakaij/KeySprout/issues/16))
 
 **Done when:** A thrown error in any route shows a friendly screen with a "Go home" button. Server logs include request IDs for debugging.
 
