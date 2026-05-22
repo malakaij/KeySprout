@@ -66,6 +66,8 @@ Each of these has a full ADR in [`docs/decisions/`](docs/decisions/). Read the A
 - **Before pushing:** `npm test`, `npm run build`, `npm run lint` all pass.
 - **PRs:** fill out the template. Do not create PRs unless explicitly asked.
 - **Destructive actions:** confirm before running. Rebases, force pushes, `db push`, deletions all require explicit approval.
+- **Doc updates:** `CLAUDE.md` current state and `ROADMAP.md` "Now" section are updated in the same PR that closes a sprint — not a follow-up. If a PR settles an architectural choice, add an ADR to `docs/decisions/` in the same PR.
+- **Bias toward action:** attempt tasks before asking clarifying questions. Ask only when reversibility is low or scope is genuinely ambiguous.
 
 ---
 
