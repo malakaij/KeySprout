@@ -108,7 +108,7 @@ npm run test:watch    # re-run on file changes
 npm run test:coverage # generate coverage report (output in coverage/)
 ```
 
-Tests live in `tests/`. Coverage is scoped to `lib/` with an 80% line/function and 70% branch threshold. The `coverage/` directory is gitignored — don't commit HTML output.
+Tests live in `tests/`. Coverage is scoped to `lib/` with an 80% line/function and 70% branch threshold — CI fails if a PR drops below. The `coverage/` directory is gitignored; the HTML report is uploaded as a CI artifact on every run, downloadable from the Actions tab.
 
 ## Questions
 

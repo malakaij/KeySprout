@@ -1,14 +1,18 @@
 import { defineConfig } from 'vitest/config'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   test: {
     environment: 'node',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'v8',
+      // `all: true` forces every file matching `include` into the report,
+      // even ones the tests don't touch — otherwise uncovered files would silently inflate the average.
+      all: true,
       include: ['lib/**/*.ts'],
       exclude: ['lib/db.ts', 'lib/auth.ts', 'lib/seed-db.ts'],
       thresholds: {
@@ -16,7 +20,7 @@ export default defineConfig({
         functions: 80,
         branches: 70,
       },
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'json-summary'],
     },
   },
 })
