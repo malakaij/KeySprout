@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import { requestLogger } from '@/lib/logger'
 
 const bodySchema = z.object({
   gameType: z.enum(['WORD_RAIN', 'LETTER_HUNT']),
@@ -12,6 +13,7 @@ const bodySchema = z.object({
 })
 
 export async function POST(req: Request) {
+  const log = requestLogger(req.headers.get('x-request-id') ?? 'unknown')
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -35,5 +37,6 @@ export async function POST(req: Request) {
     },
   })
 
+  log.info({ gameType, score }, 'game score recorded')
   return NextResponse.json({ gameScore })
 }
