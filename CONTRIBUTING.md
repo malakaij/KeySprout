@@ -100,6 +100,28 @@ KeySprout is built for children. Be paranoid about PII:
 - Never add a third-party analytics SDK without a maintainer's explicit go-ahead
 - See the privacy audit table in `CODEBASE.md` for what data is stored where
 
+## Logging
+
+Server-side code uses `pino` via `lib/logger.ts`. Route handlers should create a child logger bound to the request ID:
+
+```ts
+import { requestLogger } from '@/lib/logger'
+
+export async function POST(req: Request) {
+  const log = requestLogger(req.headers.get('x-request-id') ?? 'unknown')
+  log.info({ lessonId }, 'lesson completed')
+  log.error({ err }, 'something failed')
+}
+```
+
+Rules:
+- **Never log PII** — no real names, email addresses, Google `sub` values, or raw request bodies that may contain credentials.
+- Internal UUIDs (`user.id`, `lesson.id`) are safe — they are opaque without database access.
+- Use `log.warn` for rejected or suspicious requests (failed auth, bad input).
+- Use `log.error({ err }, 'message')` for caught exceptions — pass the error object as `err` so pino serializes the stack trace.
+
+In development, output is colorized and human-readable. In production, each line is a JSON object you can pipe to any log aggregator.
+
 ## Running tests
 
 ```bash
