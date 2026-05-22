@@ -22,7 +22,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
   const [combo, setCombo] = useState(0)
   const [lastReactionMs, setLastReactionMs] = useState<number | null>(null)
   const [keyPressTime, setKeyPressTime] = useState<number>(Date.now())
-  const [keyFrequency, setKeyFrequency] = useState<Record<string, number>>({})
+  const [, setKeyFrequency] = useState<Record<string, number>>({})
 
   const containerRef = useRef<HTMLDivElement>(null)
 

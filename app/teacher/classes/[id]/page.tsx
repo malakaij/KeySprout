@@ -46,6 +46,7 @@ export default function ClassDetailPage() {
       .then((data) => { setClassroom(data); setLoading(false) })
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchClassroom() }, [params.id])
 
   const handleCopy = async () => {

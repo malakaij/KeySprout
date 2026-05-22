@@ -5,15 +5,16 @@ import { prisma } from '@/lib/db'
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const lesson = await prisma.lesson.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       section: {
         include: {
@@ -30,7 +31,7 @@ export async function GET(
   }
 
   const attempts = await prisma.lessonAttempt.findMany({
-    where: { userId: session.user.id, lessonId: params.id },
+    where: { userId: session.user.id, lessonId: id },
     orderBy: { completedAt: 'desc' },
   })
 

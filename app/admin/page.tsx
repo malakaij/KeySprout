@@ -4,7 +4,7 @@ import { AdminLogin } from './AdminLogin'
 import { AdminDashboard } from './AdminDashboard'
 
 export default async function AdminPage() {
-  if (!isAdminAuthenticated()) {
+  if (!await isAdminAuthenticated()) {
     return <AdminLogin />
   }
 

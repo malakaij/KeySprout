@@ -6,7 +6,7 @@ import { requestLogger } from '@/lib/logger'
 export async function POST(req: Request) {
   const log = requestLogger(req.headers.get('x-request-id') ?? 'unknown')
 
-  if (!isAdminAuthenticated()) {
+  if (!await isAdminAuthenticated()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

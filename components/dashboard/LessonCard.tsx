@@ -9,7 +9,7 @@ interface LessonCardProps {
   onClick: () => void
 }
 
-export function LessonCard({ lesson, sectionTitle: _sectionTitle, locked, onClick }: LessonCardProps) {
+export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
   return (
     <button
       onClick={locked ? undefined : onClick}

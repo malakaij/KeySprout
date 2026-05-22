@@ -64,7 +64,7 @@ This document tracks what KeySprout has, what is in progress, and what we're pla
 
 | Horizon | Theme |
 |---------|-------|
-| **Now** | Sprint 5: database migrations |
+| **Now** | Sprint 4.1: Next.js 15 / React 19 / ESLint 9 upgrade → Sprint 5: database migrations |
 | **Next 2 weeks** | Sprint 6: accessibility audit; Sprint 7: physical keyboard detection |
 | **Next month** | Production hardening: rate limiting, keyboard detection, security |
 | **Next 3 months** | Teacher tools, engagement features, custom lessons |
@@ -120,6 +120,19 @@ Each sprint is approximately 1–2 weeks. Scope is intentionally loose — adjac
 - [x] Optional Sentry integration behind `SENTRY_DSN` env flag ([#16](https://github.com/malakaij/KeySprout/issues/16))
 
 **Done when:** A thrown error in any route shows a friendly screen with a "Go home" button. Server logs include request IDs for debugging.
+
+### Sprint 4.1 — Dependency upgrade: Next.js 15, React 19, ESLint 9 🟡 in progress
+*Between sprints 4 and 5*
+
+- [x] Upgrade Next.js 14 → 15 (async `params`/`cookies` migration)
+- [x] Upgrade React 18 → React 19 and matching `@types/react`
+- [x] Upgrade ESLint 8 → 9 and `eslint-config-next` 14 → 15
+- [x] Migrate lint config from legacy `.eslintrc.json` to flat `eslint.config.mjs`
+- [x] Switch `npm run lint` from deprecated `next lint` to `eslint .`
+- [x] Resolve all pre-existing lint warnings surfaced by stricter rules
+- [x] Close Dependabot PR #22 (ESLint 10 — not yet supported by `eslint-config-next`)
+
+**Done when:** Build, lint, and tests are all green on the upgraded stack.
 
 ### Sprint 5 — Database migrations
 *Week 5*

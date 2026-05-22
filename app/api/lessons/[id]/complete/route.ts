@@ -14,8 +14,9 @@ const bodySchema = z.object({
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const log = requestLogger(req.headers.get('x-request-id') ?? 'unknown')
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
@@ -31,7 +32,7 @@ export async function POST(
   const { wpm, accuracy, duration, errors } = parsed.data
 
   const lesson = await prisma.lesson.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       section: {
         include: {
@@ -58,7 +59,7 @@ export async function POST(
   const attempt = await prisma.lessonAttempt.create({
     data: {
       userId: session.user.id,
-      lessonId: params.id,
+      lessonId: id,
       wpm,
       accuracy,
       duration,
@@ -88,6 +89,6 @@ export async function POST(
     }
   }
 
-  log.info({ lessonId: params.id, wpm, accuracy }, 'lesson completed')
+  log.info({ lessonId: id, wpm, accuracy }, 'lesson completed')
   return NextResponse.json({ attempt, nextLesson })
 }

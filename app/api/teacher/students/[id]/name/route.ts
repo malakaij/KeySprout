@@ -10,8 +10,9 @@ const bodySchema = z.object({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -23,7 +24,7 @@ export async function PATCH(
   // Verify the student is in one of this teacher's classes.
   const membership = await prisma.classMember.findFirst({
     where: {
-      userId: params.id,
+      userId: id,
       status: 'APPROVED',
       classroom: { teacherId: session.user.id },
     },
@@ -39,7 +40,7 @@ export async function PATCH(
   }
 
   const updated = await prisma.user.update({
-    where: { id: params.id },
+    where: { id: id },
     data: { name: parsed.data.name, nameChangeRequested: false },
     select: { id: true, name: true },
   })

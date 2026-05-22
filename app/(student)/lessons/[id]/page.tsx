@@ -4,12 +4,13 @@ import { prisma } from '@/lib/db'
 import { notFound, redirect } from 'next/navigation'
 import { LessonClient } from './LessonClient'
 
-export default async function LessonPage({ params }: { params: { id: string } }) {
+export default async function LessonPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
 
   const lesson = await prisma.lesson.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       section: {
         include: {
@@ -50,7 +51,7 @@ export default async function LessonPage({ params }: { params: { id: string } })
   }
 
   const userAttempts = await prisma.lessonAttempt.findMany({
-    where: { userId: session.user.id, lessonId: lesson.id },
+    where: { userId: session.user.id, lessonId: id },
     orderBy: { completedAt: 'desc' },
   })
 
