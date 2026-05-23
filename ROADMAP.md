@@ -37,6 +37,7 @@ Each future sprint maps to one epic. Open any epic to see its sub-issues, depend
 | Epic | Theme |
 |------|-------|
 | [#105](https://github.com/malakaij/KeySprout/issues/105) | Teacher data export — CSV/PDF, bulk actions, weekly digests |
+| [#123](https://github.com/malakaij/KeySprout/issues/123) | Student credentials & login cards — username/password auth, QR code login cards |
 | [#106](https://github.com/malakaij/KeySprout/issues/106) | Student engagement & achievements |
 | [#107](https://github.com/malakaij/KeySprout/issues/107) | Custom lessons (teacher-authored) |
 | [#108](https://github.com/malakaij/KeySprout/issues/108) | Curriculum: numbers & symbols |
