@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import { verifySameOrigin } from '@/lib/csrf'
 import type { Prisma } from '@prisma/client'
 
 const FONT_VALUES = ['default', 'opendyslexic', 'atkinson', 'lexend', 'andika'] as const
@@ -41,6 +42,9 @@ export async function GET() {
 
 /** Merges the supplied keys into the authenticated user's stored preferences. */
 export async function PATCH(req: Request) {
+  const csrfError = verifySameOrigin(req)
+  if (csrfError) return csrfError
+
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

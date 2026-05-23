@@ -37,7 +37,7 @@ export function AdminLogin() {
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-2 mb-8">
           <KeyRound className="w-6 h-6 text-coral" />
-          <span className="text-xl font-display text-ink">KeySprout Admin</span>
+          <span className="text-xl font-display text-ink">KeySprout Super-Admin</span>
         </div>
         <form onSubmit={handleSubmit} className="kq-card p-6 space-y-4">
           <h1 className="text-lg font-display text-ink">Sign in</h1>

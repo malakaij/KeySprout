@@ -138,11 +138,15 @@ User ──< Classroom (as teacher)
 
 After signing in, a user can submit the `TEACHER_ACCESS_CODE` (set in `.env`) via the profile page. The server validates it and sets `role = TEACHER` on their `User` record. There is no expiry — once a teacher, always a teacher unless manually changed in the database.
 
-### Admin panel
+### Super-Admin panel
 
-The admin panel at `/admin` uses a completely separate authentication mechanism from NextAuth. It is a simple username/password form (`ADMIN_USERNAME` / `ADMIN_PASSWORD` in `.env`) that sets an HMAC-SHA256 signed cookie (`lib/admin-auth.ts`) valid for 4 hours. The HMAC key is `NEXTAUTH_SECRET`, so the same secret secures both systems.
+The super-admin panel at `/admin` uses a completely separate authentication mechanism from NextAuth. It is a simple username/password form (`SUPER_ADMIN_USERNAME` / `SUPER_ADMIN_PASSWORD` in `.env`) that sets an HMAC-SHA256 signed cookie (`lib/admin-auth.ts`) valid for 4 hours. `SUPER_ADMIN_PASSWORD` must be a bcrypt hash — generate one with:
 
-Admin capability: view database stats and trigger a curriculum seed. The admin panel does not manage individual users.
+```bash
+node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"
+```
+
+Super-admin capability: view database stats and trigger a curriculum seed. The super-admin panel does not manage individual users. See ADR-0007 for the full role terminology table.
 
 ---
 
@@ -270,7 +274,15 @@ Generates pseudonymous display names from a pool of 50 adjectives × 100 animals
 
 ### `lib/admin-auth.ts`
 
-Creates and verifies HMAC-SHA256 tokens stored in an HTTP-only cookie (`admin_token`). Tokens encode a timestamp; `verifyAdminToken` rejects tokens older than 4 hours. The signing key is `NEXTAUTH_SECRET`.
+Creates and verifies HMAC-SHA256 tokens stored in an HTTP-only, `SameSite=Strict` cookie. Tokens encode a timestamp; `verifyAdminToken` rejects tokens older than 4 hours and uses `crypto.timingSafeEqual` for the HMAC comparison. The signing key is `NEXTAUTH_SECRET`.
+
+### `lib/csrf.ts`
+
+`verifySameOrigin(req)` checks the `Origin` header against `NEXTAUTH_URL`. Returns a 403 `NextResponse` if the origins don't match, `null` if the check passes. Applied at the top of every state-changing route handler.
+
+### `lib/rate-limit.ts`
+
+`checkRateLimit(key, limit, windowMs)` implements a fixed-window counter stored in the `RateLimit` Postgres table. Runs inside a transaction to prevent races. Returns `{ allowed, retryAfter? }`. Applied to the lesson-complete, game-score, join-class, and admin-login endpoints.
 
 ### `lib/seed-db.ts`
 
@@ -361,6 +373,44 @@ Nothing. The application makes no external API calls except to Google during sig
 - NextAuth sessions are stored in the database (`Session` table) and identified by a signed cookie. The signing key is `NEXTAUTH_SECRET`.
 - Admin sessions are separate HMAC-signed cookies, also using `NEXTAUTH_SECRET`, expiring after 4 hours.
 - No JWTs are used; revocation is immediate (delete the `Session` row).
+
+---
+
+## Threat model
+
+This section is for security auditors and self-hosters who want to understand what KeySprout defends against and what it intentionally defers.
+
+### Attacker types
+
+| Attacker | Goal | Mitigations |
+|----------|------|-------------|
+| **Curious student** | See classmates' scores, change their own nickname without limit, skip lessons | Scores scoped to teacher view only; nickname rerolls capped at 3/day in DB; lessons not enforced server-side (curriculum integrity is a UX problem, not a security one) |
+| **Scripted abuse** | Flood the database with fake lesson completions or game scores to inflate leaderboards | Rate limiting on `/api/lessons/*/complete` (20/user/min) and `/api/games/score` (10/user/min) via Postgres `RateLimit` table |
+| **Classroom code enumeration** | Brute-force the 6-character join code to join a classroom without invitation | Rate limiting on `/api/user/join-class` (10/user/5min) |
+| **CSRF attack** | Make a logged-in teacher approve/remove students via a malicious third-party page | `SameSite=Lax` session cookies prevent cookie transmission on cross-site POST; `verifySameOrigin()` provides defense-in-depth on all state-changing routes |
+| **Super-admin brute force** | Guess the super-admin password | bcrypt hashing (cost 12); rate limiting (10 attempts/IP/5min); `SameSite=Strict` admin cookie |
+| **Malicious teacher** | Access another teacher's classrooms or students | Every teacher route queries `teacherId = session.user.id`; cross-teacher access returns 403 |
+
+### Assets and sensitivity
+
+| Asset | Sensitivity | Where stored |
+|-------|-------------|-------------|
+| Google `sub` values | High — linkable to identity | `Account.providerAccountId` (opaque without DB access) |
+| Student nicknames | Low | `User.name` |
+| WPM / accuracy data | Low-medium | `LessonAttempt`, `GameScore` |
+| Classroom membership | Low-medium | `ClassMember` |
+| `NEXTAUTH_SECRET` | Critical — signs all session and admin tokens | Environment variable only |
+| `SUPER_ADMIN_PASSWORD` hash | High | Environment variable only |
+| `TEACHER_ACCESS_CODE` | Medium — grants teacher role | Environment variable only |
+
+### Known accepted risks (alpha)
+
+| Risk | Reason deferred |
+|------|----------------|
+| No rate limiting on auth endpoints other than admin login | NextAuth handles Google OAuth; Google's own rate limits apply |
+| No per-IP rate limiting on lesson/game endpoints | User-scoped limits are sufficient at alpha scale |
+| `npm audit` reports 4 moderate findings (postcss XSS, uuid bounds check) | Both are in transitive dependencies of Next.js / next-auth; the "fix" would downgrade to incompatible major versions. Neither is exploitable in our usage. |
+| No CSP headers | Deferred to post-alpha hardening sprint |
 
 ---
 

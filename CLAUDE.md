@@ -27,11 +27,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 5:** Production-quality alpha. Core loop fully functional and deployed on Vercel. Infrastructure recently hardened — Prisma migrations now version-controlled, Next.js 15 + React 19 + ESLint 9 + Tailwind v4 all upgraded, CI on every PR.
 
-**Sprint 5 (current, PR #29):** Switched from `prisma db push` to versioned migrations. Initial `0_init` migration generated offline. Production database baselined via manual SQL on the Vercel-hosted Neon database. Ready to merge.
+**As of Sprint 8 (current, PR open):** Security hardening complete. Super-admin renamed from Admin (`SUPER_ADMIN_USERNAME`/`SUPER_ADMIN_PASSWORD` env vars, bcrypt-hashed password, `timingSafeEqual` token comparison). CSRF Origin-header checking on all state-changing routes. Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login. Threat model documented in `CODEBASE.md`. COPPA compliance statement in `SECURITY.md`. `npm audit` findings documented as accepted risks.
 
-**Next up:** Sprint 6 (accessibility audit — issues #30–35).
-
-**Not yet ready for real classrooms.** Three blockers before deployment to students: rate limiting (#42), CSRF (#43), hashed admin password (#45). All three live in Sprint 8.
+**Not yet ready for real classrooms.** Remaining blockers: #132 (admin rename fully landed but future Admin role for teacher management not yet built), CSP headers (deferred post-alpha).
 
 ---
 
@@ -55,7 +53,7 @@ Each of these has a full ADR in [`docs/decisions/`](docs/decisions/). Read the A
 | 0004 | Tailwind CSS v4 with `@theme` in `globals.css`, no config file | v4 native pattern; deleted `tailwind.config.ts` in Sprint 4.2 |
 | 0005 | ESLint 9 (not 10) | `eslint-config-next@15` peer dep blocks ESLint 10 |
 | 0006 | No third-party analytics SDKs | Privacy-first stance for minors |
-| 0007 | Admin auth uses HMAC cookie, not NextAuth | Single shared password; doesn't fit per-user OAuth model |
+| 0007 | **Super-Admin** auth uses HMAC cookie, not NextAuth; "Admin" term reserved for future teacher-management role | Single shared password; doesn't fit per-user OAuth model |
 | 0008 | Student names stored in teacher's browser only, never on the server | COPPA extension; names are never in KeySprout's data estate |
 | 0009 | Accessibility features are on by default unless a competing need exists | K–5 students cannot self-advocate; optional features that cost nothing should be universal |
 
@@ -71,6 +69,7 @@ Each of these has a full ADR in [`docs/decisions/`](docs/decisions/). Read the A
 - **Destructive actions:** confirm before running. Rebases, force pushes, `db push`, deletions all require explicit approval.
 - **Doc updates:** `CLAUDE.md` current state and `ROADMAP.md` "Now" section are updated in the same PR that closes a sprint — not a follow-up. If a PR settles an architectural choice, add an ADR to `docs/decisions/` in the same PR.
 - **Bias toward action:** attempt tasks before asking clarifying questions. Ask only when reversibility is low or scope is genuinely ambiguous.
+- **Sensitive operations:** if a task requires running code that involves sensitive data (passwords, secrets, tokens), do not run it yourself — tell the user to run it in GitHub Codespaces instead.
 
 ---
 

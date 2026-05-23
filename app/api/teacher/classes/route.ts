@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
+import { verifySameOrigin } from '@/lib/csrf'
 
 const bodySchema = z.object({
   name: z.string().min(1),
@@ -31,6 +32,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const csrfError = verifySameOrigin(req)
+  if (csrfError) return csrfError
+
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
