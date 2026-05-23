@@ -19,8 +19,9 @@ jobs:
       GOOGLE_CLIENT_ID: ci-client-id
       GOOGLE_CLIENT_SECRET: ci-client-secret
       TEACHER_ACCESS_CODE: ci-code
-      ADMIN_USERNAME: ci-admin
-      ADMIN_PASSWORD: ci-password
+      SUPER_ADMIN_USERNAME: ci-admin
+      # bcrypt hash of "ci-password" at cost 12
+      SUPER_ADMIN_PASSWORD: $2a$12$zWMEp3JkdvHAFYlyJVCMvOCaE9hLLuFB.GdUGVbMWKN0LVu95l8qO
 
     steps:
       - uses: actions/checkout@v6
