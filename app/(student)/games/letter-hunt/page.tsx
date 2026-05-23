@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { LetterHunt } from '@/components/games/LetterHunt'
+import { KeyboardGuard } from '@/components/keyboard/KeyboardGuard'
 import { Trophy, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
@@ -26,6 +27,7 @@ export default function LetterHuntPage() {
   }
 
   return (
+    <KeyboardGuard>
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/games" className="text-ink-muted hover:text-ink transition-colors">
@@ -53,5 +55,6 @@ export default function LetterHuntPage() {
 
       <LetterHunt onComplete={handleComplete} />
     </div>
+    </KeyboardGuard>
   )
 }
