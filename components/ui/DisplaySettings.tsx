@@ -5,14 +5,19 @@ import { Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useDyslexiaFont, FONT_OPTIONS, type DyslexiaFont } from '@/hooks/useDyslexiaFont'
 import { useHighContrast } from '@/hooks/useHighContrast'
+import { clearKeyboardOverride, getKeyboardOverride } from '@/lib/keyboard-detection'
 
 const SAMPLE = 'The quick fox jumps.'
 
-/** Reading and display preferences panel — font choice and high-contrast toggle. */
+/** Reading and display preferences panel — font choice, high-contrast toggle, and device overrides. */
 export function DisplaySettings() {
   const { font, setFont } = useDyslexiaFont()
   const { highContrast, setHighContrast } = useHighContrast()
   const [open, setOpen] = useState(false)
+  const [hasOverride, setHasOverride] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return getKeyboardOverride()
+  })
 
   return (
     <div>
@@ -92,6 +97,22 @@ export function DisplaySettings() {
               ))}
             </div>
           </fieldset>
+
+          {/* Device overrides */}
+          {hasOverride && (
+            <div className="px-2">
+              <p className="text-xs font-semibold text-ink font-body mb-1">This device</p>
+              <button
+                onClick={() => {
+                  clearKeyboardOverride()
+                  setHasOverride(false)
+                }}
+                className="text-xs text-ink-muted hover:text-coral font-body underline underline-offset-2 transition-colors"
+              >
+                Forget keyboard override
+              </button>
+            </div>
+          )}
 
         </div>
       )}

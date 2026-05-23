@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { TypingArea } from '@/components/typing/TypingArea'
 import { KeyboardHint } from '@/components/ui/KeyboardHint'
 import { Pip } from '@/components/ui/Pip'
+import { KeyboardGuard } from '@/components/keyboard/KeyboardGuard'
 import { ArrowLeft, ArrowRight, RefreshCw, Sparkles, CheckCircle, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -103,6 +104,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
   }
 
   return (
+    <KeyboardGuard>
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -252,5 +254,6 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         </div>
       )}
     </div>
+    </KeyboardGuard>
   )
 }
