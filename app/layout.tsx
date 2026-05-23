@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import './globals.css'
 import { Providers } from './providers'
 import { Navbar } from '@/components/layout/Navbar'
@@ -8,21 +9,20 @@ export const metadata: Metadata = {
   description: 'A structured typing curriculum to master your keyboard with games, lessons, and progress tracking.',
 }
 
-export default function RootLayout({
+const VALID_FONTS = new Set(['opendyslexic', 'atkinson', 'lexend', 'andika'])
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Read the font cookie set by the client hook so SSR can apply data-font before hydration.
+  const cookieStore = await cookies()
+  const fontCookie = cookieStore.get('kq-font')?.value
+  const dataFont = fontCookie && VALID_FONTS.has(fontCookie) ? fontCookie : undefined
+
   return (
-    <html lang="en">
-      {/* Inline script applies saved font preference before React hydrates, preventing a flash */}
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var f=localStorage.getItem('kq-font');if(f&&f!=='default')document.documentElement.setAttribute('data-font',f)}catch(e){}`,
-          }}
-        />
-      </head>
+    <html lang="en" {...(dataFont ? { 'data-font': dataFont } : {})}>
       <body className="font-body">
         <Providers>
           <a href="#main-content" className="skip-link">Skip to main content</a>

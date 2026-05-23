@@ -17,6 +17,7 @@ model User {
   rerollsToday        Int       @default(0)
   lastRerollDate      DateTime?
   nameChangeRequested Boolean   @default(false)
+  preferences         Json?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
