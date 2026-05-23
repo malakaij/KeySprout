@@ -38,7 +38,7 @@ export function Navbar() {
                   <span className="text-ink text-sm font-semibold hidden sm:block">
                     {session.user.name}
                   </span>
-                  <ChevronDown className={cn('w-4 h-4 text-ink/50 transition-transform', dropdownOpen && 'rotate-180')} />
+                  <ChevronDown className={cn('w-4 h-4 text-ink-muted transition-transform', dropdownOpen && 'rotate-180')} />
                 </button>
 
                 {dropdownOpen && (

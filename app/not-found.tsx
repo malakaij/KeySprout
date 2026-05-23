@@ -35,7 +35,7 @@ export default async function NotFound() {
         <h1 className="text-3xl font-display text-ink mb-3">
           Looks like that page wandered off!
         </h1>
-        <p className="text-ink/50 font-body mb-8">
+        <p className="text-ink-muted font-body mb-8">
           Pip looked everywhere but couldn&apos;t find what you were after.
           Maybe the link was mistyped, or the page moved somewhere new.
         </p>

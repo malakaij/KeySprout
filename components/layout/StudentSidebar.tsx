@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, BookOpen, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
-import { FontPicker } from '@/components/ui/FontPicker'
+import { DisplaySettings } from '@/components/ui/DisplaySettings'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'bg-mint' },
@@ -29,7 +29,7 @@ export function StudentSidebar() {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-ink text-sm truncate">{name}</p>
-            <p className="text-xs text-ink/50 font-body">Student</p>
+            <p className="text-xs text-ink-muted font-body">Student</p>
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@ export function StudentSidebar() {
                 'flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-100',
                 isActive
                   ? 'bg-mint border-[3px] border-ink text-ink shadow-ink-sm'
-                  : 'text-ink/60 hover:text-ink hover:bg-paper-dark'
+                  : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
               )}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -58,8 +58,8 @@ export function StudentSidebar() {
       </nav>
 
       <div className="p-4 border-t-[3px] border-ink space-y-3">
-        <FontPicker />
-        <p className="text-xs text-ink/40 font-body text-center">KeySprout v1.0</p>
+        <DisplaySettings />
+        <p className="text-xs text-ink-muted font-body text-center">KeySprout v1.0</p>
       </div>
     </aside>
   )

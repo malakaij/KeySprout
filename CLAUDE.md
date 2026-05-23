@@ -56,6 +56,8 @@ Each of these has a full ADR in [`docs/decisions/`](docs/decisions/). Read the A
 | 0005 | ESLint 9 (not 10) | `eslint-config-next@15` peer dep blocks ESLint 10 |
 | 0006 | No third-party analytics SDKs | Privacy-first stance for minors |
 | 0007 | Admin auth uses HMAC cookie, not NextAuth | Single shared password; doesn't fit per-user OAuth model |
+| 0008 | Student names stored in teacher's browser only, never on the server | COPPA extension; names are never in KeySprout's data estate |
+| 0009 | Accessibility features are on by default unless a competing need exists | K–5 students cannot self-advocate; optional features that cost nothing should be universal |
 
 ---
 

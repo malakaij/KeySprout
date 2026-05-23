@@ -42,7 +42,7 @@ export default async function TeacherDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-display text-ink">Teacher Dashboard</h1>
-          <p className="text-ink/50 mt-1 font-body">Manage your classes and track student progress.</p>
+          <p className="text-ink-muted mt-1 font-body">Manage your classes and track student progress.</p>
         </div>
         <Link
           href="/teacher/classes"
@@ -75,7 +75,7 @@ export default async function TeacherDashboardPage() {
         <h2 className="font-display text-lg text-ink mb-4">Your Classes</h2>
         {classes.length === 0 ? (
           <div className="kq-card p-8 text-center">
-            <p className="text-ink/50 font-body mb-4">No classes yet. Create one to get started!</p>
+            <p className="text-ink-muted font-body mb-4">No classes yet. Create one to get started!</p>
             <Link
               href="/teacher/classes"
               className="kq-btn bg-mint text-ink inline-flex items-center gap-2 px-4 py-2 text-sm"
@@ -98,9 +98,9 @@ export default async function TeacherDashboardPage() {
                   className="kq-card p-5 hover:shadow-ink-lg transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 block"
                 >
                   <h3 className="font-display text-ink mb-1">{c.name}</h3>
-                  {c.description && <p className="text-xs text-ink/50 mb-3 font-body">{c.description}</p>}
+                  {c.description && <p className="text-xs text-ink-muted mb-3 font-body">{c.description}</p>}
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1 text-ink/50 font-body">
+                    <div className="flex items-center gap-1 text-ink-muted font-body">
                       <Users className="w-4 h-4" />
                       <span>{c.members.length} students</span>
                     </div>
@@ -110,7 +110,7 @@ export default async function TeacherDashboardPage() {
                     </div>
                   </div>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs text-ink/40 font-body">Code:</span>
+                    <span className="text-xs text-ink-muted font-body">Code:</span>
                     <span className="font-mono text-ink font-bold tracking-widest text-xs bg-sunny/40 px-2 py-0.5 rounded-lg">
                       {c.code}
                     </span>

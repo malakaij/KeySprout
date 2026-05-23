@@ -17,11 +17,11 @@ export function FontPicker() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-controls="font-picker-list"
-        className="flex items-center gap-2 w-full px-2 py-1.5 rounded-xl text-ink/50 hover:text-ink hover:bg-paper-dark transition-colors text-xs font-semibold font-body"
+        className="flex items-center gap-2 w-full px-2 py-1.5 rounded-xl text-ink-muted hover:text-ink hover:bg-paper-dark transition-colors text-xs font-semibold font-body"
       >
         <Type className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
         <span>Reading Font</span>
-        <span className="ml-auto text-ink/30">{open ? '▲' : '▼'}</span>
+        <span className="ml-auto text-ink-muted">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
@@ -53,7 +53,7 @@ export function FontPicker() {
                 <span className="text-xs font-semibold text-ink font-body">{option.label}</span>
               </div>
               <span
-                className="text-xs text-ink/60 pl-5"
+                className="text-xs text-ink-muted pl-5"
                 style={{ fontFamily: option.stack }}
               >
                 {SAMPLE}

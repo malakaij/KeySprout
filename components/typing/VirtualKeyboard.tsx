@@ -106,7 +106,7 @@ export function VirtualKeyboard({ highlightKey, pressedKey, fingerColors = false
         </div>
       ))}
       <div className="flex gap-1 justify-center">
-        <div className="flex-1 max-w-xs bg-paper-dark border-2 border-ink/20 rounded-lg min-h-[34px] flex items-center justify-center text-xs text-ink/40 font-mono">
+        <div className="flex-1 max-w-xs bg-paper-dark border-2 border-ink/20 rounded-lg min-h-[34px] flex items-center justify-center text-xs text-ink-muted font-mono">
           space
         </div>
       </div>

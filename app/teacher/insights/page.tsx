@@ -12,7 +12,7 @@ const KEYBOARD_ROWS = [
 
 
 function getKeyHeatColor(rate: number): string {
-  if (rate === 0) return 'bg-paper-dark border-ink/20 text-ink/40'
+  if (rate === 0) return 'bg-paper-dark border-ink/20 text-ink-muted'
   if (rate < 0.2) return 'bg-mint/40 border-ink/40 text-ink/70'
   if (rate < 0.4) return 'bg-sunny/50 border-ink/50 text-ink'
   if (rate < 0.6) return 'bg-coral/40 border-ink/50 text-ink'
@@ -138,14 +138,14 @@ export default async function InsightsPage() {
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-display text-ink">Insights</h1>
-        <p className="text-ink/50 mt-1 font-body">Class-wide performance patterns and student weak spots.</p>
+        <p className="text-ink-muted mt-1 font-body">Class-wide performance patterns and student weak spots.</p>
       </div>
 
       {allAttempts.length === 0 ? (
         <div className="kq-card p-12 text-center">
           <BarChart2 className="w-12 h-12 text-ink/20 mx-auto mb-4" />
-          <p className="text-ink/40 font-body">No lesson attempts yet.</p>
-          <p className="text-sm text-ink/30 font-body mt-1">Students need to complete lessons for insights to appear.</p>
+          <p className="text-ink-muted font-body">No lesson attempts yet.</p>
+          <p className="text-sm text-ink-muted font-body mt-1">Students need to complete lessons for insights to appear.</p>
         </div>
       ) : (
         <>
@@ -155,7 +155,7 @@ export default async function InsightsPage() {
               <TrendingUp className="w-5 h-5 text-sky" />
               <h2 className="font-display text-ink">Section Performance</h2>
             </div>
-            <p className="text-xs text-ink/40 font-body mb-4">Sorted by average accuracy — lowest first (most challenging).</p>
+            <p className="text-xs text-ink-muted font-body mb-4">Sorted by average accuracy — lowest first (most challenging).</p>
             <div className="space-y-3">
               {sectionPerf.map((sec, i) => (
                 <div key={sec.id} className="flex items-center gap-4">
@@ -173,7 +173,7 @@ export default async function InsightsPage() {
                   <div className="text-sm font-display text-ink w-12 text-right">
                     {Math.round(sec.avgAccuracy * 100)}%
                   </div>
-                  <div className="text-xs text-ink/40 font-body w-16 text-right">
+                  <div className="text-xs text-ink-muted font-body w-16 text-right">
                     {Math.round(sec.avgWpm)} WPM
                   </div>
                   {i === 0 && (
@@ -190,7 +190,7 @@ export default async function InsightsPage() {
               <BarChart2 className="w-5 h-5 text-coral" />
               <h2 className="font-display text-ink">Keyboard Difficulty Heatmap</h2>
             </div>
-            <p className="text-xs text-ink/40 font-body mb-4">
+            <p className="text-xs text-ink-muted font-body mb-4">
               Keys appearing frequently in low-accuracy lessons are shown in red. Green = easy, red = challenging.
             </p>
             <div className="inline-flex flex-col items-center gap-1.5 mx-auto">
@@ -215,11 +215,11 @@ export default async function InsightsPage() {
                   })}
                 </div>
               ))}
-              <div className="h-7 rounded-lg border-2 bg-paper-dark border-ink/20 flex items-center justify-center text-xs font-mono text-ink/40" style={{ width: '14rem' }}>
+              <div className="h-7 rounded-lg border-2 bg-paper-dark border-ink/20 flex items-center justify-center text-xs font-mono text-ink-muted" style={{ width: '14rem' }}>
                 space
               </div>
             </div>
-            <div className="flex items-center gap-6 mt-4 text-xs text-ink/40 font-body justify-center">
+            <div className="flex items-center gap-6 mt-4 text-xs text-ink-muted font-body justify-center">
               <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-mint/40 border border-ink/30 inline-block" /> Easy</span>
               <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-sunny/50 border border-ink/40 inline-block" /> Medium</span>
               <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-sm bg-coral border border-ink inline-block" /> Hard</span>
@@ -242,7 +242,7 @@ export default async function InsightsPage() {
                       </div>
                       <span className="font-semibold text-ink text-sm">{student.name}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-ink/50 font-body">
+                    <div className="flex items-center gap-4 text-xs text-ink-muted font-body">
                       <span><span className="font-display text-mint text-sm">{Math.round(student.avgWpm)}</span> WPM</span>
                       <span><span className="font-display text-sky text-sm">{Math.round(student.avgAcc * 100)}%</span> acc</span>
                       <span>{student.totalAttempts} attempts</span>
@@ -250,7 +250,7 @@ export default async function InsightsPage() {
                   </div>
                   {student.weakLessons.length > 0 && (
                     <div className="space-y-1.5">
-                      <p className="text-xs text-ink/40 font-body">Lowest accuracy lessons:</p>
+                      <p className="text-xs text-ink-muted font-body">Lowest accuracy lessons:</p>
                       {student.weakLessons.map((lesson, i) => (
                         <div key={i} className="flex items-center justify-between text-xs font-body">
                           <span className="text-ink/70 truncate flex-1 mr-2">{lesson.title}</span>
@@ -268,7 +268,7 @@ export default async function InsightsPage() {
                 </div>
               ))}
               {studentSummaries.length === 0 && (
-                <p className="text-center text-ink/30 font-body py-6">No students with lesson attempts yet.</p>
+                <p className="text-center text-ink-muted font-body py-6">No students with lesson attempts yet.</p>
               )}
             </div>
           </div>
@@ -278,7 +278,7 @@ export default async function InsightsPage() {
             <div className="kq-card p-4 text-center">
               <Users className="w-6 h-6 text-sky mx-auto mb-2" />
               <p className="text-2xl font-display text-ink">{allMembers.length}</p>
-              <p className="text-xs text-ink/50 font-body">Total Students</p>
+              <p className="text-xs text-ink-muted font-body">Total Students</p>
             </div>
             <div className="kq-card p-4 text-center">
               <TrendingUp className="w-6 h-6 text-mint mx-auto mb-2" />
@@ -287,7 +287,7 @@ export default async function InsightsPage() {
                   ? Math.round(allAttempts.reduce((s, a) => s + a.wpm, 0) / allAttempts.length)
                   : 0}
               </p>
-              <p className="text-xs text-ink/50 font-body">Class Avg WPM</p>
+              <p className="text-xs text-ink-muted font-body">Class Avg WPM</p>
             </div>
             <div className="kq-card p-4 text-center">
               <BarChart2 className="w-6 h-6 text-coral mx-auto mb-2" />
@@ -296,7 +296,7 @@ export default async function InsightsPage() {
                   ? Math.round(allAttempts.reduce((s, a) => s + a.accuracy, 0) / allAttempts.length * 100)
                   : 0}%
               </p>
-              <p className="text-xs text-ink/50 font-body">Class Avg Accuracy</p>
+              <p className="text-xs text-ink-muted font-body">Class Avg Accuracy</p>
             </div>
           </div>
         </>

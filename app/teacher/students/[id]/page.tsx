@@ -47,15 +47,15 @@ export default function StudentDetailPage() {
       })
   }, [params.id])
 
-  if (loading) return <div className="p-6 text-ink/40 font-body">Loading...</div>
-  if (!data || !data.student) return <div className="p-6 text-ink/40 font-body">Student not found.</div>
+  if (loading) return <div className="p-6 text-ink-muted font-body">Loading...</div>
+  if (!data || !data.student) return <div className="p-6 text-ink-muted font-body">Student not found.</div>
 
   const { student, lessonStats, chartData, weakKeys, totalAttempts } = data
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/teacher/classes" className="text-ink/40 hover:text-ink transition-colors">
+        <Link href="/teacher/classes" className="text-ink-muted hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex items-center gap-4 flex-1">
@@ -74,7 +74,7 @@ export default function StudentDetailPage() {
           )}
           <div>
             <h1 className="text-xl font-display text-ink">{student.name ?? 'Unknown'}</h1>
-            <div className="flex items-center gap-3 text-xs text-ink/40 font-body">
+            <div className="flex items-center gap-3 text-xs text-ink-muted font-body">
               <span className="flex items-center gap-1">
                 <Mail className="w-3 h-3" /> {student.email}
               </span>
@@ -86,7 +86,7 @@ export default function StudentDetailPage() {
         </div>
         <div className="text-right">
           <p className="text-2xl font-display text-mint">{totalAttempts}</p>
-          <p className="text-xs text-ink/40 font-body">Total Attempts</p>
+          <p className="text-xs text-ink-muted font-body">Total Attempts</p>
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export default function StudentDetailPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-xs text-ink/40 border-b-2 border-ink/10">
+              <tr className="text-xs text-ink-muted border-b-2 border-ink/10">
                 <th className="text-left pb-2 font-semibold font-body">Lesson</th>
                 <th className="text-left pb-2 font-semibold font-body">Unit</th>
                 <th className="text-right pb-2 font-semibold font-body">Attempts</th>
@@ -115,8 +115,8 @@ export default function StudentDetailPage() {
               {lessonStats.map((ls) => (
                 <tr key={ls.lessonId} className="hover:bg-paper-dark transition-colors">
                   <td className="py-2 text-ink font-body">{ls.title}</td>
-                  <td className="py-2 text-ink/50 text-xs font-body">{ls.unit}</td>
-                  <td className="py-2 text-right text-ink/50 font-body">{ls.attemptsCount}</td>
+                  <td className="py-2 text-ink-muted text-xs font-body">{ls.unit}</td>
+                  <td className="py-2 text-right text-ink-muted font-body">{ls.attemptsCount}</td>
                   <td className="py-2 text-right font-display text-mint">{Math.round(ls.bestWpm)}</td>
                   <td className="py-2 text-right text-sky font-semibold font-body">{Math.round(ls.bestAccuracy * 100)}%</td>
                   <td className="py-2 text-right">
@@ -133,7 +133,7 @@ export default function StudentDetailPage() {
               ))}
               {lessonStats.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-6 text-center text-ink/30 font-body">No lessons attempted yet.</td>
+                  <td colSpan={6} className="py-6 text-center text-ink-muted font-body">No lessons attempted yet.</td>
                 </tr>
               )}
             </tbody>
@@ -144,7 +144,7 @@ export default function StudentDetailPage() {
       {/* Weak Keys Heatmap */}
       <div className="kq-card p-5">
         <h2 className="font-display text-ink mb-2">Weak Keys Heatmap</h2>
-        <p className="text-xs text-ink/40 mb-4 font-body">Keys with higher error rates are shown in red.</p>
+        <p className="text-xs text-ink-muted mb-4 font-body">Keys with higher error rates are shown in red.</p>
         <VirtualKeyboard errorKeys={weakKeys} />
       </div>
     </div>

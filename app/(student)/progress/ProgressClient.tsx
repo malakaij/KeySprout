@@ -43,7 +43,7 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
     <div className="p-6 max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-display text-ink">Your Progress</h1>
-        <p className="text-ink/50 mt-1 font-body">Track your typing improvement over time.</p>
+        <p className="text-ink-muted mt-1 font-body">Track your typing improvement over time.</p>
       </div>
 
       {/* WPM Chart */}
@@ -65,7 +65,7 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
                   <span className={`text-sm font-semibold px-3 py-0.5 rounded-full border-2 font-body ${c.badgeClass}`}>
                     {unit.name}
                   </span>
-                  <span className="text-xs text-ink/40 font-body">{unit.passed}/{unit.total} passed</span>
+                  <span className="text-xs text-ink-muted font-body">{unit.passed}/{unit.total} passed</span>
                 </div>
                 <div className="w-full bg-paper-dark rounded-full h-3 border-2 border-ink/10 overflow-hidden">
                   <div
@@ -82,13 +82,13 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
       {/* Weak Keys */}
       <div className="kq-card p-5">
         <h2 className="font-display text-ink mb-2">Weak Keys Heatmap</h2>
-        <p className="text-xs text-ink/40 mb-4 font-body">
+        <p className="text-xs text-ink-muted mb-4 font-body">
           Keys colored red are your most challenging. Practice them with personalized exercises.
         </p>
         <VirtualKeyboard errorKeys={weakKeys} fingerColors={false} />
         {topWeakKeys.length > 0 && (
           <div className="mt-4">
-            <p className="text-xs text-ink/40 mb-2 font-body">Your most challenging keys:</p>
+            <p className="text-xs text-ink-muted mb-2 font-body">Your most challenging keys:</p>
             <div className="flex flex-wrap gap-2">
               {topWeakKeys.map(([key, rate]) => (
                 <div key={key} className="flex items-center gap-1.5 bg-coral/10 border-2 border-coral rounded-full px-3 py-1">
@@ -100,7 +100,7 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
           </div>
         )}
         {topWeakKeys.length === 0 && (
-          <p className="text-sm text-ink/40 mt-4 text-center font-body">
+          <p className="text-sm text-ink-muted mt-4 text-center font-body">
             Complete some lessons to see your weak key analysis!
           </p>
         )}
@@ -110,12 +110,12 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
       <div className="kq-card p-5">
         <h2 className="font-display text-ink mb-4">Recent Attempts</h2>
         {recentAttempts.length === 0 ? (
-          <p className="text-ink/40 text-sm text-center py-4 font-body">No attempts yet. Start a lesson!</p>
+          <p className="text-ink-muted text-sm text-center py-4 font-body">No attempts yet. Start a lesson!</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-xs text-ink/40 border-b-2 border-ink/10">
+                <tr className="text-xs text-ink-muted border-b-2 border-ink/10">
                   <th className="text-left pb-2 font-semibold font-body">Lesson</th>
                   <th className="text-right pb-2 font-semibold font-body">WPM</th>
                   <th className="text-right pb-2 font-semibold font-body">Accuracy</th>
@@ -130,7 +130,7 @@ export function ProgressClient({ chartData, unitStats, weakKeys, recentAttempts 
                     <td className="py-2 text-right font-display text-mint">{Math.round(a.wpm)}</td>
                     <td className="py-2 text-right text-sky font-semibold font-body">{Math.round(a.accuracy * 100)}%</td>
                     <td className="py-2 text-right text-coral font-body">{a.errors}</td>
-                    <td className="py-2 text-right text-ink/30 text-xs font-body">{formatDate(new Date(a.completedAt))}</td>
+                    <td className="py-2 text-right text-ink-muted text-xs font-body">{formatDate(new Date(a.completedAt))}</td>
                   </tr>
                 ))}
               </tbody>

@@ -27,6 +27,8 @@
 @theme {
   --color-paper: #fff6e3;
   --color-ink: #1a1a2e;
+  /* Semantic token for secondary/muted text — 70% ink on paper gives 5.9:1 contrast, passing WCAG AA */
+  --color-ink-muted: rgb(26 26 46 / 70%);
   --color-coral: #ff5e5b;
   --color-sunny: #ffd23f;
   --color-mint: #4dd4ac;
@@ -146,4 +148,22 @@ html[data-font="lexend"] {
 html[data-font="andika"] {
   --font-body: 'Andika', sans-serif;
   --font-mono: 'Andika', sans-serif;
+}
+
+/* ---- High-contrast mode ---- */
+/* Applied automatically when the OS reports prefers-contrast: more,
+   or manually via data-contrast="high" set from the user's stored preference. */
+
+@media (prefers-contrast: more) {
+  html {
+    --color-paper: #ffffff;
+    --color-paper-dark: #f0f0f0;
+    --color-ink-muted: rgb(26 26 46 / 90%);
+  }
+}
+
+html[data-contrast="high"] {
+  --color-paper: #ffffff;
+  --color-paper-dark: #f0f0f0;
+  --color-ink-muted: rgb(26 26 46 / 90%);
 }

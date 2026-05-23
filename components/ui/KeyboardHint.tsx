@@ -19,7 +19,7 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
 
   return (
     <div className="select-none" aria-label="Keyboard hint">
-      <p className="text-xs text-ink/50 font-body text-center mb-2">
+      <p className="text-xs text-ink-muted font-body text-center mb-2">
         {target ? (
           <>Next key: <span className="font-mono font-bold text-ink">{nextKey?.toUpperCase()}</span></>
         ) : 'Keyboard guide'}
@@ -31,7 +31,7 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
               const isTarget = k === target
               const isLeft = LEFT_KEYS.has(k)
               const isRight = RIGHT_KEYS.has(k)
-              let bg = 'bg-paper-dark border-ink/30 text-ink/50'
+              let bg = 'bg-paper-dark border-ink/30 text-ink-muted'
               if (isTarget) bg = 'bg-sunny border-ink text-ink shadow-ink-sm animate-pulse-ring'
               else if (isLeft) bg = 'bg-mint/40 border-ink/40 text-ink/70'
               else if (isRight) bg = 'bg-coral/30 border-ink/40 text-ink/70'
@@ -48,12 +48,12 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
         ))}
         {/* Space bar */}
         <div className="flex gap-1 mt-0.5">
-          <div className={`h-7 rounded-lg border-2 flex items-center justify-center text-xs font-mono font-bold transition-all ${target === ' ' ? 'bg-sunny border-ink shadow-ink-sm animate-pulse-ring' : 'bg-paper-dark border-ink/30 text-ink/50'}`} style={{ width: '12rem' }}>
+          <div className={`h-7 rounded-lg border-2 flex items-center justify-center text-xs font-mono font-bold transition-all ${target === ' ' ? 'bg-sunny border-ink shadow-ink-sm animate-pulse-ring' : 'bg-paper-dark border-ink/30 text-ink-muted'}`} style={{ width: '12rem' }}>
             space
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-center gap-4 mt-2 text-xs text-ink/40 font-body">
+      <div className="flex items-center justify-center gap-4 mt-2 text-xs text-ink-muted font-body">
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-mint/40 border border-ink/30 inline-block" /> Left hand</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-coral/30 border border-ink/30 inline-block" /> Right hand</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-xs bg-sunny border border-ink inline-block" /> Next key</span>

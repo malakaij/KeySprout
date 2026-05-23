@@ -9,6 +9,7 @@ const FONT_VALUES = ['default', 'opendyslexic', 'atkinson', 'lexend', 'andika'] 
 
 const patchSchema = z.object({
   fontPreference: z.enum(FONT_VALUES).optional(),
+  highContrast: z.boolean().optional(),
 })
 
 /** Parses the raw Json column into a typed preferences object. */
@@ -34,6 +35,7 @@ export async function GET() {
   const prefs = parsePrefs(user?.preferences ?? null)
   return NextResponse.json({
     fontPreference: (prefs.fontPreference as string) ?? 'default',
+    highContrast: (prefs.highContrast as boolean) ?? false,
   })
 }
 

@@ -21,7 +21,7 @@ export default function LoginPage() {
             <Pip size="lg" variant="wave" />
           </div>
           <h1 className="text-2xl font-display text-ink">Welcome to KeySprout</h1>
-          <p className="text-ink/50 mt-2 text-sm font-body">Sign in to start your typing journey</p>
+          <p className="text-ink-muted mt-2 text-sm font-body">Sign in to start your typing journey</p>
         </div>
 
         <div className="kq-card p-8">
@@ -37,13 +37,13 @@ export default function LoginPage() {
           </button>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-ink/30 font-body">
+            <p className="text-xs text-ink-muted font-body">
               By signing in, you agree to our terms of service and privacy policy.
             </p>
           </div>
         </div>
 
-        <div className="mt-6 text-center text-sm text-ink/30 font-body">
+        <div className="mt-6 text-center text-sm text-ink-muted font-body">
           <p>Free forever. No credit card required.</p>
         </div>
       </div>

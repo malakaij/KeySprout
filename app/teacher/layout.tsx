@@ -20,7 +20,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-paper">
-        <div className="text-ink/40 font-body">Loading...</div>
+        <div className="text-ink-muted font-body">Loading...</div>
       </div>
     )
   }
@@ -57,7 +57,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               <GraduationCap className="w-8 h-8 text-ink" />
             </div>
             <h1 className="text-xl font-display text-ink">Teacher Access</h1>
-            <p className="text-ink/50 text-sm font-body">
+            <p className="text-ink-muted text-sm font-body">
               Enter the access code provided by your school administrator to enable teacher mode.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
 
           <button
             onClick={() => router.push('/dashboard')}
-            className="w-full px-4 py-2 text-ink/40 hover:text-ink text-sm transition-colors text-center font-body"
+            className="w-full px-4 py-2 text-ink-muted hover:text-ink text-sm transition-colors text-center font-body"
           >
             Back to Student Dashboard
           </button>

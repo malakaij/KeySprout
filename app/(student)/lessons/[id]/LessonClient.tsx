@@ -97,7 +97,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
   if (!lesson.content) {
     return (
       <div className="p-6 max-w-3xl mx-auto">
-        <p className="text-ink/50">This lesson has no content yet.</p>
+        <p className="text-ink-muted">This lesson has no content yet.</p>
       </div>
     )
   }
@@ -106,7 +106,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/lessons" className="text-ink/40 hover:text-ink transition-colors">
+        <Link href="/lessons" className="text-ink-muted hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
@@ -114,7 +114,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
             <span className={cn('text-xs px-2 py-0.5 rounded-full border-2 font-semibold', sectionColor)}>
               {lesson.sectionTitle}
             </span>
-            <span className="text-xs text-ink/50 font-body">Lesson {lesson.order + 1}</span>
+            <span className="text-xs text-ink-muted font-body">Lesson {lesson.order + 1}</span>
             {previouslyPassed && (
               <span className="text-xs text-mint flex items-center gap-1 font-semibold">
                 <CheckCircle className="w-3 h-3" /> Passed
@@ -123,12 +123,12 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
           </div>
           <h1 className="text-xl font-display text-ink">{lesson.title}</h1>
           {lesson.description && (
-            <p className="text-sm text-ink/50 mt-0.5 font-body">{lesson.description}</p>
+            <p className="text-sm text-ink-muted mt-0.5 font-body">{lesson.description}</p>
           )}
         </div>
         {bestWpm > 0 && (
           <div className="text-right">
-            <p className="text-xs text-ink/40 font-body">Best WPM</p>
+            <p className="text-xs text-ink-muted font-body">Best WPM</p>
             <p className="text-lg font-display text-mint">{Math.round(bestWpm)}</p>
           </div>
         )}
@@ -150,7 +150,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
 
       {/* Goals */}
       {(lesson.minWpm || lesson.minAccuracy) && (
-        <div className="flex gap-4 text-sm text-ink/60 font-body">
+        <div className="flex gap-4 text-sm text-ink-muted font-body">
           {lesson.minWpm && <span>Goal: <span className="text-mint font-bold">{lesson.minWpm} WPM</span></span>}
           {lesson.minAccuracy && <span>Accuracy: <span className="text-sky font-bold">{Math.round(lesson.minAccuracy * 100)}%</span></span>}
         </div>
@@ -184,7 +184,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
               <h2 className="text-lg font-display text-ink">
                 {passed ? 'Lesson Passed! 🎉' : 'Not quite — keep trying!'}
               </h2>
-              <p className="text-sm text-ink/50 font-body">
+              <p className="text-sm text-ink-muted font-body">
                 {passed ? 'Great job! You met the requirements.' : `Keep practicing to reach ${lesson.minWpm} WPM and ${Math.round((lesson.minAccuracy ?? 0.9) * 100)}% accuracy.`}
               </p>
             </div>
@@ -193,23 +193,23 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
           <div className="grid grid-cols-4 gap-3">
             <div className="bg-mint/20 rounded-xl border-2 border-ink/20 p-3 text-center">
               <p className="text-2xl font-display text-mint">{result.wpm}</p>
-              <p className="text-xs text-ink/50 font-body">WPM</p>
+              <p className="text-xs text-ink-muted font-body">WPM</p>
             </div>
             <div className="bg-sky/20 rounded-xl border-2 border-ink/20 p-3 text-center">
               <p className="text-2xl font-display text-sky">{Math.round(result.accuracy * 100)}%</p>
-              <p className="text-xs text-ink/50 font-body">Accuracy</p>
+              <p className="text-xs text-ink-muted font-body">Accuracy</p>
             </div>
             <div className="bg-sunny/20 rounded-xl border-2 border-ink/20 p-3 text-center">
               <p className="text-2xl font-display text-ink">{result.duration}s</p>
-              <p className="text-xs text-ink/50 font-body">Duration</p>
+              <p className="text-xs text-ink-muted font-body">Duration</p>
             </div>
             <div className="bg-coral/20 rounded-xl border-2 border-ink/20 p-3 text-center">
               <p className="text-2xl font-display text-coral">{result.errors}</p>
-              <p className="text-xs text-ink/50 font-body">Errors</p>
+              <p className="text-xs text-ink-muted font-body">Errors</p>
             </div>
           </div>
 
-          {saving && <p className="text-xs text-ink/40 text-center font-body">Saving result...</p>}
+          {saving && <p className="text-xs text-ink-muted text-center font-body">Saving result...</p>}
 
           <div className="flex flex-wrap gap-3">
             <button

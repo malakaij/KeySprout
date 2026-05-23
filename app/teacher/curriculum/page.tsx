@@ -37,14 +37,14 @@ export default async function CurriculumPage() {
     <div className="p-6 max-w-6xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-display text-ink">Curriculum</h1>
-        <p className="text-ink/50 mt-1 font-body">Browse all courses, sections, and lessons in the typing curriculum.</p>
+        <p className="text-ink-muted mt-1 font-body">Browse all courses, sections, and lessons in the typing curriculum.</p>
       </div>
 
       {courses.length === 0 ? (
         <div className="kq-card p-12 text-center">
           <BookOpen className="w-12 h-12 text-ink/20 mx-auto mb-4" />
-          <p className="text-ink/40 font-body">No curriculum seeded yet.</p>
-          <p className="text-sm text-ink/30 font-body mt-1">Go to the admin panel to seed the database.</p>
+          <p className="text-ink-muted font-body">No curriculum seeded yet.</p>
+          <p className="text-sm text-ink-muted font-body mt-1">Go to the admin panel to seed the database.</p>
         </div>
       ) : (
         courses.map((course) => (
@@ -56,10 +56,10 @@ export default async function CurriculumPage() {
               <div>
                 <h2 className="text-xl font-display text-ink">{course.title}</h2>
                 {course.description && (
-                  <p className="text-sm text-ink/50 font-body">{course.description}</p>
+                  <p className="text-sm text-ink-muted font-body">{course.description}</p>
                 )}
               </div>
-              <span className="ml-auto text-xs text-ink/40 font-body">
+              <span className="ml-auto text-xs text-ink-muted font-body">
                 {course.sections.length} sections · {course.sections.reduce((s, sec) => s + sec._count.lessons, 0)} lessons
               </span>
             </div>
@@ -78,7 +78,7 @@ export default async function CurriculumPage() {
                   <div key={section.id} className={`kq-card p-4 ${color.bg} border-[3px] ${color.border} space-y-3`}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-ink/60 shrink-0" />
+                        <Layers className="w-4 h-4 text-ink-muted shrink-0" />
                         <h3 className="font-display text-ink text-sm leading-tight">{section.title}</h3>
                       </div>
                       <span className={`kq-chip text-xs shrink-0 ${diff.color} border-2`}>
@@ -86,7 +86,7 @@ export default async function CurriculumPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs text-ink/50 font-body">
+                    <div className="flex items-center gap-3 text-xs text-ink-muted font-body">
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3 h-3" />
                         {section._count.lessons} lessons
@@ -108,11 +108,11 @@ export default async function CurriculumPage() {
                         />
                       ))}
                       {section.lessons.length > 20 && (
-                        <span className="text-xs text-ink/30 font-body">+{section.lessons.length - 20}</span>
+                        <span className="text-xs text-ink-muted font-body">+{section.lessons.length - 20}</span>
                       )}
                     </div>
 
-                    <div className="text-xs text-ink/40 font-body border-t border-ink/10 pt-2">
+                    <div className="text-xs text-ink-muted font-body border-t border-ink/10 pt-2">
                       {section.lessons[0]?.title && (
                         <p className="truncate">First: {section.lessons[0].title}</p>
                       )}
