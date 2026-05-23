@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, BookOpen, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
+import { FontPicker } from '@/components/ui/FontPicker'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'bg-mint' },
@@ -56,7 +57,8 @@ export function StudentSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t-[3px] border-ink">
+      <div className="p-4 border-t-[3px] border-ink space-y-3">
+        <FontPicker />
         <p className="text-xs text-ink/40 font-body text-center">KeySprout v1.0</p>
       </div>
     </aside>

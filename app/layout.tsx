@@ -15,6 +15,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      {/* Inline script applies saved font preference before React hydrates, preventing a flash */}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var f=localStorage.getItem('kq-font');if(f&&f!=='default')document.documentElement.setAttribute('data-font',f)}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="font-body">
         <Providers>
           <a href="#main-content" className="skip-link">Skip to main content</a>
