@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import './globals.css'
 import { Providers } from './providers'
 import { Navbar } from '@/components/layout/Navbar'
+import { AxeDevTools } from '@/components/dev/AxeDevTools'
 
 export const metadata: Metadata = {
   title: 'KeySprout — Learn to Type',
@@ -35,6 +36,7 @@ export default async function RootLayout({
           <a href="#main-content" className="skip-link">Skip to main content</a>
           <Navbar />
           {children}
+          {process.env.NODE_ENV === 'development' && <AxeDevTools />}
         </Providers>
       </body>
     </html>
