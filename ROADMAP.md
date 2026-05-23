@@ -6,27 +6,33 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 ## Where we are
 
-Production-quality alpha deployed on Vercel. Core loop works. Infrastructure recently hardened — Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR. Sprint 5 (database migrations) is the most recent merge.
+Production-quality alpha deployed on Vercel. Sprints 1–8 are merged or in review.
 
-**Not yet ready for real classrooms.** The [security hardening epic](https://github.com/malakaij/KeySprout/issues/104) must land first — rate limiting, CSRF tokens, and a hashed admin password are the blockers.
+**Completed sprints:**
+- Sprint 5: Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR
+- Sprint 6 ([Epic #102](https://github.com/malakaij/KeySprout/issues/102)): Accessibility audit — axe-core, focus styles, ARIA labels, high-contrast mode, keyboard-shortcut docs
+- Sprint 7 ([Epic #103](https://github.com/malakaij/KeySprout/issues/103)): Physical keyboard detection — `looksLikeNoKeyboard()` heuristic, `KeyboardGuard` blocking UI, auto-dismiss on trusted keypress, localStorage override
 
----
-
-## Now — Sprint 6
-
-**[Epic #102: Accessibility audit](https://github.com/malakaij/KeySprout/issues/102)** — close the gap between "works with a keyboard" and "actually accessible." 6 sub-issues covering axe-core audit, focus styles, ARIA labels, screen-reader testing, high-contrast mode, and keyboard-shortcut docs.
-
-**Done when:** axe-core reports zero serious issues; a screen reader user can complete a full lesson.
+**Not yet ready for real classrooms.** Sprint 8 (security hardening) is in review as PR #133; it must merge first.
 
 ---
 
-## Next — Sprints 7 and 8
+## Now — Sprint 8
 
-**[Epic #103: Physical keyboard detection](https://github.com/malakaij/KeySprout/issues/103)** (Sprint 7). Touch-only students currently waste their time on a virtual keyboard. Detect and block lessons until a real keypress is registered.
+**[Epic #104: Security hardening](https://github.com/malakaij/KeySprout/issues/104)** — PR #133 in review.
 
-**[Epic #104: Security hardening](https://github.com/malakaij/KeySprout/issues/104)** (Sprint 8). Rate limiting, CSRF tokens, hashed admin password, dependency audit, threat-model docs.
+- Super-Admin renamed from Admin; bcrypt-hashed password (`SUPER_ADMIN_PASSWORD`), `timingSafeEqual` token comparison
+- CSRF: `verifySameOrigin()` Origin-header check on all state-changing routes
+- Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login
+- Threat model in `CODEBASE.md`; COPPA compliance statement in `SECURITY.md`; `npm audit` findings documented
 
-After Epic #104 the app is deployable to real classrooms.
+**Done when:** PR #133 merges and Vercel deploy is green.
+
+---
+
+## Next
+
+**After Sprint 8 the app is deployable to real classrooms.**
 
 ---
 
