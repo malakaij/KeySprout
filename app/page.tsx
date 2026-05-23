@@ -4,7 +4,7 @@ import { Pip } from '@/components/ui/Pip'
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-paper">
+    <main id="main-content" className="min-h-screen bg-paper">
       {/* Hero */}
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
@@ -20,7 +20,7 @@ export default function LandingPage() {
             <br />
             <span className="text-coral">Unlock Your Potential</span>
           </h1>
-          <p className="text-xl text-ink/50 mb-10 max-w-2xl mx-auto font-body">
+          <p className="text-xl text-ink-muted mb-10 max-w-2xl mx-auto font-body">
             A structured typing curriculum that takes you from hunt-and-peck to professional speed.
             Engaging lessons, fun games, and powerful progress tracking.
           </p>
@@ -47,7 +47,7 @@ export default function LandingPage() {
           <h2 className="text-3xl font-display text-center text-ink mb-4">
             Everything you need to type like a pro
           </h2>
-          <p className="text-ink/50 text-center mb-12 font-body">
+          <p className="text-ink-muted text-center mb-12 font-body">
             KeySprout provides a complete learning experience from beginner to expert
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -56,7 +56,7 @@ export default function LandingPage() {
                 <BookOpen className="w-6 h-6 text-ink" />
               </div>
               <h3 className="text-lg font-display text-ink mb-2">Structured Curriculum</h3>
-              <p className="text-ink/50 text-sm font-body">
+              <p className="text-ink-muted text-sm font-body">
                 250 carefully designed lessons across 5 sections. Start with home row keys and build up to
                 full speed typing with real English passages.
               </p>
@@ -67,7 +67,7 @@ export default function LandingPage() {
                 <Gamepad2 className="w-6 h-6 text-ink" />
               </div>
               <h3 className="text-lg font-display text-ink mb-2">Typing Mini Games</h3>
-              <p className="text-ink/50 text-sm font-body">
+              <p className="text-ink-muted text-sm font-body">
                 Make practice fun with Word Rain and Letter Hunt. Improve your reflexes and accuracy
                 while competing for your personal best score.
               </p>
@@ -78,7 +78,7 @@ export default function LandingPage() {
                 <Users className="w-6 h-6 text-ink" />
               </div>
               <h3 className="text-lg font-display text-ink mb-2">Teacher Dashboard</h3>
-              <p className="text-ink/50 text-sm font-body">
+              <p className="text-ink-muted text-sm font-body">
                 Create virtual classrooms, track student progress in real time, identify struggling
                 learners, and celebrate achievements.
               </p>
@@ -92,15 +92,15 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
           <div>
             <p className="text-4xl font-display text-mint mb-2">250</p>
-            <p className="text-ink/50 text-sm font-body">Structured Lessons</p>
+            <p className="text-ink-muted text-sm font-body">Structured Lessons</p>
           </div>
           <div>
             <p className="text-4xl font-display text-sunny mb-2">2</p>
-            <p className="text-ink/50 text-sm font-body">Fun Mini Games</p>
+            <p className="text-ink-muted text-sm font-body">Fun Mini Games</p>
           </div>
           <div>
             <p className="text-4xl font-display text-coral mb-2">100%</p>
-            <p className="text-ink/50 text-sm font-body">Free to Use</p>
+            <p className="text-ink-muted text-sm font-body">Free to Use</p>
           </div>
         </div>
       </section>
@@ -118,7 +118,7 @@ export default function LandingPage() {
               <div key={step.n} className="text-center">
                 <div className={`w-12 h-12 ${step.color} rounded-full border-[3px] border-ink flex items-center justify-center mx-auto mb-4 font-display text-white text-lg shadow-ink-sm`}>{step.n}</div>
                 <h3 className="font-display text-ink mb-2">{step.title}</h3>
-                <p className="text-ink/50 text-sm font-body">{step.desc}</p>
+                <p className="text-ink-muted text-sm font-body">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -143,7 +143,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-ink font-body">{t.name}</p>
-                    <p className="text-xs text-ink/40 font-body">{t.role}</p>
+                    <p className="text-xs text-ink-muted font-body">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto text-center">
           <Zap className="w-12 h-12 text-coral mx-auto mb-4" />
           <h2 className="text-3xl font-display text-ink mb-4">Ready to start typing faster?</h2>
-          <p className="text-ink/50 mb-8 font-body">Join thousands of learners improving their typing skills with KeySprout.</p>
+          <p className="text-ink-muted mb-8 font-body">Join thousands of learners improving their typing skills with KeySprout.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/dashboard" className="kq-btn bg-coral text-white px-8 py-4 font-display">
               Get Started Free
@@ -171,10 +171,10 @@ export default function LandingPage() {
       </section>
 
       <footer className="py-8 px-6 border-t-[3px] border-ink/10">
-        <div className="max-w-5xl mx-auto flex items-center justify-between text-ink/30 text-sm font-body">
+        <div className="max-w-5xl mx-auto flex items-center justify-between text-ink-muted text-sm font-body">
           <div className="flex items-center gap-2">
             <span>🌱</span>
-            <span className="font-display text-ink/50">KeySprout</span>
+            <span className="font-display text-ink-muted">KeySprout</span>
           </div>
           <div className="flex items-center gap-2 text-xs">
             <Award className="w-3 h-3" />

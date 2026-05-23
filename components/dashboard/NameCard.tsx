@@ -49,7 +49,7 @@ export function NameCard({
 
   return (
     <div className="kq-card p-5">
-      <p className="text-xs text-ink/40 uppercase tracking-wider mb-1 font-body">Your username</p>
+      <p className="text-xs text-ink-muted uppercase tracking-wider mb-1 font-body">Your username</p>
       <p className="text-2xl font-display text-ink mb-4">{currentName}</p>
 
       {requested ? (
@@ -67,7 +67,7 @@ export function NameCard({
             <Shuffle className="w-4 h-4" />
             {isInClass ? 'Request New Username' : 'Reroll Name'}
           </button>
-          <p className="text-xs text-ink/40 font-body">
+          <p className="text-xs text-ink-muted font-body">
             {remaining > 0
               ? `${remaining} reroll${remaining === 1 ? '' : 's'} remaining today`
               : 'No rerolls remaining today — try again tomorrow'}

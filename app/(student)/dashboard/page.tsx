@@ -135,7 +135,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-display text-ink">
             Welcome back, {session.user.name?.split(' ')[0] ?? 'Learner'}!
           </h1>
-          <p className="text-ink/60 mt-1 font-body">Keep up the great work on your typing journey.</p>
+          <p className="text-ink-muted mt-1 font-body">Keep up the great work on your typing journey.</p>
         </div>
       </div>
 
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-2">
             <span className="text-2xl">🔥</span>
             <span className="font-display text-2xl text-coral">{streak}</span>
-            <span className="text-ink/50 text-sm font-body">day{streak !== 1 ? 's' : ''}</span>
+            <span className="text-ink-muted text-sm font-body">day{streak !== 1 ? 's' : ''}</span>
           </div>
         </div>
         <div className="flex gap-2">
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
                   active ? 'bg-coral shadow-ink-sm' : 'bg-paper-dark'
                 }`}
               />
-              <span className="text-xs text-ink/50 font-body">{DAY_LABELS[i]}</span>
+              <span className="text-xs text-ink-muted font-body">{DAY_LABELS[i]}</span>
             </div>
           ))}
         </div>
@@ -232,7 +232,7 @@ export default async function DashboardPage() {
                           {isPassed ? (
                             <CheckCircle className="w-5 h-5 text-ink" />
                           ) : isLocked ? (
-                            <Lock className="w-4 h-4 text-ink/30" />
+                            <Lock className="w-4 h-4 text-ink-muted" />
                           ) : (
                             <span className="text-xs font-display text-ink">{li + 1}</span>
                           )}
@@ -245,7 +245,7 @@ export default async function DashboardPage() {
             )
           })}
         </div>
-        <div className="flex items-center gap-4 mt-5 text-xs text-ink/50 font-body">
+        <div className="flex items-center gap-4 mt-5 text-xs text-ink-muted font-body">
           <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-mint border-2 border-ink inline-block" /> Done</span>
           <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-coral border-2 border-ink inline-block" /> Current</span>
           <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-paper-dark border-2 border-ink/30 inline-block" /> Locked</span>
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-3">
             {nextLessons.length === 0 ? (
-              <p className="text-ink/50 text-sm py-4 text-center font-body">
+              <p className="text-ink-muted text-sm py-4 text-center font-body">
                 You&apos;ve completed all lessons! 🎉
               </p>
             ) : (
@@ -275,9 +275,9 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="text-sm font-semibold text-ink">{lesson.title}</p>
-                    <p className="text-xs text-ink/50 font-body">{lesson.section.title}</p>
+                    <p className="text-xs text-ink-muted font-body">{lesson.section.title}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-ink/40" />
+                  <ArrowRight className="w-4 h-4 text-ink-muted" />
                 </Link>
               ))
             )}
@@ -289,7 +289,7 @@ export default async function DashboardPage() {
           <h2 className="font-display text-lg text-ink mb-4">Recent Activity</h2>
           <div className="space-y-3">
             {recentAttempts.length === 0 ? (
-              <p className="text-ink/50 text-sm py-4 text-center font-body">
+              <p className="text-ink-muted text-sm py-4 text-center font-body">
                 No attempts yet. Start your first lesson!
               </p>
             ) : (
@@ -297,7 +297,7 @@ export default async function DashboardPage() {
                 <div key={attempt.id} className="flex items-center justify-between text-sm">
                   <div className="min-w-0 flex-1">
                     <p className="text-ink font-semibold truncate">{attempt.lesson.title}</p>
-                    <p className="text-xs text-ink/40 font-body">{formatDate(attempt.completedAt)}</p>
+                    <p className="text-xs text-ink-muted font-body">{formatDate(attempt.completedAt)}</p>
                   </div>
                   <div className="flex gap-3 ml-3 shrink-0">
                     <span className="text-mint font-bold">{Math.round(attempt.wpm)} WPM</span>
@@ -325,7 +325,7 @@ export default async function DashboardPage() {
           >
             <div className="text-2xl mb-2">🌧️</div>
             <h3 className="font-display text-ink">Word Rain</h3>
-            <p className="text-xs text-ink/50 mt-1 font-body">Type falling words before they hit the ground</p>
+            <p className="text-xs text-ink-muted mt-1 font-body">Type falling words before they hit the ground</p>
           </Link>
           <Link
             href="/games/letter-hunt"
@@ -333,7 +333,7 @@ export default async function DashboardPage() {
           >
             <div className="text-2xl mb-2">🎯</div>
             <h3 className="font-display text-ink">Letter Hunt</h3>
-            <p className="text-xs text-ink/50 mt-1 font-body">Press the highlighted key as fast as you can</p>
+            <p className="text-xs text-ink-muted mt-1 font-body">Press the highlighted key as fast as you can</p>
           </Link>
         </div>
       </div>

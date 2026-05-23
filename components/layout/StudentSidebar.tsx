@@ -2,9 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, BookOpen, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, BookOpen, TrendingUp, Keyboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
+import { DisplaySettings } from '@/components/ui/DisplaySettings'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'bg-mint' },
@@ -28,7 +29,7 @@ export function StudentSidebar() {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-ink text-sm truncate">{name}</p>
-            <p className="text-xs text-ink/50 font-body">Student</p>
+            <p className="text-xs text-ink-muted font-body">Student</p>
           </div>
         </div>
       </div>
@@ -46,7 +47,7 @@ export function StudentSidebar() {
                 'flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-100',
                 isActive
                   ? 'bg-mint border-[3px] border-ink text-ink shadow-ink-sm'
-                  : 'text-ink/60 hover:text-ink hover:bg-paper-dark'
+                  : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
               )}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -56,8 +57,21 @@ export function StudentSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t-[3px] border-ink">
-        <p className="text-xs text-ink/40 font-body text-center">KeySprout v1.0</p>
+      <div className="p-4 border-t-[3px] border-ink space-y-3">
+        <DisplaySettings />
+        <Link
+          href="/help"
+          className={cn(
+            'flex items-center gap-2 w-full px-2 py-1.5 rounded-xl text-xs font-semibold font-body transition-colors',
+            pathname === '/help'
+              ? 'text-ink bg-paper-dark'
+              : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
+          )}
+        >
+          <Keyboard className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+          Keyboard shortcuts
+        </Link>
+        <p className="text-xs text-ink-muted font-body text-center">KeySprout v1.0</p>
       </div>
     </aside>
   )

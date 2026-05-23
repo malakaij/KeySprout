@@ -71,9 +71,9 @@ export default function ClassDetailPage() {
     }
   }
 
-  if (loading) return <div className="p-6 text-ink/40 font-body">Loading...</div>
+  if (loading) return <div className="p-6 text-ink-muted font-body">Loading...</div>
   if (!classroom || ('error' in (classroom as unknown as Record<string, unknown>))) {
-    return <div className="p-6 text-ink/40 font-body">Class not found.</div>
+    return <div className="p-6 text-ink-muted font-body">Class not found.</div>
   }
 
   const students: StudentProgress[] = classroom.members.map((m) => ({
@@ -96,18 +96,18 @@ export default function ClassDetailPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/teacher/classes" className="text-ink/40 hover:text-ink transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+        <Link href="/teacher/classes" aria-label="Back to classes" className="text-ink-muted hover:text-ink transition-colors">
+          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-display text-ink">{classroom.name}</h1>
-          {classroom.description && <p className="text-ink/50 mt-0.5 font-body">{classroom.description}</p>}
+          {classroom.description && <p className="text-ink-muted mt-0.5 font-body">{classroom.description}</p>}
         </div>
       </div>
 
       {/* Join Code */}
       <div className="kq-card p-5">
-        <p className="text-sm text-ink/50 mb-2 font-body">Join Code — Share with students</p>
+        <p className="text-sm text-ink-muted mb-2 font-body">Join Code — Share with students</p>
         <div className="flex items-center gap-4">
           <div className="text-4xl font-mono font-bold text-ink tracking-widest bg-sunny/40 px-4 py-2 rounded-xl border-2 border-ink/30">
             {classroom.code}
@@ -157,7 +157,7 @@ export default function ClassDetailPage() {
                   <button
                     onClick={() => handleMemberAction(member.id, 'reject')}
                     disabled={processingId === member.id}
-                    className="kq-btn bg-paper-dark text-ink/60 flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:opacity-50"
+                    className="kq-btn bg-paper-dark text-ink-muted flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:opacity-50"
                   >
                     <UserX className="w-3.5 h-3.5" />
                     Reject
@@ -174,12 +174,12 @@ export default function ClassDetailPage() {
         <div className="kq-card p-4 text-center">
           <Users className="w-5 h-5 text-sky mx-auto mb-2" />
           <p className="text-2xl font-display text-ink">{students.length}</p>
-          <p className="text-xs text-ink/50 font-body">Students</p>
+          <p className="text-xs text-ink-muted font-body">Students</p>
         </div>
         <div className="kq-card p-4 text-center">
           <Zap className="w-5 h-5 text-mint mx-auto mb-2" />
           <p className="text-2xl font-display text-ink">{avgWpm}</p>
-          <p className="text-xs text-ink/50 font-body">Avg WPM</p>
+          <p className="text-xs text-ink-muted font-body">Avg WPM</p>
         </div>
         <div className="kq-card p-4 text-center">
           <BookOpen className="w-5 h-5 text-sunny mx-auto mb-2" />
@@ -188,7 +188,7 @@ export default function ClassDetailPage() {
               ? Math.round(students.reduce((s, st) => s + st.lessonsCompleted, 0) / students.length)
               : 0}
           </p>
-          <p className="text-xs text-ink/50 font-body">Avg Lessons</p>
+          <p className="text-xs text-ink-muted font-body">Avg Lessons</p>
         </div>
       </div>
 

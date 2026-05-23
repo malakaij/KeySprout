@@ -158,7 +158,7 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
       >
         {!focused && !completed && (
           <div className="absolute inset-0 flex items-center justify-center bg-paper/80 rounded-2xl z-10">
-            <p className="text-ink/40 text-sm font-body">Click to start typing</p>
+            <p className="text-ink-muted text-sm font-body">Click to start typing</p>
           </div>
         )}
 
@@ -175,7 +175,7 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
                 ref={isCurrent ? cursorRef : null}
                 className={cn(
                   'relative',
-                  !isTyped && 'text-ink/40',
+                  !isTyped && 'text-ink-muted',
                   isCorrect && 'text-mint',
                   isError && 'text-coral',
                   isCurrent && 'text-ink after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-ink after:animate-blink'
@@ -191,7 +191,7 @@ export function TypingArea({ text, onComplete, onProgress, onCurrentChar }: Typi
       {completed && (
         <div className="kq-card p-4 text-center bg-mint/10 border-mint">
           <p className="text-mint font-display">Lesson Complete!</p>
-          <p className="text-ink/60 text-sm mt-1 font-body">
+          <p className="text-ink-muted text-sm mt-1 font-body">
             {liveWpm} WPM · {Math.round(liveAccuracy * 100)}% accuracy
           </p>
         </div>

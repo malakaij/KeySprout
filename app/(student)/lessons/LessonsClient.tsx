@@ -33,7 +33,7 @@ export function LessonsClient({ courseTitle, sections }: LessonsClientProps) {
     <div className="p-6 max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-display text-ink">{courseTitle}</h1>
-        <p className="text-ink/50 mt-1 font-body">Complete lessons in order to unlock the next one.</p>
+        <p className="text-ink-muted mt-1 font-body">Complete lessons in order to unlock the next one.</p>
       </div>
 
       {/* Personalized Practice */}
@@ -42,7 +42,7 @@ export function LessonsClient({ courseTitle, sections }: LessonsClientProps) {
           <Sparkles className="w-5 h-5 text-mint" />
           <h2 className="font-display text-ink">Personalized Practice</h2>
         </div>
-        <p className="text-sm text-ink/50 mb-3 font-body">
+        <p className="text-sm text-ink-muted mb-3 font-body">
           Get a custom typing exercise targeting your weak keys, generated just for you.
         </p>
         <Link
@@ -62,9 +62,9 @@ export function LessonsClient({ courseTitle, sections }: LessonsClientProps) {
             <div className={`rounded-2xl border-[3px] p-4 mb-4 ${c.bg} ${c.border} text-ink`}>
               <h2 className="text-lg font-display text-ink">{section.title}</h2>
               {section.description && (
-                <p className="text-sm text-ink/60 mt-0.5 font-body">{section.description}</p>
+                <p className="text-sm text-ink-muted mt-0.5 font-body">{section.description}</p>
               )}
-              <p className="text-xs text-ink/40 mt-1 font-body">
+              <p className="text-xs text-ink-muted mt-1 font-body">
                 {completedCount} / {section.lessons.length} completed
               </p>
             </div>

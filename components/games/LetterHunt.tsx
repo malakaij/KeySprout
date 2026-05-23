@@ -121,17 +121,17 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
       {/* HUD */}
       <div className="flex items-center justify-between w-full max-w-2xl">
         <div className="kq-card px-4 py-2 text-center min-w-[80px]">
-          <p className="text-xs text-ink/40 font-body">Score</p>
+          <p className="text-xs text-ink-muted font-body">Score</p>
           <p className="text-2xl font-display text-mint">{score}</p>
         </div>
         <div className="kq-card px-4 py-2 text-center min-w-[80px]">
-          <p className="text-xs text-ink/40 font-body">Time</p>
+          <p className="text-xs text-ink-muted font-body">Time</p>
           <p className={cn('text-2xl font-display', timeLeft <= 10 ? 'text-coral' : 'text-ink')}>
             {timeLeft}s
           </p>
         </div>
         <div className="kq-card px-4 py-2 text-center min-w-[80px]">
-          <p className="text-xs text-ink/40 font-body">Combo</p>
+          <p className="text-xs text-ink-muted font-body">Combo</p>
           <p className={cn('text-2xl font-display', combo > 5 ? 'text-sunny' : 'text-ink')}>
             x{combo}
           </p>
@@ -146,7 +146,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
         {gameState === 'idle' && (
           <div className="flex flex-col items-center gap-4 py-8">
             <h2 className="text-2xl font-display text-ink">Letter Hunt</h2>
-            <p className="text-ink/50 text-center max-w-xs font-body text-sm">
+            <p className="text-ink-muted text-center max-w-xs font-body text-sm">
               Press the highlighted key as fast as you can! Score points for each correct press.
             </p>
             <button onClick={startGame} className="kq-btn bg-sunny text-ink px-6 py-3">
@@ -157,7 +157,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
 
         {gameState === 'countdown' && (
           <div className="flex flex-col items-center gap-4 py-8">
-            <p className="text-ink/50 font-body">Get ready...</p>
+            <p className="text-ink-muted font-body">Get ready...</p>
             <p className="text-7xl font-display text-coral">{countdown || 'GO!'}</p>
           </div>
         )}
@@ -167,7 +167,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
             <h2 className="text-2xl font-display text-ink">Time&apos;s Up!</h2>
             <p className="text-4xl font-display text-mint">{score} pts</p>
             {lastReactionMs && (
-              <p className="text-ink/40 text-sm font-body">Last reaction: {lastReactionMs}ms</p>
+              <p className="text-ink-muted text-sm font-body">Last reaction: {lastReactionMs}ms</p>
             )}
             <button onClick={startGame} className="kq-btn bg-sunny text-ink px-6 py-3">
               Play Again
@@ -178,12 +178,12 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
         {gameState === 'playing' && (
           <div className="space-y-4">
             <div className="text-center mb-2">
-              <p className="text-sm text-ink/50 mb-3 font-body">Press this key:</p>
+              <p className="text-sm text-ink-muted mb-3 font-body">Press this key:</p>
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-sunny border-[3px] border-ink text-ink text-4xl font-display shadow-ink animate-pulse-ring">
                 {targetKey}
               </div>
               {lastReactionMs && (
-                <p className="text-xs text-ink/30 mt-2 font-body">{lastReactionMs}ms</p>
+                <p className="text-xs text-ink-muted mt-2 font-body">{lastReactionMs}ms</p>
               )}
             </div>
             <VirtualKeyboard highlightKey={targetKey} pressedKey={pressedKey} />
@@ -192,7 +192,7 @@ export function LetterHunt({ onComplete }: LetterHuntProps) {
       </div>
 
       {gameState === 'playing' && (
-        <p className="text-ink/30 text-sm font-body">Press keys on your physical keyboard</p>
+        <p className="text-ink-muted text-sm font-body">Press keys on your physical keyboard</p>
       )}
     </div>
   )

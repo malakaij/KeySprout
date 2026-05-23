@@ -169,13 +169,13 @@ export function WordRain({ onComplete }: WordRainProps) {
         </div>
         <div className="text-center">
           <span className="text-2xl font-display text-mint">{score}</span>
-          <span className="text-ink/40 text-sm ml-2 font-body">pts</span>
+          <span className="text-ink-muted text-sm ml-2 font-body">pts</span>
         </div>
         <div className="text-right">
           <span className={cn('font-mono font-bold', timeLeft <= 10 ? 'text-coral' : 'text-ink')}>
             {timeLeft}s
           </span>
-          <span className="text-ink/40 text-sm ml-2 font-body">Lv.{level}</span>
+          <span className="text-ink-muted text-sm ml-2 font-body">Lv.{level}</span>
         </div>
       </div>
 
@@ -236,6 +236,7 @@ export function WordRain({ onComplete }: WordRainProps) {
           onChange={handleInput}
           onKeyDown={handleKeyDown}
           placeholder="Type the falling word..."
+          aria-label="Type the falling word"
           className="w-full max-w-2xl bg-paper border-[3px] border-ink rounded-2xl px-4 py-3 text-ink font-mono text-lg placeholder-ink/30 focus:outline-hidden shadow-ink-sm"
         />
       )}

@@ -27,6 +27,9 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
+                  aria-expanded={dropdownOpen}
+                  aria-haspopup="true"
+                  aria-label={`Account menu for ${session.user.name ?? 'user'}`}
                   className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-paper-dark transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full bg-coral border-[3px] border-ink flex items-center justify-center text-white text-sm font-display shadow-ink-sm">
@@ -35,7 +38,7 @@ export function Navbar() {
                   <span className="text-ink text-sm font-semibold hidden sm:block">
                     {session.user.name}
                   </span>
-                  <ChevronDown className={cn('w-4 h-4 text-ink/50 transition-transform', dropdownOpen && 'rotate-180')} />
+                  <ChevronDown className={cn('w-4 h-4 text-ink-muted transition-transform', dropdownOpen && 'rotate-180')} />
                 </button>
 
                 {dropdownOpen && (

@@ -28,12 +28,12 @@ export default function WordRainPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/games" className="text-ink/40 hover:text-ink transition-colors">
+        <Link href="/games" className="text-ink-muted hover:text-ink transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-display text-ink">🌧️ Word Rain</h1>
-          <p className="text-ink/50 text-sm font-body">Type the falling words before they hit the ground!</p>
+          <p className="text-ink-muted text-sm font-body">Type the falling words before they hit the ground!</p>
         </div>
         {personalBest !== null && (
           <div className="flex items-center gap-2 text-sunny">
@@ -45,7 +45,7 @@ export default function WordRainPage() {
 
       {lastScore !== null && (
         <div className="kq-card px-4 py-2 text-sm flex items-center gap-2">
-          <span className="text-ink/50 font-body">Last score:</span>
+          <span className="text-ink-muted font-body">Last score:</span>
           <span className="font-display text-mint">{lastScore} pts</span>
           {personalBest === lastScore && <span className="text-sunny text-xs font-body">🏆 New best!</span>}
         </div>

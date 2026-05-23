@@ -25,7 +25,7 @@ export default async function GamesPage() {
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-display text-ink">Typing Games</h1>
-        <p className="text-ink/50 mt-1 font-body">Have fun while improving your typing speed and accuracy!</p>
+        <p className="text-ink-muted mt-1 font-body">Have fun while improving your typing speed and accuracy!</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6">
@@ -33,7 +33,7 @@ export default async function GamesPage() {
           <div className="bg-linear-to-br from-sky/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
             <div className="text-4xl mb-3">🌧️</div>
             <h2 className="text-xl font-display text-ink">Word Rain</h2>
-            <p className="text-sm text-ink/50 mt-2 font-body">
+            <p className="text-sm text-ink-muted mt-2 font-body">
               Words fall from the sky. Type them before they reach the bottom!
               Get 3 lives and compete for the highest score.
             </p>
@@ -58,7 +58,7 @@ export default async function GamesPage() {
           <div className="bg-linear-to-br from-sunny/30 to-paper-dark p-6 border-b-[3px] border-ink/10">
             <div className="text-4xl mb-3">🎯</div>
             <h2 className="text-xl font-display text-ink">Letter Hunt</h2>
-            <p className="text-sm text-ink/50 mt-2 font-body">
+            <p className="text-sm text-ink-muted mt-2 font-body">
               Press the highlighted key as fast as you can! Build combos and beat your
               reaction time in this 60-second challenge.
             </p>

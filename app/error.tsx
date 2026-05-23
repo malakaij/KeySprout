@@ -27,7 +27,7 @@ export default function Error({ error, reset }: ErrorProps) {
         <h1 className="text-3xl font-display text-ink mb-3">
           Something went sideways!
         </h1>
-        <p className="text-ink/50 font-body mb-8">
+        <p className="text-ink-muted font-body mb-8">
           Pip ran into an unexpected problem. It&apos;s not your fault — try again
           or head back home.
         </p>
@@ -37,7 +37,7 @@ export default function Error({ error, reset }: ErrorProps) {
           <div className="kq-card p-4 mb-6 text-left">
             <p className="text-xs font-mono text-coral break-all">{error.message}</p>
             {error.digest && (
-              <p className="text-xs text-ink/30 font-mono mt-1">digest: {error.digest}</p>
+              <p className="text-xs text-ink-muted font-mono mt-1">digest: {error.digest}</p>
             )}
           </div>
         )}

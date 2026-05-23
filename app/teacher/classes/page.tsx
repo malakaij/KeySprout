@@ -59,7 +59,7 @@ export default function TeacherClassesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-display text-ink">My Classes</h1>
-          <p className="text-ink/50 mt-1 font-body">Create and manage your virtual classrooms.</p>
+          <p className="text-ink-muted mt-1 font-body">Create and manage your virtual classrooms.</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
@@ -74,13 +74,13 @@ export default function TeacherClassesPage() {
         <div className="kq-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-ink">Create New Class</h2>
-            <button onClick={() => setShowForm(false)} className="text-ink/40 hover:text-ink transition-colors">
-              <X className="w-5 h-5" />
+            <button onClick={() => setShowForm(false)} aria-label="Close form" className="text-ink-muted hover:text-ink transition-colors">
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
           <form onSubmit={handleCreate} className="space-y-3">
             <div>
-              <label className="block text-sm text-ink/60 mb-1 font-body">Class Name *</label>
+              <label className="block text-sm text-ink-muted mb-1 font-body">Class Name *</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -90,7 +90,7 @@ export default function TeacherClassesPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-ink/60 mb-1 font-body">Description (optional)</label>
+              <label className="block text-sm text-ink-muted mb-1 font-body">Description (optional)</label>
               <input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -110,10 +110,10 @@ export default function TeacherClassesPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-12 text-ink/40 font-body">Loading...</div>
+        <div className="text-center py-12 text-ink-muted font-body">Loading...</div>
       ) : classes.length === 0 ? (
         <div className="kq-card p-8 text-center">
-          <p className="text-ink/50 font-body mb-4">No classes yet.</p>
+          <p className="text-ink-muted font-body mb-4">No classes yet.</p>
           <button
             onClick={() => setShowForm(true)}
             className="kq-btn bg-mint text-ink inline-flex items-center gap-2 px-4 py-2 text-sm"

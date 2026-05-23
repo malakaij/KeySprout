@@ -37,35 +37,36 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
         <div>
           <h3 className="font-display text-ink text-lg">{classroom.name}</h3>
           {classroom.description && (
-            <p className="text-sm text-ink/50 mt-0.5 font-body">{classroom.description}</p>
+            <p className="text-sm text-ink-muted mt-0.5 font-body">{classroom.description}</p>
           )}
         </div>
         <button
           onClick={handleDelete}
-          className="text-ink/30 hover:text-coral transition-colors p-1"
-          title={showConfirm ? 'Click again to confirm' : 'Delete class'}
+          className="text-ink-muted hover:text-coral transition-colors p-1"
+          aria-label={showConfirm ? 'Confirm delete class' : `Delete class ${classroom.name}`}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-xs text-ink/50 font-body">Class Code:</span>
+        <span className="text-xs text-ink-muted font-body">Class Code:</span>
         <div className="flex items-center gap-2 bg-paper-dark rounded-xl border-2 border-ink/30 px-3 py-1.5">
           <span className="font-mono font-bold text-sunny tracking-widest text-sm" style={{ textShadow: '0 1px 0 #1a1a2e' }}>
             {classroom.code}
           </span>
           <button
             onClick={handleCopy}
-            className="text-ink/40 hover:text-ink transition-colors"
+            aria-label={copied ? 'Copied!' : `Copy class code ${classroom.code}`}
+            className="text-ink-muted hover:text-ink transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-mint" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-mint" aria-hidden="true" /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-ink/50 text-sm font-body">
+        <div className="flex items-center gap-1.5 text-ink-muted text-sm font-body">
           <Users className="w-4 h-4" />
           <span>{memberCount} student{memberCount !== 1 ? 's' : ''}</span>
         </div>

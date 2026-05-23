@@ -19,7 +19,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
           <Zap className="w-4 h-4 text-mint" />
         </div>
         <div>
-          <p className="text-xs text-ink/40 font-body">WPM</p>
+          <p className="text-xs text-ink-muted font-body">WPM</p>
           <p className="text-lg font-display text-mint">{wpm}</p>
         </div>
       </div>
@@ -29,7 +29,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
           <Target className="w-4 h-4 text-sky" />
         </div>
         <div>
-          <p className="text-xs text-ink/40 font-body">Accuracy</p>
+          <p className="text-xs text-ink-muted font-body">Accuracy</p>
           <p className="text-lg font-display text-sky">{Math.round(accuracy * 100)}%</p>
         </div>
       </div>
@@ -39,7 +39,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
           <Clock className="w-4 h-4 text-sunny" />
         </div>
         <div>
-          <p className="text-xs text-ink/40 font-body">Time</p>
+          <p className="text-xs text-ink-muted font-body">Time</p>
           <p className="text-lg font-display text-ink">{timeStr}</p>
         </div>
       </div>
@@ -49,7 +49,7 @@ export function StatsBar({ wpm, accuracy, timeElapsed, errors }: StatsBarProps) 
           <AlertCircle className="w-4 h-4 text-coral" />
         </div>
         <div>
-          <p className="text-xs text-ink/40 font-body">Errors</p>
+          <p className="text-xs text-ink-muted font-body">Errors</p>
           <p className="text-lg font-display text-coral">{errors}</p>
         </div>
       </div>

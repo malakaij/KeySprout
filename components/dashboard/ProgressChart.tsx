@@ -33,7 +33,7 @@ export function ProgressChart({ attempts }: ProgressChartProps) {
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48 text-ink/40 text-sm font-body">
+      <div className="flex items-center justify-center h-48 text-ink-muted text-sm font-body">
         No data yet. Complete some lessons to see your progress!
       </div>
     )

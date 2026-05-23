@@ -18,7 +18,7 @@ export function TeacherSidebar() {
   return (
     <aside className="w-56 shrink-0 bg-paper border-r-[3px] border-ink min-h-screen flex flex-col">
       <div className="p-5 border-b-[3px] border-ink">
-        <p className="text-xs font-display text-ink/40 uppercase tracking-widest">Teacher Portal</p>
+        <p className="text-xs font-display text-ink-muted uppercase tracking-widest">Teacher Portal</p>
       </div>
       <nav className="p-3 space-y-1 flex-1">
         {navItems.map((item) => {
@@ -32,7 +32,7 @@ export function TeacherSidebar() {
                 'flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-semibold transition-all duration-100',
                 isActive
                   ? `${item.accent} border-[3px] border-ink text-ink shadow-ink-sm`
-                  : 'text-ink/60 hover:text-ink hover:bg-paper-dark'
+                  : 'text-ink-muted hover:text-ink hover:bg-paper-dark'
               )}
             >
               <Icon className="w-4 h-4 shrink-0" />
@@ -43,7 +43,7 @@ export function TeacherSidebar() {
       </nav>
 
       <div className="p-4 border-t-[3px] border-ink">
-        <p className="text-xs text-ink/40 font-body text-center">KeySprout v1.0</p>
+        <p className="text-xs text-ink-muted font-body text-center">KeySprout v1.0</p>
       </div>
     </aside>
   )

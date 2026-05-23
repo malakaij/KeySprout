@@ -42,7 +42,9 @@ export function AdminLogin() {
         <form onSubmit={handleSubmit} className="kq-card p-6 space-y-4">
           <h1 className="text-lg font-display text-ink">Sign in</h1>
           <div className="space-y-3">
+            <label className="sr-only" htmlFor="admin-username">Username</label>
             <input
+              id="admin-username"
               type="text"
               placeholder="Username"
               value={username}
@@ -51,7 +53,9 @@ export function AdminLogin() {
               autoComplete="username"
               className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
             />
+            <label className="sr-only" htmlFor="admin-password">Password</label>
             <input
+              id="admin-password"
               type="password"
               placeholder="Password"
               value={password}

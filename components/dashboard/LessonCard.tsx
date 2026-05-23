@@ -37,11 +37,11 @@ export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
         <div className="flex-1 min-w-0">
           <h3 className="font-display text-ink text-sm">{lesson.title}</h3>
           {lesson.description && (
-            <p className="text-xs text-ink/50 mt-0.5 line-clamp-2 font-body">{lesson.description}</p>
+            <p className="text-xs text-ink-muted mt-0.5 line-clamp-2 font-body">{lesson.description}</p>
           )}
 
           {lesson.attempts > 0 && (
-            <div className="flex gap-3 mt-2 text-xs text-ink/40 font-body">
+            <div className="flex gap-3 mt-2 text-xs text-ink-muted font-body">
               <span>Best: <span className="text-mint font-semibold">{Math.round(lesson.bestWpm ?? 0)} WPM</span></span>
               <span>Acc: <span className="text-sky font-semibold">{Math.round((lesson.bestAccuracy ?? 0) * 100)}%</span></span>
               <span>{lesson.attempts} attempt{lesson.attempts !== 1 ? 's' : ''}</span>
@@ -50,7 +50,7 @@ export function LessonCard({ lesson, locked, onClick }: LessonCardProps) {
         </div>
 
         {!locked && (
-          <ChevronRight className="w-4 h-4 text-ink/30 shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-ink-muted shrink-0 mt-1" />
         )}
       </div>
     </button>

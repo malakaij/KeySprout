@@ -64,7 +64,7 @@ export function AdminDashboard({ isSeeded, stats }: Props) {
             { label: 'Attempts', value: stats.attempts, icon: <Zap className="w-4 h-4 text-grape" /> },
           ].map(({ label, value, icon }) => (
             <div key={label} className="kq-card p-4">
-              <div className="flex items-center gap-2 mb-1">{icon}<span className="text-xs text-ink/50 font-body">{label}</span></div>
+              <div className="flex items-center gap-2 mb-1">{icon}<span className="text-xs text-ink-muted font-body">{label}</span></div>
               <p className="text-2xl font-display text-ink">{value}</p>
             </div>
           ))}
@@ -85,7 +85,7 @@ export function AdminDashboard({ isSeeded, stats }: Props) {
             )}
           </div>
 
-          <p className="text-sm text-ink/50 font-body">
+          <p className="text-sm text-ink-muted font-body">
             {isSeeded
               ? `The database already contains ${stats.courses} course(s) and ${stats.lessons} lesson(s). Re-seeding will wipe all lesson data and lesson attempt history.`
               : 'No courses or lessons found. Run the seed to populate the database with the full 250-lesson curriculum.'}

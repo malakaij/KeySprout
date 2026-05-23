@@ -85,18 +85,26 @@ export function StudentTable({ students }: StudentTableProps) {
     }
   }
 
+  const colLabels: Record<SortKey, string> = {
+    name: 'student name',
+    lessonsCompleted: 'lessons completed',
+    averageWpm: 'average WPM',
+    averageAccuracy: 'average accuracy',
+  }
+
   const SortButton = ({ col }: { col: SortKey }) => (
     <button
       onClick={() => handleSort(col)}
+      aria-label={`Sort by ${colLabels[col]}${sortKey === col ? `, currently ${sortDir}ending` : ''}`}
       className="flex items-center gap-1 hover:text-ink transition-colors"
     >
-      <ArrowUpDown className="w-3 h-3" />
+      <ArrowUpDown className="w-3 h-3" aria-hidden="true" />
     </button>
   )
 
   if (students.length === 0) {
     return (
-      <div className="text-center py-12 text-ink/40 font-body">
+      <div className="text-center py-12 text-ink-muted font-body">
         <p>No students have joined this class yet.</p>
         <p className="text-sm mt-1">Share the class code with your students.</p>
       </div>
@@ -107,7 +115,7 @@ export function StudentTable({ students }: StudentTableProps) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-xs text-ink/40 border-b-2 border-ink/10">
+          <tr className="text-left text-xs text-ink-muted border-b-2 border-ink/10">
             <th className="pb-3 pr-4 font-semibold font-body">
               <div className="flex items-center gap-1">Student <SortButton col="name" /></div>
             </th>
@@ -162,7 +170,7 @@ export function StudentTable({ students }: StudentTableProps) {
                     <span className={cn(
                       'font-display',
                       student.averageWpm >= 40 ? 'text-mint' :
-                      student.averageWpm >= 25 ? 'text-sunny' : 'text-ink/60'
+                      student.averageWpm >= 25 ? 'text-sunny' : 'text-ink-muted'
                     )}>
                       {Math.round(student.averageWpm)}
                     </span>
@@ -176,7 +184,7 @@ export function StudentTable({ students }: StudentTableProps) {
                       {Math.round(student.averageAccuracy * 100)}%
                     </span>
                   </td>
-                  <td className="py-3 text-ink/40 text-xs font-body">
+                  <td className="py-3 text-ink-muted text-xs font-body">
                     {lastAttempt ? formatDate(new Date(lastAttempt.completedAt)) : 'Never'}
                   </td>
                 </tr>
@@ -193,19 +201,20 @@ export function StudentTable({ students }: StudentTableProps) {
                             value={customName}
                             onChange={(e) => setCustomName(e.target.value)}
                             placeholder="Enter a name…"
+                            aria-label="New student username"
                             className="flex-1 bg-paper border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
                           />
                           <button
                             onClick={fetchSuggestion}
                             disabled={loadingSuggestion}
-                            title="Suggest a random name"
-                            className="p-2 bg-paper-dark border-2 border-ink/20 hover:border-ink rounded-xl text-ink/60 hover:text-ink transition-colors disabled:opacity-50"
+                            aria-label="Suggest a random name"
+                            className="p-2 bg-paper-dark border-2 border-ink/20 hover:border-ink rounded-xl text-ink-muted hover:text-ink transition-colors disabled:opacity-50"
                           >
                             <RefreshCw className={cn('w-4 h-4', loadingSuggestion && 'animate-spin')} />
                           </button>
                         </div>
                         {suggestion && (
-                          <p className="text-xs text-ink/50 font-body">
+                          <p className="text-xs text-ink-muted font-body">
                             Suggestion:{' '}
                             <button
                               onClick={() => setCustomName(suggestion)}
@@ -226,7 +235,7 @@ export function StudentTable({ students }: StudentTableProps) {
                           </button>
                           <button
                             onClick={closePanel}
-                            className="kq-btn bg-paper-dark text-ink/60 px-3 py-1.5 text-xs"
+                            className="kq-btn bg-paper-dark text-ink-muted px-3 py-1.5 text-xs"
                           >
                             Cancel
                           </button>

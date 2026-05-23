@@ -32,7 +32,7 @@ export function StatsCard({ label, value, icon, trend }: StatsCardProps) {
       </div>
       <div className="mt-4">
         <p className="text-2xl font-display text-ink">{value}</p>
-        <p className="text-sm text-ink/50 mt-1 font-body">{label}</p>
+        <p className="text-sm text-ink-muted mt-1 font-body">{label}</p>
       </div>
     </div>
   )
