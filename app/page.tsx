@@ -4,7 +4,7 @@ import { Pip } from '@/components/ui/Pip'
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-paper">
+    <main id="main-content" className="min-h-screen bg-paper">
       {/* Hero */}
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">

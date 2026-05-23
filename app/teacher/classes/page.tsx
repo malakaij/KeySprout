@@ -74,8 +74,8 @@ export default function TeacherClassesPage() {
         <div className="kq-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-ink">Create New Class</h2>
-            <button onClick={() => setShowForm(false)} className="text-ink/40 hover:text-ink transition-colors">
-              <X className="w-5 h-5" />
+            <button onClick={() => setShowForm(false)} aria-label="Close form" className="text-ink/40 hover:text-ink transition-colors">
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
           <form onSubmit={handleCreate} className="space-y-3">

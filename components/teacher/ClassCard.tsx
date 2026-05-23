@@ -43,9 +43,9 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
         <button
           onClick={handleDelete}
           className="text-ink/30 hover:text-coral transition-colors p-1"
-          title={showConfirm ? 'Click again to confirm' : 'Delete class'}
+          aria-label={showConfirm ? 'Confirm delete class' : `Delete class ${classroom.name}`}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -57,9 +57,10 @@ export function ClassCard({ classroom, onDelete }: ClassCardProps) {
           </span>
           <button
             onClick={handleCopy}
+            aria-label={copied ? 'Copied!' : `Copy class code ${classroom.code}`}
             className="text-ink/40 hover:text-ink transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-mint" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-mint" aria-hidden="true" /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" />}
           </button>
         </div>
       </div>

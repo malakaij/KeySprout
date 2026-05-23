@@ -68,6 +68,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
               value={accessCode}
               onChange={(e) => { setAccessCode(e.target.value); setError('') }}
               placeholder="Access code"
+              aria-label="Teacher access code"
               required
               className="w-full bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2.5 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
             />
@@ -97,7 +98,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
       <TeacherSidebar />
-      <main className="flex-1 overflow-auto">
+      <main id="main-content" className="flex-1 overflow-auto">
         {children}
       </main>
     </div>

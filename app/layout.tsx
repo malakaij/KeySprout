@@ -17,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-body">
         <Providers>
+          <a href="#main-content" className="skip-link">Skip to main content</a>
           <Navbar />
           {children}
         </Providers>

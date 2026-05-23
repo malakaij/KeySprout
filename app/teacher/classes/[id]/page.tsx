@@ -96,8 +96,8 @@ export default function ClassDetailPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/teacher/classes" className="text-ink/40 hover:text-ink transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+        <Link href="/teacher/classes" aria-label="Back to classes" className="text-ink/40 hover:text-ink transition-colors">
+          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-display text-ink">{classroom.name}</h1>

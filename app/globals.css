@@ -57,6 +57,12 @@
   *, ::after, ::before, ::backdrop, ::file-selector-button {
     border-color: color-mix(in srgb, var(--color-ink) 20%, transparent);
   }
+
+  /* Global focus-visible ring — ensures every interactive element has a visible focus indicator */
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 2px;
+  }
 }
 
 html, body {
@@ -76,6 +82,18 @@ html, body {
   &:active {
     transform: translate(2px, 2px);
     box-shadow: 1px 1px 0 #1a1a2e;
+  }
+  /* Focus ring for keyboard navigation — matches ink shadow aesthetic */
+  &:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+}
+
+@utility skip-link {
+  @apply sr-only;
+  &:focus {
+    @apply not-sr-only fixed top-2 left-2 z-50 bg-ink text-paper px-4 py-2 rounded-xl font-body text-sm font-semibold;
   }
 }
 

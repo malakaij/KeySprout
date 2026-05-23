@@ -85,12 +85,20 @@ export function StudentTable({ students }: StudentTableProps) {
     }
   }
 
+  const colLabels: Record<SortKey, string> = {
+    name: 'student name',
+    lessonsCompleted: 'lessons completed',
+    averageWpm: 'average WPM',
+    averageAccuracy: 'average accuracy',
+  }
+
   const SortButton = ({ col }: { col: SortKey }) => (
     <button
       onClick={() => handleSort(col)}
+      aria-label={`Sort by ${colLabels[col]}${sortKey === col ? `, currently ${sortDir}ending` : ''}`}
       className="flex items-center gap-1 hover:text-ink transition-colors"
     >
-      <ArrowUpDown className="w-3 h-3" />
+      <ArrowUpDown className="w-3 h-3" aria-hidden="true" />
     </button>
   )
 
@@ -193,12 +201,13 @@ export function StudentTable({ students }: StudentTableProps) {
                             value={customName}
                             onChange={(e) => setCustomName(e.target.value)}
                             placeholder="Enter a name…"
+                            aria-label="New student username"
                             className="flex-1 bg-paper border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-body"
                           />
                           <button
                             onClick={fetchSuggestion}
                             disabled={loadingSuggestion}
-                            title="Suggest a random name"
+                            aria-label="Suggest a random name"
                             className="p-2 bg-paper-dark border-2 border-ink/20 hover:border-ink rounded-xl text-ink/60 hover:text-ink transition-colors disabled:opacity-50"
                           >
                             <RefreshCw className={cn('w-4 h-4', loadingSuggestion && 'animate-spin')} />

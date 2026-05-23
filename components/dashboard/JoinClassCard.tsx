@@ -48,6 +48,7 @@ export function JoinClassCard() {
             value={code}
             onChange={(e) => { setCode(e.target.value.toUpperCase()); setStatus('idle'); setMessage('') }}
             placeholder="Enter class code"
+            aria-label="Class code"
             maxLength={8}
             className="flex-1 bg-paper-dark border-2 border-ink/30 rounded-xl px-3 py-2 text-ink placeholder-ink/30 focus:outline-hidden focus:border-ink text-sm font-mono tracking-wider uppercase font-body"
           />
