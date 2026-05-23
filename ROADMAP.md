@@ -1,6 +1,6 @@
 # Roadmap
 
-KeySprout's working plan. For project identity, constraints, and architecture, see [`CLAUDE.md`](CLAUDE.md) and [`CODEBASE.md`](CODEBASE.md). For the full backlog with acceptance criteria, see [GitHub Issues](https://github.com/malakaij/KeySprout/issues).
+KeySprout's working plan. For project identity, constraints, and architecture, see [`CLAUDE.md`](CLAUDE.md) and [`CODEBASE.md`](CODEBASE.md). For the full backlog, browse [GitHub Epics](https://github.com/malakaij/KeySprout/labels/epic) — each epic links to its sub-issues with live progress tracking.
 
 ---
 
@@ -8,20 +8,13 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 Production-quality alpha deployed on Vercel. Core loop works. Infrastructure recently hardened — Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR. Sprint 5 (database migrations) is the most recent merge.
 
-**Not yet ready for real classrooms.** Three security blockers must land first: rate limiting ([#42](https://github.com/malakaij/KeySprout/issues/42)), CSRF tokens ([#43](https://github.com/malakaij/KeySprout/issues/43)), hashed admin password ([#45](https://github.com/malakaij/KeySprout/issues/45)).
+**Not yet ready for real classrooms.** The [security hardening epic](https://github.com/malakaij/KeySprout/issues/104) must land first — rate limiting, CSRF tokens, and a hashed admin password are the blockers.
 
 ---
 
-## Now — Sprint 6: Accessibility audit
+## Now — Sprint 6
 
-Every student deserves a usable experience. Close the gap between "works with a keyboard" and "actually accessible."
-
-- [#30](https://github.com/malakaij/KeySprout/issues/30) Run axe-core audit across all pages **— high**
-- [#31](https://github.com/malakaij/KeySprout/issues/31) Verify visible focus styles on all interactive elements **— high**
-- [#32](https://github.com/malakaij/KeySprout/issues/32) Add ARIA labels to icon-only buttons **— high**
-- [#33](https://github.com/malakaij/KeySprout/issues/33) Test the typing interface with VoiceOver and NVDA **— high**
-- [#34](https://github.com/malakaij/KeySprout/issues/34) High-contrast mode toggle **— medium**
-- [#35](https://github.com/malakaij/KeySprout/issues/35) Document keyboard shortcuts **— medium**
+**[Epic #102: Accessibility audit](https://github.com/malakaij/KeySprout/issues/102)** — close the gap between "works with a keyboard" and "actually accessible." 6 sub-issues covering axe-core audit, focus styles, ARIA labels, screen-reader testing, high-contrast mode, and keyboard-shortcut docs.
 
 **Done when:** axe-core reports zero serious issues; a screen reader user can complete a full lesson.
 
@@ -29,31 +22,35 @@ Every student deserves a usable experience. Close the gap between "works with a 
 
 ## Next — Sprints 7 and 8
 
-**Sprint 7 — Physical keyboard detection.** Touch-only students currently waste their time on a virtual keyboard. Detect and block lessons until a real keypress is registered. Issues [#36–#41](https://github.com/malakaij/KeySprout/labels/device-detection).
+**[Epic #103: Physical keyboard detection](https://github.com/malakaij/KeySprout/issues/103)** (Sprint 7). Touch-only students currently waste their time on a virtual keyboard. Detect and block lessons until a real keypress is registered.
 
-**Sprint 8 — Security hardening.** The three classroom-deployment blockers plus dependency audit and threat-model docs. Issues [#42–#47](https://github.com/malakaij/KeySprout/labels/security).
+**[Epic #104: Security hardening](https://github.com/malakaij/KeySprout/issues/104)** (Sprint 8). Rate limiting, CSRF tokens, hashed admin password, dependency audit, threat-model docs.
 
-After Sprint 8 the app is deployable to real classrooms.
+After Epic #104 the app is deployable to real classrooms.
 
 ---
 
 ## Later
 
-The full backlog is in GitHub Issues, browseable by [`priority`](https://github.com/malakaij/KeySprout/labels?q=priority) and [category](https://github.com/malakaij/KeySprout/labels) labels. Themes:
+Each future sprint maps to one epic. Open any epic to see its sub-issues, dependencies, and live progress.
 
-- **Teacher tools** — CSV/PDF exports, bulk actions, custom lessons
-- **Student engagement** — achievements, badges, Pip reactions
-- **Curriculum expansion** — numbers, symbols, Spanish, alternate layouts
-- **Games** — Trick Words, Story Builder, classroom leaderboards
-- **PWA** — offline lessons, background sync, install prompt
-- **i18n** — string extraction, language switcher, Spanish curriculum
-- **Parent portal** — magic-link accounts, pairing flow, COPPA review
-- **Multiplayer** — real-time races, leaderboards, replays
-- **Community** — curriculum sharing, fork/remix, moderation
-- **Stretch** — AI remediation, voice feedback, SSO, white-label, dyslexia font
+| Epic | Theme |
+|------|-------|
+| [#105](https://github.com/malakaij/KeySprout/issues/105) | Teacher data export — CSV/PDF, bulk actions, weekly digests |
+| [#106](https://github.com/malakaij/KeySprout/issues/106) | Student engagement & achievements |
+| [#107](https://github.com/malakaij/KeySprout/issues/107) | Custom lessons (teacher-authored) |
+| [#108](https://github.com/malakaij/KeySprout/issues/108) | Curriculum: numbers & symbols |
+| [#109](https://github.com/malakaij/KeySprout/issues/109) | Games expansion (Trick Words, Story Builder, leaderboard) |
+| [#110](https://github.com/malakaij/KeySprout/issues/110) | Progressive Web App |
+| [#111](https://github.com/malakaij/KeySprout/issues/111) | Internationalisation (Spanish first) |
+| [#112](https://github.com/malakaij/KeySprout/issues/112) | Alternate keyboard layouts (Dvorak, Colemak) |
+| [#113](https://github.com/malakaij/KeySprout/issues/113) | Parent portal |
+| [#114](https://github.com/malakaij/KeySprout/issues/114) | Multiplayer & challenges |
+| [#115](https://github.com/malakaij/KeySprout/issues/115) | Community curriculum sharing |
+| [#116](https://github.com/malakaij/KeySprout/issues/116) | Stretch / someday — AI, SSO, dyslexia font, etc. |
 
 ---
 
 ## How this roadmap is maintained
 
-Updated before each PR to `main`. The two sections that drift fastest — "Where we are" and "Now" — are the ones to keep current. The full backlog detail lives in issues; this file just orients.
+Updated before each PR to `main`. The two sections that drift fastest — "Where we are" and "Now" — are the ones to keep current. Per-issue detail lives on the epics; this file just orients.
