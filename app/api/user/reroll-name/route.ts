@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { generateRandomDisplayName } from '@/lib/name-generator'
+import { verifySameOrigin } from '@/lib/csrf'
 
 const DAILY_LIMIT = 3
 
@@ -15,7 +16,10 @@ function isToday(date: Date): boolean {
   )
 }
 
-export async function POST() {
+export async function POST(req: Request) {
+  const csrfError = verifySameOrigin(req)
+  if (csrfError) return csrfError
+
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

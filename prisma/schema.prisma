@@ -181,3 +181,11 @@ model ClassMember {
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([classroomId, userId])
 }
+
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  windowEnd DateTime
+
+  @@index([windowEnd])
+}

@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
 import { cookies } from 'next/headers'
 
 export const ADMIN_COOKIE = 'ks_admin'
@@ -17,8 +17,7 @@ export function createAdminToken(): string {
 
 /**
  * Validates a token by checking both its HMAC signature and its age.
- * Checking age before the HMAC would leak timing info about valid-but-expired tokens,
- * so age is checked first only as a fast-reject; the HMAC check always runs.
+ * Uses timingSafeEqual for the HMAC comparison to prevent timing side-channels.
  */
 export function verifyAdminToken(token: string): boolean {
   const dot = token.lastIndexOf('.')
@@ -26,10 +25,14 @@ export function verifyAdminToken(token: string): boolean {
   const ts = token.slice(0, dot)
   const sig = token.slice(dot + 1)
   if (Date.now() - parseInt(ts) > MAX_AGE_MS) return false
-  const expected = createHmac('sha256', secret()).update(`admin:${ts}`).digest('hex')
-  return sig === expected
+  const expected = createHmac('sha256', secret()).update(`admin:${ts}`).digest()
+  // Pad attacker-supplied sig to the expected buffer length before comparing.
+  const actual = Buffer.alloc(expected.length)
+  Buffer.from(sig, 'hex').copy(actual, 0, 0, expected.length)
+  return timingSafeEqual(actual, expected)
 }
 
+/** Returns true if the current request carries a valid, unexpired super-admin token. */
 export async function isAdminAuthenticated(): Promise<boolean> {
   const token = (await cookies()).get(ADMIN_COOKIE)?.value
   return !!token && verifyAdminToken(token)

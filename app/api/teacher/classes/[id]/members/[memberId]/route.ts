@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import { verifySameOrigin } from '@/lib/csrf'
 
 const bodySchema = z.object({
   action: z.enum(['approve', 'reject']),
@@ -13,6 +14,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; memberId: string }> }
 ) {
   const { id, memberId } = await params
+  const csrfError = verifySameOrigin(req)
+  if (csrfError) return csrfError
+
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

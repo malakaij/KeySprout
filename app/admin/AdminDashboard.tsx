@@ -43,7 +43,7 @@ export function AdminDashboard({ isSeeded, stats }: Props) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-coral" />
-            <h1 className="text-xl font-display text-ink">KeySprout Admin</h1>
+            <h1 className="text-xl font-display text-ink">KeySprout Super-Admin</h1>
           </div>
           <button
             onClick={handleLogout}
