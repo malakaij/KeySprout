@@ -27,9 +27,11 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 5:** Production-quality alpha. Core loop fully functional and deployed on Vercel. Infrastructure recently hardened — Prisma migrations now version-controlled, Next.js 15 + React 19 + ESLint 9 + Tailwind v4 all upgraded, CI on every PR.
 
-**As of Sprint 8 (current, PR open):** Security hardening complete. Super-admin renamed from Admin (`SUPER_ADMIN_USERNAME`/`SUPER_ADMIN_PASSWORD` env vars, bcrypt-hashed password, `timingSafeEqual` token comparison). CSRF Origin-header checking on all state-changing routes. Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login. Threat model documented in `CODEBASE.md`. COPPA compliance statement in `SECURITY.md`. `npm audit` findings documented as accepted risks.
+**As of Sprint 8:** Security hardening merged. Super-admin renamed from Admin (`SUPER_ADMIN_USERNAME`/`SUPER_ADMIN_PASSWORD` env vars, bcrypt-hashed password, `timingSafeEqual` token comparison). CSRF Origin-header checking on all state-changing routes. Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login. Threat model documented in `CODEBASE.md`. COPPA compliance statement in `SECURITY.md`. `npm audit` findings documented as accepted risks.
 
-**Not yet ready for real classrooms.** Remaining blockers: #132 (admin rename fully landed but future Admin role for teacher management not yet built), CSP headers (deferred post-alpha).
+**As of Sprint 9 (current, PR open):** Student redesign Epic begun. Sidebar refactor: both `StudentSidebar` and `TeacherSidebar` now collapsible (224px ↔ 72px icon rail, 180ms transition, `PanelLeft` toggle). Student sidebar adds Courses (`/courses`), Games, Settings (`/settings`) nav items with per-item accent colors. Placeholder pages added for `/courses` and `/settings`. `DisplaySettings` removed from sidebar footer (moves to `/settings` in Sprint 13).
+
+**Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 
 ---
 

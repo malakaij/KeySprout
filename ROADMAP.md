@@ -6,33 +6,38 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 ## Where we are
 
-Production-quality alpha deployed on Vercel. Sprints 1–8 are merged or in review.
+Production-quality alpha deployed on Vercel. Sprints 1–8 merged. Student redesign epic in progress.
 
 **Completed sprints:**
 - Sprint 5: Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR
 - Sprint 6 ([Epic #102](https://github.com/malakaij/KeySprout/issues/102)): Accessibility audit — axe-core, focus styles, ARIA labels, high-contrast mode, keyboard-shortcut docs
 - Sprint 7 ([Epic #103](https://github.com/malakaij/KeySprout/issues/103)): Physical keyboard detection — `looksLikeNoKeyboard()` heuristic, `KeyboardGuard` blocking UI, auto-dismiss on trusted keypress, localStorage override
+- Sprint 8 ([Epic #104](https://github.com/malakaij/KeySprout/issues/104)): Security hardening — Super-Admin rename, bcrypt password, CSRF Origin-header check, Postgres rate limiting, threat model, COPPA statement
 
-**Not yet ready for real classrooms.** Sprint 8 (security hardening) is in review as PR #133; it must merge first.
-
----
-
-## Now — Sprint 8
-
-**[Epic #104: Security hardening](https://github.com/malakaij/KeySprout/issues/104)** — PR #133 in review.
-
-- Super-Admin renamed from Admin; bcrypt-hashed password (`SUPER_ADMIN_PASSWORD`), `timingSafeEqual` token comparison
-- CSRF: `verifySameOrigin()` Origin-header check on all state-changing routes
-- Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login
-- Threat model in `CODEBASE.md`; COPPA compliance statement in `SECURITY.md`; `npm audit` findings documented
-
-**Done when:** PR #133 merges and Vercel deploy is green.
+**The app is now deployable to real classrooms** (pending CSP headers, deferred post-alpha).
 
 ---
 
-## Next
+## Now — Sprint 9 (Student Redesign, step 1 of 6)
 
-**After Sprint 8 the app is deployable to real classrooms.**
+**Student experience redesign** based on design handoff — six sprints total.
+
+**Sprint 9 (current, PR open):** Sidebar refactor.
+- Both `StudentSidebar` and `TeacherSidebar` now collapsible (224px ↔ 72px icon rail, 180ms transition)
+- Student sidebar adds Courses, Games, Settings nav items with per-item accent colors
+- Placeholder pages for `/courses` and `/settings`
+
+---
+
+## Next — Sprints 10–14
+
+| Sprint | Work |
+|--------|------|
+| 10 | Courses data model: `CourseEnrollment`, `icon`/`subtitle`/`accent` on `Course`; seed Alice in Wonderland course (chapters → sections, paragraphs → lessons); `/courses` page |
+| 11 | `/lessons` rebuild: section accordion + lesson-dot grid + detail panel; course switcher |
+| 12 | `/dashboard` cleanup: remove Quest Map, add Up Next card + weekly streak |
+| 13 | `/settings` page: nickname reroll, class-code join, display preferences (font + contrast) |
+| 14 | Lesson runner redesign: borderless text area, line clipping, font-size selector, SVG keyboard + hand overlay |
 
 ---
 
