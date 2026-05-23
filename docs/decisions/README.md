@@ -24,3 +24,4 @@ When a decision is reversed, mark the old ADR as superseded and write a new one.
 | [0005](0005-eslint-9-not-10.md) | Stay on ESLint 9 until `eslint-config-next` supports 10 | Accepted |
 | [0006](0006-no-third-party-analytics.md) | No third-party analytics SDKs | Accepted |
 | [0007](0007-admin-auth-hmac-cookie.md) | Admin auth uses HMAC cookie, not NextAuth | Accepted |
+| [0008](0008-student-names-browser-only.md) | Student names stored in teacher's browser only, never on the server | Accepted |
