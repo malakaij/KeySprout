@@ -14,6 +14,7 @@ model User {
   name                String?
   image               String?
   role                Role      @default(STUDENT)
+  passwordHash        String?
   rerollsToday        Int       @default(0)
   lastRerollDate      DateTime?
   nameChangeRequested Boolean   @default(false)
@@ -29,6 +30,7 @@ model User {
   classes         Classroom[]        @relation("TeacherClasses")
   courses         Course[]           @relation("CourseAuthor")
   enrollments     CourseEnrollment[]
+  loginTokens     StudentLoginToken[]
 }
 
 enum Role {
@@ -180,6 +182,19 @@ model Classroom {
   teacher     User          @relation("TeacherClasses", fields: [teacherId], references: [id])
   members     ClassMember[]
   courses     ClassroomCourse[]
+  loginTokens StudentLoginToken[]
+}
+
+model StudentLoginToken {
+  id          String    @id @default(cuid())
+  userId      String
+  classroomId String
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
 }
 
 enum MemberStatus {
