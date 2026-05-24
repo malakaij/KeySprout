@@ -24,15 +24,21 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 
 **Completed sprints (continued):**
 - Sprint 13: `/settings` page — Username (reroll/request), Class (join by code), Display (font picker + high-contrast, always-open inline). `DisplaySettings` `alwaysOpen` prop added.
+- Sprint 14: Lesson runner redesigned — `TypingArea` borderless + 3-line clip; SVG keyboard + hand overlay with per-finger highlighting; S/M/L font-size toggle (localStorage-persisted).
 
 ---
 
-## Now — Sprint 14 (Student Redesign, step 6 of 6)
+## Now — Post student-redesign epic
 
-**Up next:** Lesson runner redesign.
-- Borderless text area, line clipping
-- Font-size selector
-- SVG keyboard + hand overlay
+The student-redesign epic (Sprints 9–14) is complete. All student-facing pages rebuilt.
+
+**Candidate next work:**
+
+| Theme | Notes |
+|-------|-------|
+| CSP headers | Last pre-launch blocker |
+| Teacher data export | CSV/PDF, bulk actions ([#105](https://github.com/malakaij/KeySprout/issues/105)) |
+| Student credentials | Username/password, QR login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
 
 ---
 

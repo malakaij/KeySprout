@@ -37,7 +37,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 12:** `/dashboard` cleaned up. Quest Map removed (didn't scale to 554-lesson Alice course). New Up Next card: accent-colored header band with course icon and name, lesson title + content preview, direct Start button. Stats grid, weekly streak dots, recent activity, and practice games retained. Games moved inline (2-col grid alongside recent activity). NameCard and JoinClassCard at bottom.
 
-**As of Sprint 13 (current):** `/settings` page live. Three sections: Username (NameCard — reroll / teacher-mediated request), Class (JoinClassCard — join by code), Display (DisplaySettings always-open — high-contrast toggle, reading font picker, keyboard override clear). `DisplaySettings` gained `alwaysOpen` prop so it renders inline without the sidebar collapse toggle.
+**As of Sprint 13:** `/settings` page live. Three sections: Username (NameCard — reroll / teacher-mediated request), Class (JoinClassCard — join by code), Display (DisplaySettings always-open — high-contrast toggle, reading font picker, keyboard override clear). `DisplaySettings` gained `alwaysOpen` prop so it renders inline without the sidebar collapse toggle.
+
+**As of Sprint 14 (current):** Lesson runner redesigned. `TypingArea`: borderless (soft tinted bg, no heavy border), line clipping (3 lines at a time via word-wrap, advances with cursor), font-size prop (`sm`/`md`/`lg`). `KeyboardHint`: full SVG keyboard layout + two SVG hand diagrams with per-finger highlighting — shows which hand and which finger (index/middle/ring/pinky/thumb) to press next. `LessonClient`: S/M/L font-size toggle (persisted to localStorage via `useTypingFontSize` hook), state shared with `TypingArea`. `hooks/useTypingFontSize.ts` added.
 
 **Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 
