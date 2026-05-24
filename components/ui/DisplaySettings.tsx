@@ -9,8 +9,13 @@ import { clearKeyboardOverride, getKeyboardOverride } from '@/lib/keyboard-detec
 
 const SAMPLE = 'The quick fox jumps.'
 
+interface DisplaySettingsProps {
+  /** When true, renders content directly without the collapse toggle — for use on the /settings page. */
+  alwaysOpen?: boolean
+}
+
 /** Reading and display preferences panel — font choice, high-contrast toggle, and device overrides. */
-export function DisplaySettings() {
+export function DisplaySettings({ alwaysOpen }: DisplaySettingsProps) {
   const { font, setFont } = useDyslexiaFont()
   const { highContrast, setHighContrast } = useHighContrast()
   const [open, setOpen] = useState(false)
@@ -21,18 +26,20 @@ export function DisplaySettings() {
 
   return (
     <div>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-controls="display-settings-panel"
-        className="flex items-center gap-2 w-full px-2 py-1.5 rounded-xl text-ink-muted hover:text-ink hover:bg-paper-dark transition-colors text-xs font-semibold font-body"
-      >
-        <Settings2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-        <span>Display Settings</span>
-        <span className="ml-auto text-ink-muted" aria-hidden="true">{open ? '▲' : '▼'}</span>
-      </button>
+      {!alwaysOpen && (
+        <button
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls="display-settings-panel"
+          className="flex items-center gap-2 w-full px-2 py-1.5 rounded-xl text-ink-muted hover:text-ink hover:bg-paper-dark transition-colors text-xs font-semibold font-body"
+        >
+          <Settings2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+          <span>Display Settings</span>
+          <span className="ml-auto text-ink-muted" aria-hidden="true">{open ? '▲' : '▼'}</span>
+        </button>
+      )}
 
-      {open && (
+      {(alwaysOpen || open) && (
         <div id="display-settings-panel" className="mt-2 space-y-4 px-1">
 
           {/* High contrast toggle */}

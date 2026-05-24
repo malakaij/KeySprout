@@ -35,7 +35,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 11:** `/lessons` page rebuilt. Server component now accepts `?course=id` and fetches all enrolled courses for the switcher. Client replaced with: scrollable course-switcher pill tabs (only shown when enrolled in 2+ courses); collapsible section accordions (auto-opens the section with the next unstarted lesson); lesson-dot grid (14px dots colour-coded by state: passed / attempted / unlocked / locked); inline detail panel on dot click (title, content preview, best stats, goal line, Start/Practice-again button).
 
-**As of Sprint 12 (current):** `/dashboard` cleaned up. Quest Map removed (didn't scale to 554-lesson Alice course). New Up Next card: accent-colored header band with course icon and name, lesson title + content preview, direct Start button. Stats grid, weekly streak dots, recent activity, and practice games retained. Games moved inline (2-col grid alongside recent activity). NameCard and JoinClassCard at bottom.
+**As of Sprint 12:** `/dashboard` cleaned up. Quest Map removed (didn't scale to 554-lesson Alice course). New Up Next card: accent-colored header band with course icon and name, lesson title + content preview, direct Start button. Stats grid, weekly streak dots, recent activity, and practice games retained. Games moved inline (2-col grid alongside recent activity). NameCard and JoinClassCard at bottom.
+
+**As of Sprint 13 (current):** `/settings` page live. Three sections: Username (NameCard — reroll / teacher-mediated request), Class (JoinClassCard — join by code), Display (DisplaySettings always-open — high-contrast toggle, reading font picker, keyboard override clear). `DisplaySettings` gained `alwaysOpen` prop so it renders inline without the sidebar collapse toggle.
 
 **Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 
