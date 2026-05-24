@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronDown, Check, Lock } from 'lucide-react'
@@ -14,6 +14,19 @@ export interface CourseTab {
   subtitle: string | null
   icon: string
   accent: string
+  totalLessons: number
+  passedLessons: number
+  /** ISO date string of last lesson activity, or null. */
+  lastLessonAt: string | null
+}
+
+function relativeTime(iso: string): string {
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
+  if (days === 0) return 'today'
+  if (days === 1) return 'yesterday'
+  if (days < 7) return `${days}d ago`
+  if (days < 30) return `${Math.floor(days / 7)}w ago`
+  return `${Math.floor(days / 30)}mo ago`
 }
 
 export interface LessonDot {
@@ -341,8 +354,18 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
   const [openSectionId, setOpenSectionId] = useState<string | null>(() =>
     findAutoOpenSectionId(sections)
   )
-
   const [selectedDot, setSelectedDot] = useState<{ sectionId: string; lessonId: string } | null>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const pickerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!pickerOpen) return
+    function onOutsideClick(e: MouseEvent) {
+      if (!pickerRef.current?.contains(e.target as Node)) setPickerOpen(false)
+    }
+    document.addEventListener('mousedown', onOutsideClick)
+    return () => document.removeEventListener('mousedown', onOutsideClick)
+  }, [pickerOpen])
 
   // Re-compute auto-open when sections change (course switch)
   useEffect(() => {
@@ -398,30 +421,68 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
         />
       )}
 
-      {/* Course switcher */}
-      {courses.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Courses">
-          {courses.map((course) => {
-            const isActive = course.id === activeCourseId
-            return (
-              <button
-                key={course.id}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => {
-                  if (!isActive) router.push(`/lessons?course=${course.id}`)
-                }}
-                className={`kq-btn flex items-center gap-2 px-4 py-2 text-sm font-display shrink-0 ${
-                  isActive ? `${accentBg(activeCourseAccent)} text-ink` : 'bg-paper-dark text-ink'
-                }`}
-              >
-                <span aria-hidden="true">{course.icon}</span>
-                {course.title}
-              </button>
-            )
-          })}
-        </div>
-      )}
+      {/* Course switcher — dropdown button (always shown so students know which course they're in) */}
+      <div ref={pickerRef} style={{ position: 'relative', alignSelf: 'flex-start' }}>
+        <button
+          onClick={() => setPickerOpen((p) => !p)}
+          className={`kq-btn flex items-center gap-2 px-4 py-2 text-sm font-display ${accentBg(activeCourseAccent)} text-ink`}
+          aria-haspopup="listbox"
+          aria-expanded={pickerOpen}
+        >
+          <span aria-hidden="true">{activeCourse?.icon}</span>
+          {activeCourse?.title}
+          <ChevronDown
+            className="w-4 h-4 transition-transform duration-150"
+            style={{ transform: pickerOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          />
+        </button>
+
+        {pickerOpen && (
+          <div
+            role="listbox"
+            aria-label="Select course"
+            style={{
+              position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 30,
+              minWidth: 300, background: 'var(--color-paper)',
+              border: '3px solid #1a1a2e', borderRadius: 14,
+              boxShadow: '4px 4px 0 #1a1a2e', overflow: 'hidden',
+            }}
+          >
+            {courses.map((course, i) => {
+              const isActive = course.id === activeCourseId
+              return (
+                <button
+                  key={course.id}
+                  role="option"
+                  aria-selected={isActive}
+                  onClick={() => {
+                    setPickerOpen(false)
+                    if (!isActive) router.push(`/lessons?course=${course.id}`)
+                  }}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px 16px', textAlign: 'left', cursor: 'pointer',
+                    background: isActive ? 'rgba(77,212,172,0.12)' : 'transparent',
+                    borderBottom: i < courses.length - 1 ? '1px solid rgba(26,26,46,0.08)' : 'none',
+                  }}
+                >
+                  <span style={{ fontSize: 22, flexShrink: 0 }}>{course.icon}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontFamily: 'Fredoka One, cursive', fontSize: 14, color: '#1a1a2e', margin: 0 }}>
+                      {course.title}
+                    </p>
+                    <p style={{ fontSize: 11, color: 'var(--color-ink-muted)', fontFamily: 'Nunito, sans-serif', margin: 0 }}>
+                      {course.passedLessons}/{course.totalLessons} lessons
+                      {course.lastLessonAt ? ` · last ${relativeTime(course.lastLessonAt)}` : ''}
+                    </p>
+                  </div>
+                  {isActive && <Check size={15} style={{ color: 'var(--color-mint)', flexShrink: 0 }} />}
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Course subtitle */}
       {activeCourse?.subtitle && (
