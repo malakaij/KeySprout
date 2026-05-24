@@ -22,20 +22,27 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 
 ---
 
-## Now — Sprint 13 (Student Redesign, step 5 of 6)
-
-**Up next:** `/settings` page.
-- Nickname reroll (with daily limit display)
-- Class-code join
-- Display preferences (font size, contrast)
+**Completed sprints (continued):**
+- Sprint 13: `/settings` page — Username (reroll/request), Class (join by code), Display (font picker + high-contrast, always-open inline). `DisplaySettings` `alwaysOpen` prop added.
 
 ---
 
-## Next — Sprint 14
+## Now — Sprint 14 (Student Redesign, step 6 of 6)
 
-| Sprint | Work |
-|--------|------|
-| 14 | Lesson runner redesign: borderless text area, line clipping, font-size selector, SVG keyboard + hand overlay |
+**Up next:** Lesson runner redesign.
+- Borderless text area, line clipping
+- Font-size selector
+- SVG keyboard + hand overlay
+
+---
+
+## Next
+
+| Theme | Notes |
+|-------|-------|
+| Teacher data export | CSV/PDF, bulk actions, weekly digests ([#105](https://github.com/malakaij/KeySprout/issues/105)) |
+| Student credentials | Username/password auth, QR code login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
+| CSP headers | Final blocker before real-classroom launch |
 
 ---
 
