@@ -6,12 +6,20 @@ import { StatsCard } from '@/components/dashboard/StatsCard'
 import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
 import { NameCard } from '@/components/dashboard/NameCard'
 import { Pip } from '@/components/ui/Pip'
-import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2, CheckCircle, Lock } from 'lucide-react'
+import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
-import { sectionColor } from '@/lib/section-colors'
 
 const DAILY_LIMIT = 3
+
+const ACCENT_BG: Record<string, string> = {
+  mint: 'bg-mint', sky: 'bg-sky', sunny: 'bg-sunny',
+  grape: 'bg-grape', coral: 'bg-coral', berry: 'bg-berry',
+}
+const ACCENT_TEXT: Record<string, string> = {
+  mint: 'text-ink', sky: 'text-ink', sunny: 'text-ink',
+  grape: 'text-white', coral: 'text-white', berry: 'text-white',
+}
 
 function isToday(date: Date): boolean {
   const now = new Date()
@@ -24,15 +32,13 @@ function isToday(date: Date): boolean {
 
 function getWeekDots(attempts: { completedAt: Date }[]): boolean[] {
   const today = new Date()
-  const dayOfWeek = today.getDay() // 0=Sun
-  const dots: boolean[] = []
-  for (let i = 0; i < 7; i++) {
+  const dayOfWeek = today.getDay()
+  return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(today)
     d.setDate(today.getDate() - dayOfWeek + i)
     const dateStr = d.toDateString()
-    dots.push(attempts.some((a) => a.completedAt.toDateString() === dateStr))
-  }
-  return dots
+    return attempts.some((a) => a.completedAt.toDateString() === dateStr)
+  })
 }
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -43,16 +49,38 @@ export default async function DashboardPage() {
 
   const userId = session.user.id
 
-  const [attempts, lessons, userData, approvedMembership] = await Promise.all([
+  const [attempts, enrollments, userData, approvedMembership] = await Promise.all([
     prisma.lessonAttempt.findMany({
       where: { userId },
-      include: { lesson: { select: { title: true, minWpm: true, minAccuracy: true, section: { select: { title: true } } } } },
+      include: {
+        lesson: {
+          select: {
+            title: true,
+            minWpm: true,
+            minAccuracy: true,
+            section: { select: { title: true } },
+          },
+        },
+      },
       orderBy: { completedAt: 'desc' },
     }),
-    prisma.lesson.findMany({
-      where: { section: { course: { isPublic: true } } },
-      include: { section: { select: { id: true, title: true, order: true } } },
-      orderBy: [{ section: { order: 'asc' } }, { order: 'asc' }],
+    prisma.courseEnrollment.findMany({
+      where: { userId },
+      orderBy: [{ lastLessonAt: { sort: 'desc', nulls: 'last' } }],
+      include: {
+        course: {
+          select: {
+            id: true,
+            title: true,
+            icon: true,
+            accent: true,
+            sections: {
+              orderBy: { order: 'asc' },
+              include: { lessons: { orderBy: { order: 'asc' } } },
+            },
+          },
+        },
+      },
     }),
     prisma.user.findUnique({
       where: { id: userId },
@@ -75,16 +103,15 @@ export default async function DashboardPage() {
     ? attempts.reduce((s, a) => s + a.accuracy, 0) / attempts.length
     : 0
 
-  const passedLessonIdsArr = attempts
-    .filter((a) => {
-      const wpmOk = !a.lesson.minWpm || a.wpm >= a.lesson.minWpm
-      const accOk = !a.lesson.minAccuracy || a.accuracy >= a.lesson.minAccuracy
-      return wpmOk && accOk
-    })
-    .map((a) => a.lessonId)
-  const passedLessonIds = new Set(passedLessonIdsArr)
-
-  const attemptedLessonIds = new Set(attempts.map((a) => a.lessonId))
+  const passedLessonIds = new Set(
+    attempts
+      .filter((a) => {
+        const wpmOk = !a.lesson.minWpm || a.wpm >= a.lesson.minWpm
+        const accOk = !a.lesson.minAccuracy || a.accuracy >= a.lesson.minAccuracy
+        return wpmOk && accOk
+      })
+      .map((a) => a.lessonId)
+  )
 
   const streak = (() => {
     if (attempts.length === 0) return 0
@@ -94,41 +121,54 @@ export default async function DashboardPage() {
     let current = new Date()
     for (const d of dates) {
       const diff = differenceInDays(current, new Date(d))
-      if (diff <= 1) {
-        count++
-        current = new Date(d)
-      } else {
-        break
-      }
+      if (diff <= 1) { count++; current = new Date(d) }
+      else break
     }
     return count
   })()
 
   const weekDots = getWeekDots(attempts)
-
-  const nextLessons = lessons
-    .filter((l) => !passedLessonIds.has(l.id))
-    .slice(0, 3)
-
   const recentAttempts = attempts.slice(0, 5)
 
-  // Group lessons by section for quest map
-  const sectionMap = new Map<string, { id: string; title: string; order: number; lessons: typeof lessons }>()
-  for (const lesson of lessons) {
-    const sec = lesson.section
-    if (!sectionMap.has(sec.id)) {
-      sectionMap.set(sec.id, { id: sec.id, title: sec.title, order: sec.order, lessons: [] })
-    }
-    sectionMap.get(sec.id)!.lessons.push(lesson)
+  // Find the next lesson from the most recently active enrolled course
+  type UpNext = {
+    lessonId: string
+    lessonTitle: string
+    lessonContent: string | null
+    sectionTitle: string
+    courseTitle: string
+    courseAccent: string
+    courseIcon: string
   }
-  const sections = Array.from(sectionMap.values()).sort((a, b) => a.order - b.order)
+  let upNext: UpNext | null = null
 
-  // Find the first non-passed lesson index (for "current")
-  const firstUnpassedId = lessons.find((l) => !passedLessonIds.has(l.id))?.id
+  for (const enrollment of enrollments) {
+    const course = enrollment.course
+    let prevPassed = true
+    outer: for (const section of course.sections) {
+      for (const lesson of section.lessons) {
+        if (!prevPassed) break outer
+        if (!passedLessonIds.has(lesson.id)) {
+          upNext = {
+            lessonId: lesson.id,
+            lessonTitle: lesson.title,
+            lessonContent: lesson.content,
+            sectionTitle: section.title,
+            courseTitle: course.title,
+            courseAccent: course.accent,
+            courseIcon: course.icon,
+          }
+          break outer
+        }
+        prevPassed = passedLessonIds.has(lesson.id)
+      }
+    }
+    if (upNext) break
+  }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8">
-      {/* Header with Pip */}
+    <div className="p-6 max-w-5xl mx-auto space-y-6">
+      {/* Header */}
       <div className="flex items-center gap-4">
         <Pip size="md" variant="wave" className="shrink-0" />
         <div>
@@ -139,12 +179,61 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Streak Tracker */}
+      {/* Up Next */}
+      {upNext ? (
+        <div className="kq-card overflow-hidden">
+          <div className={`px-5 py-3 flex items-center gap-2 border-b-[3px] border-ink ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'}`}>
+            <span aria-hidden="true">{upNext.courseIcon}</span>
+            <span className={`text-sm font-display ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}>
+              Up Next · {upNext.courseTitle}
+            </span>
+          </div>
+          <div className="p-5 flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs text-ink-muted font-body mb-1">{upNext.sectionTitle}</p>
+              <h2 className="font-display text-lg text-ink leading-snug">{upNext.lessonTitle}</h2>
+              {upNext.lessonContent && (
+                <p className="text-sm font-body text-ink-muted mt-1.5 italic line-clamp-2">
+                  {upNext.lessonContent.slice(0, 120)}{upNext.lessonContent.length > 120 ? '…' : ''}
+                </p>
+              )}
+            </div>
+            <Link
+              href={`/lessons/${upNext.lessonId}`}
+              className={`shrink-0 kq-btn px-5 py-2.5 font-display text-sm flex items-center gap-2 ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'} ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}
+            >
+              Start <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      ) : enrollments.length === 0 ? (
+        <div className="kq-card p-5 flex items-center justify-between gap-4">
+          <p className="font-body text-ink-muted">Pick a course to start your typing journey.</p>
+          <Link href="/courses" className="kq-btn bg-mint text-ink px-4 py-2 text-sm font-display shrink-0">
+            Browse Courses
+          </Link>
+        </div>
+      ) : (
+        <div className="kq-card p-5 text-center">
+          <p className="font-display text-ink text-lg">🎉 All caught up!</p>
+          <p className="text-ink-muted font-body text-sm mt-1">You&apos;ve completed every lesson in your courses.</p>
+        </div>
+      )}
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard label="Lessons Passed" value={passedLessonIds.size} icon={<BookOpen className="w-5 h-5 text-mint" />} />
+        <StatsCard label="Average WPM" value={avgWpm} icon={<Zap className="w-5 h-5 text-sunny" />} />
+        <StatsCard label="Avg Accuracy" value={`${Math.round(avgAccuracy * 100)}%`} icon={<Target className="w-5 h-5 text-sky" />} />
+        <StatsCard label="Day Streak" value={streak} icon={<Flame className="w-5 h-5 text-coral" />} />
+      </div>
+
+      {/* Weekly Streak */}
       <div className="kq-card p-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display text-lg text-ink">Weekly Streak</h2>
+          <h2 className="font-display text-lg text-ink">This Week</h2>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🔥</span>
+            <span className="text-2xl" aria-hidden="true">🔥</span>
             <span className="font-display text-2xl text-coral">{streak}</span>
             <span className="text-ink-muted text-sm font-body">day{streak !== 1 ? 's' : ''}</span>
           </div>
@@ -152,138 +241,14 @@ export default async function DashboardPage() {
         <div className="flex gap-2">
           {weekDots.map((active, i) => (
             <div key={i} className="flex flex-col items-center gap-1 flex-1">
-              <div
-                className={`w-full h-8 rounded-full border-[3px] border-ink transition-all ${
-                  active ? 'bg-coral shadow-ink-sm' : 'bg-paper-dark'
-                }`}
-              />
+              <div className={`w-full h-8 rounded-full border-[3px] border-ink transition-all ${active ? 'bg-coral shadow-ink-sm' : 'bg-paper-dark'}`} />
               <span className="text-xs text-ink-muted font-body">{DAY_LABELS[i]}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <NameCard
-        currentName={userData?.name ?? 'Unknown'}
-        rerollsRemaining={rerollsRemaining}
-        nameChangeRequested={userData?.nameChangeRequested ?? false}
-        isInClass={isInClass}
-      />
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard
-          label="Lessons Completed"
-          value={passedLessonIds.size}
-          icon={<BookOpen className="w-5 h-5 text-mint" />}
-        />
-        <StatsCard
-          label="Average WPM"
-          value={avgWpm}
-          icon={<Zap className="w-5 h-5 text-sunny" />}
-        />
-        <StatsCard
-          label="Average Accuracy"
-          value={`${Math.round(avgAccuracy * 100)}%`}
-          icon={<Target className="w-5 h-5 text-sky" />}
-        />
-        <StatsCard
-          label="Day Streak"
-          value={streak}
-          icon={<Flame className="w-5 h-5 text-coral" />}
-        />
-      </div>
-
-      {/* Quest Map */}
-      <div className="kq-card p-5">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-display text-xl text-ink">Quest Map</h2>
-          <Link href="/lessons" className="kq-btn bg-sky text-white text-sm px-4 py-1.5 flex items-center gap-1">
-            All Lessons <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
-        <div className="space-y-6">
-          {sections.map((section, si) => {
-            const c = sectionColor(si)
-            return (
-              <div key={section.id}>
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border-[3px] border-ink mb-3 ${c.solid}`}>
-                  <span className={`font-display text-sm ${c.accentText}`}>{section.title}</span>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {section.lessons.map((lesson, li) => {
-                    const isPassed = passedLessonIds.has(lesson.id)
-                    const isCurrent = lesson.id === firstUnpassedId
-                    const isAttempted = attemptedLessonIds.has(lesson.id)
-                    const isLocked = !isPassed && !isCurrent && !isAttempted &&
-                      li > 0 && !passedLessonIds.has(section.lessons[li - 1]?.id ?? '')
-
-                    return (
-                      <Link key={lesson.id} href={`/lessons/${lesson.id}`}>
-                        <div
-                          className={`relative w-12 h-12 rounded-full border-[3px] border-ink flex items-center justify-center transition-all cursor-pointer
-                            ${isPassed ? 'bg-mint shadow-ink-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5' :
-                              isCurrent ? 'bg-coral shadow-ink-sm animate-pulse-ring' :
-                              isLocked ? 'bg-paper-dark opacity-60' :
-                              'bg-paper-dark hover:bg-paper-dark shadow-ink-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5'}
-                          `}
-                          title={lesson.title}
-                        >
-                          {isPassed ? (
-                            <CheckCircle className="w-5 h-5 text-ink" />
-                          ) : isLocked ? (
-                            <Lock className="w-4 h-4 text-ink-muted" />
-                          ) : (
-                            <span className="text-xs font-display text-ink">{li + 1}</span>
-                          )}
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-        <div className="flex items-center gap-4 mt-5 text-xs text-ink-muted font-body">
-          <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-mint border-2 border-ink inline-block" /> Done</span>
-          <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-coral border-2 border-ink inline-block" /> Current</span>
-          <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded-full bg-paper-dark border-2 border-ink/30 inline-block" /> Locked</span>
-        </div>
-      </div>
-
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Continue Learning */}
-        <div className="kq-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg text-ink">Continue Learning</h2>
-            <Link href="/lessons" className="text-sm text-sky font-semibold hover:text-sky/80 flex items-center gap-1">
-              All lessons <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
-          <div className="space-y-3">
-            {nextLessons.length === 0 ? (
-              <p className="text-ink-muted text-sm py-4 text-center font-body">
-                You&apos;ve completed all lessons! 🎉
-              </p>
-            ) : (
-              nextLessons.map((lesson) => (
-                <Link
-                  key={lesson.id}
-                  href={`/lessons/${lesson.id}`}
-                  className="flex items-center justify-between p-3 bg-paper-dark rounded-xl border-2 border-ink/20 hover:border-ink hover:shadow-ink-sm transition-all"
-                >
-                  <div>
-                    <p className="text-sm font-semibold text-ink">{lesson.title}</p>
-                    <p className="text-xs text-ink-muted font-body">{lesson.section.title}</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-ink-muted" />
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-
         {/* Recent Activity */}
         <div className="kq-card p-5">
           <h2 className="font-display text-lg text-ink mb-4">Recent Activity</h2>
@@ -308,35 +273,46 @@ export default async function DashboardPage() {
             )}
           </div>
         </div>
+
+        {/* Practice Games */}
+        <div className="kq-card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-lg text-ink">Practice Games</h2>
+            <Gamepad2 className="w-5 h-5 text-sunny" aria-hidden="true" />
+          </div>
+          <div className="space-y-3">
+            <Link
+              href="/games/word-rain"
+              className="flex items-center gap-3 p-3 bg-paper-dark rounded-xl border-2 border-ink/20 hover:border-ink hover:shadow-ink-sm transition-all"
+            >
+              <span className="text-2xl" aria-hidden="true">🌧️</span>
+              <div>
+                <p className="font-display text-sm text-ink">Word Rain</p>
+                <p className="text-xs text-ink-muted font-body">Type falling words before they hit the ground</p>
+              </div>
+            </Link>
+            <Link
+              href="/games/letter-hunt"
+              className="flex items-center gap-3 p-3 bg-paper-dark rounded-xl border-2 border-ink/20 hover:border-ink hover:shadow-ink-sm transition-all"
+            >
+              <span className="text-2xl" aria-hidden="true">🎯</span>
+              <div>
+                <p className="font-display text-sm text-ink">Letter Hunt</p>
+                <p className="text-xs text-ink-muted font-body">Press the highlighted key as fast as you can</p>
+              </div>
+            </Link>
+          </div>
+        </div>
       </div>
+
+      <NameCard
+        currentName={userData?.name ?? 'Unknown'}
+        rerollsRemaining={rerollsRemaining}
+        nameChangeRequested={userData?.nameChangeRequested ?? false}
+        isInClass={isInClass}
+      />
 
       <JoinClassCard />
-
-      {/* Games */}
-      <div className="kq-card p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl text-ink">Practice Games</h2>
-          <Gamepad2 className="w-5 h-5 text-sunny" />
-        </div>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Link
-            href="/games/word-rain"
-            className="p-4 bg-linear-to-br from-sky/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
-          >
-            <div className="text-2xl mb-2">🌧️</div>
-            <h3 className="font-display text-ink">Word Rain</h3>
-            <p className="text-xs text-ink-muted mt-1 font-body">Type falling words before they hit the ground</p>
-          </Link>
-          <Link
-            href="/games/letter-hunt"
-            className="p-4 bg-linear-to-br from-sunny/20 to-paper-dark rounded-xl border-[3px] border-ink hover:shadow-ink-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 group"
-          >
-            <div className="text-2xl mb-2">🎯</div>
-            <h3 className="font-display text-ink">Letter Hunt</h3>
-            <p className="text-xs text-ink-muted mt-1 font-body">Press the highlighted key as fast as you can</p>
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }
