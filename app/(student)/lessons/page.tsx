@@ -3,37 +3,61 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { LessonsClient } from './LessonsClient'
+import type { CourseTab, SectionData, LessonDot } from './LessonsClient'
 
-export default async function LessonsPage() {
+export default async function LessonsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ course?: string }>
+}) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
 
   const userId = session.user.id
+  const { course: courseParam } = await searchParams
 
-  const course = await prisma.course.findFirst({
-    where: { isPublic: true },
-    orderBy: { order: 'asc' },
+  const enrollments = await prisma.courseEnrollment.findMany({
+    where: { userId },
+    orderBy: [{ lastLessonAt: { sort: 'desc', nulls: 'last' } }],
+    include: {
+      course: {
+        select: { id: true, title: true, icon: true, accent: true, order: true },
+      },
+    },
+  })
+
+  if (enrollments.length === 0) redirect('/courses')
+
+  const courses: CourseTab[] = enrollments.map((e) => ({
+    id: e.course.id,
+    title: e.course.title,
+    icon: e.course.icon,
+    accent: e.course.accent,
+  }))
+
+  const enrolledIds = new Set(courses.map((c) => c.id))
+  const activeCourseId =
+    courseParam && enrolledIds.has(courseParam) ? courseParam : courses[0].id
+  const activeCourse = courses.find((c) => c.id === activeCourseId)!
+
+  const courseWithSections = await prisma.course.findUnique({
+    where: { id: activeCourseId },
     include: {
       sections: {
         orderBy: { order: 'asc' },
         include: {
-          lessons: {
-            orderBy: { order: 'asc' },
-          },
+          lessons: { orderBy: { order: 'asc' } },
         },
       },
     },
   })
 
-  if (!course) {
-    return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-display text-ink">No courses available yet.</h1>
-      </div>
-    )
-  }
+  if (!courseWithSections) redirect('/courses')
 
-  const allLessonIds = course.sections.flatMap((s) => s.lessons.map((l) => l.id))
+  const allLessonIds = courseWithSections.sections.flatMap((s) =>
+    s.lessons.map((l) => l.id),
+  )
+
   const attempts = await prisma.lessonAttempt.findMany({
     where: { userId, lessonId: { in: allLessonIds } },
   })
@@ -44,39 +68,70 @@ export default async function LessonsPage() {
     attemptMap.get(a.lessonId)!.push(a)
   }
 
-  const sections = course.sections.map((section) => ({
-    id: section.id,
-    title: section.title,
-    description: section.description,
-    order: section.order,
-    lessons: section.lessons.map((lesson) => {
+  // Build a flat ordered list of all lessons to compute locking
+  const allLessonsFlat = courseWithSections.sections.flatMap((s) => s.lessons)
+  const passedIds = new Set<string>()
+
+  for (const lesson of allLessonsFlat) {
+    const la = attemptMap.get(lesson.id) ?? []
+    const passed = la.some((a) => {
+      const wpmOk = !lesson.minWpm || a.wpm >= lesson.minWpm
+      const accOk = !lesson.minAccuracy || a.accuracy >= lesson.minAccuracy
+      return wpmOk && accOk
+    })
+    if (passed) passedIds.add(lesson.id)
+  }
+
+  const sections: SectionData[] = courseWithSections.sections.map((section, sectionIndex) => {
+    const lessons: LessonDot[] = section.lessons.map((lesson, lessonIndex) => {
       const la = attemptMap.get(lesson.id) ?? []
+      const passed = passedIds.has(lesson.id)
+      const attempted = la.length > 0
       const bestWpm = la.length > 0 ? Math.max(...la.map((a) => a.wpm)) : null
       const bestAccuracy = la.length > 0 ? Math.max(...la.map((a) => a.accuracy)) : null
-      const passed = la.some((a) => {
-        const wpmOk = !lesson.minWpm || a.wpm >= lesson.minWpm
-        const accOk = !lesson.minAccuracy || a.accuracy >= lesson.minAccuracy
-        return wpmOk && accOk
-      })
+
+      let locked: boolean
+      if (sectionIndex === 0 && lessonIndex === 0) {
+        locked = false
+      } else if (lessonIndex > 0) {
+        locked = !passedIds.has(section.lessons[lessonIndex - 1].id)
+      } else {
+        const prevSection = courseWithSections.sections[sectionIndex - 1]
+        locked = !passedIds.has(prevSection.lessons[prevSection.lessons.length - 1].id)
+      }
+
       return {
         id: lesson.id,
+        order: lesson.order,
         title: lesson.title,
         description: lesson.description,
         content: lesson.content,
-        order: lesson.order,
-        type: lesson.type as 'SCRIPTED' | 'DYNAMIC',
-        sectionId: lesson.sectionId,
-        targetKeys: lesson.targetKeys,
-        minWpm: lesson.minWpm,
-        targetWpm: lesson.targetWpm,
-        minAccuracy: lesson.minAccuracy,
-        attempts: la.length,
+        passed,
+        attempted,
+        locked,
         bestWpm,
         bestAccuracy,
-        passed,
+        minWpm: lesson.minWpm,
+        targetWpm: lesson.targetWpm,
       }
-    }),
-  }))
+    })
 
-  return <LessonsClient courseTitle={course.title} sections={sections} />
+    return {
+      id: section.id,
+      title: section.title,
+      description: section.description,
+      order: section.order,
+      lessons,
+      passedCount: lessons.filter((l) => l.passed).length,
+    }
+  })
+
+  return (
+    <LessonsClient
+      courses={courses}
+      activeCourseId={activeCourseId}
+      activeCourseAccent={activeCourse.accent}
+      sections={sections}
+    />
+  )
 }

@@ -6,7 +6,7 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 ## Where we are
 
-Production-quality alpha deployed on Vercel. Sprints 1–10 merged (Sprint 10 PR open). Student redesign epic in progress.
+Production-quality alpha deployed on Vercel. Sprints 1–11 merged (Sprint 11 PR open). Student redesign epic in progress.
 
 **Completed sprints:**
 - Sprint 5: Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR
@@ -19,22 +19,21 @@ Production-quality alpha deployed on Vercel. Sprints 1–10 merged (Sprint 10 PR
 
 ---
 
-## Now — Sprint 10 (Student Redesign, step 2 of 6)
+## Now — Sprint 11 (Student Redesign, step 3 of 6)
 
-**Sprint 10 (current, PR open):** Courses data model + `/courses` page.
-- `CourseEnrollment` model + migration (`userId`, `courseId`, `enrolledAt`, `lastLessonAt`)
-- `icon`, `subtitle`, `accent` fields added to `Course`
-- `/courses` page: enrolled/available cards with progress bars and enroll button
-- Enrollment API at `/api/courses/[id]/enroll`; lesson complete route updates `lastLessonAt`
-- Alice in Wonderland seeded as second course: 12 sections (one per chapter), 554 lessons covering the full public-domain text
+**Sprint 11 (current, PR open):** `/lessons` page rebuilt.
+- Server component accepts `?course=id`, fetches all enrolled courses for the switcher
+- Scrollable course-switcher pill tabs (hidden when only one course enrolled)
+- Collapsible section accordions with progress chip and rotating chevron; auto-opens section with next unstarted lesson
+- Lesson-dot grid (14px dots): passed / attempted / unlocked / locked states
+- Inline detail panel on dot click: title, content preview, best stats, goal, Start button
 
 ---
 
-## Next — Sprints 11–14
+## Next — Sprints 12–14
 
 | Sprint | Work |
 |--------|------|
-| 11 | `/lessons` rebuild: section accordion + lesson-dot grid + detail panel; course switcher |
 | 12 | `/dashboard` cleanup: remove Quest Map, add Up Next card + weekly streak |
 | 13 | `/settings` page: nickname reroll, class-code join, display preferences (font + contrast) |
 | 14 | Lesson runner redesign: borderless text area, line clipping, font-size selector, SVG keyboard + hand overlay |
