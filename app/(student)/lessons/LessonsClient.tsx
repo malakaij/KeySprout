@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Check, Lock } from 'lucide-react'
 import { sectionColor } from '@/lib/section-colors'
 import { Pip } from '@/components/ui/Pip'
+import { UpNextCard } from '@/components/ui/UpNextCard'
 
 export interface CourseTab {
   id: string
@@ -71,10 +72,20 @@ function findAutoOpenSectionId(sections: SectionData[]): string | null {
 
 /** Status label and color for a lesson dot. */
 function lessonStatus(lesson: LessonDot): { label: string; color: string } {
-  if (lesson.locked)   return { label: 'Locked',      color: 'var(--color-ink-muted)' }
-  if (lesson.passed)   return { label: 'Passed',       color: 'var(--color-mint)' }
+  if (lesson.locked)    return { label: 'Locked',      color: 'var(--color-ink-muted)' }
+  if (lesson.passed)    return { label: 'Passed',       color: 'var(--color-mint)' }
   if (lesson.attempted) return { label: 'In progress', color: 'var(--color-sunny)' }
-  return                       { label: 'Up next',     color: 'var(--color-coral)' }
+  return                        { label: 'Up next',     color: 'var(--color-coral)' }
+}
+
+/** Returns the first "current" lesson ID: unlocked, not attempted, not passed. */
+function findCurrentLessonId(sections: SectionData[]): string | null {
+  for (const section of sections) {
+    for (const lesson of section.lessons) {
+      if (!lesson.locked && !lesson.attempted && !lesson.passed) return lesson.id
+    }
+  }
+  return null
 }
 
 interface DetailPanelProps {
@@ -150,6 +161,8 @@ interface SectionAccordionProps {
   selectedDot: { sectionId: string; lessonId: string } | null
   onSelectDot: (sectionId: string, lessonId: string) => void
   accent: string
+  /** The ID of the current (first unlocked/unattempted/unpassed) lesson across all sections. */
+  currentLessonId: string | null
 }
 
 function SectionAccordion({
@@ -160,6 +173,7 @@ function SectionAccordion({
   selectedDot,
   onSelectDot,
   accent,
+  currentLessonId,
 }: SectionAccordionProps) {
   const c = sectionColor(sectionIndex)
   const selectedLesson =
@@ -192,35 +206,98 @@ function SectionAccordion({
 
       {isOpen && (
         <div className="bg-paper p-4 border-t-[3px] border-inherit">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {section.lessons.map((lesson) => {
               const isSelected =
                 selectedDot?.sectionId === section.id && selectedDot.lessonId === lesson.id
+              const isCurrent = lesson.id === currentLessonId
 
-              let dotClass = 'w-3.5 h-3.5 rounded-full border-2 transition-all duration-100'
-              if (lesson.locked) {
-                dotClass += ' bg-paper-dark border-ink/30 cursor-not-allowed'
-              } else if (lesson.passed) {
-                dotClass += ` ${c.solid} ${c.border}`
-              } else if (lesson.attempted) {
-                dotClass += ' bg-sunny border-sunny'
-              } else {
-                dotClass += ' bg-paper border-ink'
+              // Determine dot state
+              const isPassed = lesson.passed
+              const isAttempted = !lesson.passed && lesson.attempted
+              const isLocked = lesson.locked
+
+              // Build inline styles for the 52×52 dot button
+              const baseStyle: React.CSSProperties = {
+                width: 52,
+                height: 52,
+                borderRadius: 9999,
+                border: isSelected ? '4px solid #1a1a2e' : '3px solid #1a1a2e',
+                boxShadow: isSelected
+                  ? '5px 5px 0 #1a1a2e'
+                  : isLocked
+                  ? 'none'
+                  : '3px 3px 0 #1a1a2e',
+                transform: isSelected ? 'translate(-1px, -1px)' : undefined,
+                opacity: isLocked ? 0.55 : 1,
+                cursor: isLocked ? 'not-allowed' : 'pointer',
+                position: 'relative',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                transition: 'box-shadow 100ms, transform 100ms, border-width 100ms',
+                // Background color per state
+                background: isLocked
+                  ? 'var(--color-paper-dark)'
+                  : isAttempted
+                  ? 'var(--color-sunny)'
+                  : isCurrent
+                  ? 'var(--color-coral)'
+                  : undefined,
               }
 
-              if (isSelected) {
-                dotClass += ' ring-2 ring-offset-1 ring-ink'
-              }
+              // For passed dots we use a Tailwind class for the section solid color
+              const passedBgClass = isPassed ? c.solid : ''
+
+              const displayNumber = lesson.order + 1
 
               return (
                 <button
                   key={lesson.id}
-                  disabled={lesson.locked}
+                  disabled={isLocked}
                   title={lesson.title}
-                  aria-label={`${lesson.title}${lesson.passed ? ' (passed)' : lesson.attempted ? ' (in progress)' : lesson.locked ? ' (locked)' : ''}`}
-                  onClick={() => !lesson.locked && onSelectDot(section.id, lesson.id)}
-                  className={dotClass}
-                />
+                  aria-label={`${lesson.title}${isPassed ? ' (passed)' : isAttempted ? ' (in progress)' : isLocked ? ' (locked)' : ''}`}
+                  onClick={() => !isLocked && onSelectDot(section.id, lesson.id)}
+                  style={baseStyle}
+                  className={`${passedBgClass} ${isCurrent && !isSelected ? 'lesson-dot-current' : ''}`}
+                >
+                  {isPassed && (
+                    <Check size={16} color="white" strokeWidth={3} aria-hidden="true" />
+                  )}
+                  {(isCurrent || isAttempted) && (
+                    <span
+                      style={{
+                        fontFamily: "'Fredoka One', cursive",
+                        fontSize: 14,
+                        color: isCurrent ? 'white' : '#1a1a2e',
+                        lineHeight: 1,
+                        userSelect: 'none',
+                      }}
+                    >
+                      {displayNumber}
+                    </span>
+                  )}
+                  {isLocked && !isPassed && !isCurrent && !isAttempted && (
+                    <Lock size={14} style={{ color: 'rgba(26,26,46,0.55)' }} aria-hidden="true" />
+                  )}
+                  {/* Attempted badge dot */}
+                  {isAttempted && (
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        top: -2,
+                        right: -2,
+                        width: 8,
+                        height: 8,
+                        borderRadius: 9999,
+                        background: 'var(--color-coral)',
+                        border: '1.5px solid #1a1a2e',
+                      }}
+                    />
+                  )}
+                </button>
               )
             })}
           </div>
@@ -232,6 +309,27 @@ function SectionAccordion({
       )}
     </div>
   )
+}
+
+/** Computes the Up Next lesson data for the UpNextCard. */
+function findUpNextLesson(sections: SectionData[]): { lesson: LessonDot; sectionTitle: string } | null {
+  // First: first unlocked, not attempted, not passed
+  for (const section of sections) {
+    for (const lesson of section.lessons) {
+      if (!lesson.locked && !lesson.passed && !lesson.attempted) {
+        return { lesson, sectionTitle: section.title }
+      }
+    }
+  }
+  // Fallback: first unlocked, not passed (i.e. attempted but not passed)
+  for (const section of sections) {
+    for (const lesson of section.lessons) {
+      if (!lesson.locked && !lesson.passed) {
+        return { lesson, sectionTitle: section.title }
+      }
+    }
+  }
+  return null
 }
 
 /** Lessons page — course switcher tabs + section accordions with lesson dot navigation. */
@@ -268,8 +366,38 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
     )
   }
 
+  const currentLessonId = findCurrentLessonId(sections)
+  const upNextData = findUpNextLesson(sections)
+
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
+      {/* Pulse-ring keyframes for the current lesson dot */}
+      <style suppressHydrationWarning>{`
+        @keyframes pulse-ring {
+          0%   { box-shadow: 3px 3px 0 #1a1a2e, 0 0 0 0 rgba(255,94,91,0.55); }
+          70%  { box-shadow: 3px 3px 0 #1a1a2e, 0 0 0 8px rgba(255,94,91,0); }
+          100% { box-shadow: 3px 3px 0 #1a1a2e, 0 0 0 0 rgba(255,94,91,0); }
+        }
+        .lesson-dot-current {
+          animation: pulse-ring 1.8s ease-out infinite;
+        }
+      `}</style>
+
+      {/* Up Next card */}
+      {upNextData && activeCourse && (
+        <UpNextCard
+          courseTitle={activeCourse.title}
+          courseIcon={activeCourse.icon}
+          courseAccent={activeCourseAccent}
+          sectionTitle={upNextData.sectionTitle}
+          lessonTitle={upNextData.lesson.title}
+          lessonId={upNextData.lesson.id}
+          lessonOrder={upNextData.lesson.order + 1}
+          minWpm={upNextData.lesson.minWpm}
+          minAccuracy={null}
+        />
+      )}
+
       {/* Course switcher */}
       {courses.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Courses">
@@ -344,6 +472,7 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
             selectedDot={selectedDot}
             onSelectDot={handleSelectDot}
             accent={activeCourseAccent}
+            currentLessonId={currentLessonId}
           />
         ))}
       </div>
@@ -352,7 +481,7 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
       <div className="flex flex-wrap gap-4 pt-1" aria-label="Lesson status legend">
         {[
           { label: 'Passed',      bg: 'bg-mint',       border: 'border-mint' },
-          { label: 'Up next',     bg: 'bg-paper',      border: 'border-ink' },
+          { label: 'Up next',     bg: 'bg-coral',      border: 'border-coral' },
           { label: 'In progress', bg: 'bg-sunny',      border: 'border-sunny' },
           { label: 'Locked',      bg: 'bg-paper-dark', border: 'border-ink/30' },
         ].map(({ label, bg, border }) => (

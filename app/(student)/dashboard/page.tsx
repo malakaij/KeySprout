@@ -6,20 +6,13 @@ import { StatsCard } from '@/components/dashboard/StatsCard'
 import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
 import { NameCard } from '@/components/dashboard/NameCard'
 import { Pip } from '@/components/ui/Pip'
-import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2 } from 'lucide-react'
+import { UpNextCard } from '@/components/ui/UpNextCard'
+import { BookOpen, Zap, Target, Flame, Gamepad2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
 
 const DAILY_LIMIT = 3
 
-const ACCENT_BG: Record<string, string> = {
-  mint: 'bg-mint', sky: 'bg-sky', sunny: 'bg-sunny',
-  grape: 'bg-grape', coral: 'bg-coral', berry: 'bg-berry',
-}
-const ACCENT_TEXT: Record<string, string> = {
-  mint: 'text-ink', sky: 'text-ink', sunny: 'text-ink',
-  grape: 'text-white', coral: 'text-white', berry: 'text-white',
-}
 
 function isToday(date: Date): boolean {
   const now = new Date()
@@ -76,7 +69,12 @@ export default async function DashboardPage() {
             accent: true,
             sections: {
               orderBy: { order: 'asc' },
-              include: { lessons: { orderBy: { order: 'asc' } } },
+              include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                    select: { id: true, title: true, content: true, order: true, minWpm: true, minAccuracy: true },
+                  },
+                },
             },
           },
         },
@@ -135,6 +133,9 @@ export default async function DashboardPage() {
     lessonId: string
     lessonTitle: string
     lessonContent: string | null
+    lessonOrder: number
+    minWpm: number | null
+    minAccuracy: number | null
     sectionTitle: string
     courseTitle: string
     courseAccent: string
@@ -153,6 +154,9 @@ export default async function DashboardPage() {
             lessonId: lesson.id,
             lessonTitle: lesson.title,
             lessonContent: lesson.content,
+            lessonOrder: lesson.order + 1,
+            minWpm: lesson.minWpm ?? null,
+            minAccuracy: lesson.minAccuracy ?? null,
             sectionTitle: section.title,
             courseTitle: course.title,
             courseAccent: course.accent,
@@ -181,31 +185,17 @@ export default async function DashboardPage() {
 
       {/* Up Next */}
       {upNext ? (
-        <div className="kq-card overflow-hidden">
-          <div className={`px-5 py-3 flex items-center gap-2 border-b-[3px] border-ink ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'}`}>
-            <span aria-hidden="true">{upNext.courseIcon}</span>
-            <span className={`text-sm font-display ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}>
-              Up Next · {upNext.courseTitle}
-            </span>
-          </div>
-          <div className="p-5 flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-xs text-ink-muted font-body mb-1">{upNext.sectionTitle}</p>
-              <h2 className="font-display text-lg text-ink leading-snug">{upNext.lessonTitle}</h2>
-              {upNext.lessonContent && (
-                <p className="text-sm font-body text-ink-muted mt-1.5 italic line-clamp-2">
-                  {upNext.lessonContent.slice(0, 120)}{upNext.lessonContent.length > 120 ? '…' : ''}
-                </p>
-              )}
-            </div>
-            <Link
-              href={`/lessons/${upNext.lessonId}`}
-              className={`shrink-0 kq-btn px-5 py-2.5 font-display text-sm flex items-center gap-2 ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'} ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}
-            >
-              Start <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
+        <UpNextCard
+          courseTitle={upNext.courseTitle}
+          courseIcon={upNext.courseIcon}
+          courseAccent={upNext.courseAccent}
+          sectionTitle={upNext.sectionTitle}
+          lessonTitle={upNext.lessonTitle}
+          lessonId={upNext.lessonId}
+          lessonOrder={upNext.lessonOrder}
+          minWpm={upNext.minWpm}
+          minAccuracy={upNext.minAccuracy}
+        />
       ) : enrollments.length === 0 ? (
         <div className="kq-card p-5 flex items-center justify-between gap-4">
           <p className="font-body text-ink-muted">Pick a course to start your typing journey.</p>

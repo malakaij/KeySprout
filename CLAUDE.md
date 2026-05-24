@@ -41,7 +41,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 14:** Lesson runner redesigned. `TypingArea`: borderless, DOM-measurement line clipping (3–4 lines, advances with cursor), numeric font-size prop (18/28/40/56px). `KeyboardHint`: single SVG — full QWERTY + modifier keys + ellipse palms + 10 per-finger lines reaching to target key. `LessonClient`: S/M/L/XL segmented pill, live-stats toggle, 4px progress bar, full-height column layout. `useTypingFontSize` hook (numeric, localStorage-persisted).
 
-**As of Sprint 15 (current):** `/lessons` page polished to match design handoff. Course subtitle rendered below switcher. Personalized Practice card (Pip + weak-key callout + drill button) appears when attempted-but-not-passed lessons exist. Section accordions now single-open (only one section open at a time). Status chip (Passed / Up next / In progress / Locked) added to lesson detail panel. Dot legend added below accordions.
+**As of Sprint 15:** `/lessons` page polished to match design handoff. Course subtitle rendered below switcher. Personalized Practice card (Pip + weak-key callout + drill button) appears when attempted-but-not-passed lessons exist. Section accordions now single-open (only one section open at a time). Status chip (Passed / Up next / In progress / Locked) added to lesson detail panel. Dot legend added below accordions.
+
+**As of Sprint 16 (current):** Remaining design-handoff gaps closed. Lesson dots rebuilt to 52×52 with icons (Check/Lock/lesson number), per-state fills, correct shadows, and pulse animation on current lesson. Shared `UpNextCard` component created and used on both `/dashboard` and `/lessons`. Dashboard Up Next card now shows accent circle, gradient background, and color-coded goal chips. Settings page gains keyboard-shortcuts link section (→ `/help`). NameCard gains teacher-change footnote.
 
 **Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 

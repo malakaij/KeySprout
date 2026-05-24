@@ -75,6 +75,9 @@ export function NameCard({
           {error && <p className="text-xs text-coral font-body">{error}</p>}
         </div>
       )}
+      <p className="text-xs text-ink-muted font-body mt-3">
+        Need a different name? Your teacher can change it for you.
+      </p>
     </div>
   )
 }
