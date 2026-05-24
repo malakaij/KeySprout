@@ -21,13 +21,14 @@ model User {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
-  accounts       Account[]
-  sessions       Session[]
-  lessonAttempts LessonAttempt[]
-  gameScores     GameScore[]
-  classMembers   ClassMember[]
-  classes        Classroom[]     @relation("TeacherClasses")
-  courses        Course[]        @relation("CourseAuthor")
+  accounts        Account[]
+  sessions        Session[]
+  lessonAttempts  LessonAttempt[]
+  gameScores      GameScore[]
+  classMembers    ClassMember[]
+  classes         Classroom[]        @relation("TeacherClasses")
+  courses         Course[]           @relation("CourseAuthor")
+  enrollments     CourseEnrollment[]
 }
 
 enum Role {
@@ -76,7 +77,10 @@ enum LessonType {
 model Course {
   id          String    @id @default(cuid())
   title       String
+  subtitle    String?
   description String?
+  icon        String    @default("⌨️")
+  accent      String    @default("mint")
   createdById String?
   isPublic    Boolean   @default(true)
   order       Int       @default(0)
@@ -85,6 +89,18 @@ model Course {
   createdBy   User?     @relation("CourseAuthor", fields: [createdById], references: [id])
   sections    Section[]
   classrooms  ClassroomCourse[]
+  enrollments CourseEnrollment[]
+}
+
+model CourseEnrollment {
+  id           String    @id @default(cuid())
+  userId       String
+  courseId     String
+  enrolledAt   DateTime  @default(now())
+  lastLessonAt DateTime?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@unique([userId, courseId])
 }
 
 model Section {

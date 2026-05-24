@@ -70,16 +70,17 @@ export async function POST(
     return NextResponse.json({ error: 'Lesson not found' }, { status: 404 })
   }
 
-  const attempt = await prisma.lessonAttempt.create({
-    data: {
-      userId: session.user.id,
-      lessonId: id,
-      wpm,
-      accuracy,
-      duration,
-      errors,
-    },
-  })
+  const [attempt] = await prisma.$transaction([
+    prisma.lessonAttempt.create({
+      data: { userId: session.user.id, lessonId: id, wpm, accuracy, duration, errors },
+    }),
+    // Ensure enrollment exists and update lastLessonAt so the Courses page stays current
+    prisma.courseEnrollment.upsert({
+      where: { userId_courseId: { userId: session.user.id, courseId: lesson.section.courseId } },
+      create: { userId: session.user.id, courseId: lesson.section.courseId, lastLessonAt: new Date() },
+      update: { lastLessonAt: new Date() },
+    }),
+  ])
 
   // Find next lesson: next in same section by order, or first lesson of next section
   const currentSection = lesson.section

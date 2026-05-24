@@ -29,7 +29,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 8:** Security hardening merged. Super-admin renamed from Admin (`SUPER_ADMIN_USERNAME`/`SUPER_ADMIN_PASSWORD` env vars, bcrypt-hashed password, `timingSafeEqual` token comparison). CSRF Origin-header checking on all state-changing routes. Postgres-based rate limiting on lesson completions, game scores, join-class, and admin login. Threat model documented in `CODEBASE.md`. COPPA compliance statement in `SECURITY.md`. `npm audit` findings documented as accepted risks.
 
-**As of Sprint 9 (current, PR open):** Student redesign Epic begun. Sidebar refactor: both `StudentSidebar` and `TeacherSidebar` now collapsible (224px ↔ 72px icon rail, 180ms transition, `PanelLeft` toggle). Student sidebar adds Courses (`/courses`), Games, Settings (`/settings`) nav items with per-item accent colors. Placeholder pages added for `/courses` and `/settings`. `DisplaySettings` removed from sidebar footer (moves to `/settings` in Sprint 13).
+**As of Sprint 9:** Student redesign Epic begun. Sidebar refactor: both `StudentSidebar` and `TeacherSidebar` now collapsible (224px ↔ 72px icon rail, 180ms transition, `PanelLeft` toggle). Student sidebar adds Courses (`/courses`), Games, Settings (`/settings`) nav items with per-item accent colors. Placeholder pages added for `/courses` and `/settings`. `DisplaySettings` removed from sidebar footer (moves to `/settings` in Sprint 13).
+
+**As of Sprint 10 (current, PR open):** Courses data model shipped. `CourseEnrollment` model + migration (`userId`, `courseId`, `enrolledAt`, `lastLessonAt`). `/courses` page shows enrolled and available courses with progress bars and enroll button. Enrollment API at `/api/courses/[id]/enroll`. Lesson complete route now upserts enrollment + updates `lastLessonAt`. Alice in Wonderland added as second course: 12 sections (one per chapter), 554 lessons covering the full public-domain text, split at sentence boundaries into ~120–300-char chunks.
 
 **Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 

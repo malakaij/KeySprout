@@ -6,34 +6,34 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 ## Where we are
 
-Production-quality alpha deployed on Vercel. Sprints 1–8 merged. Student redesign epic in progress.
+Production-quality alpha deployed on Vercel. Sprints 1–10 merged (Sprint 10 PR open). Student redesign epic in progress.
 
 **Completed sprints:**
 - Sprint 5: Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR
 - Sprint 6 ([Epic #102](https://github.com/malakaij/KeySprout/issues/102)): Accessibility audit — axe-core, focus styles, ARIA labels, high-contrast mode, keyboard-shortcut docs
 - Sprint 7 ([Epic #103](https://github.com/malakaij/KeySprout/issues/103)): Physical keyboard detection — `looksLikeNoKeyboard()` heuristic, `KeyboardGuard` blocking UI, auto-dismiss on trusted keypress, localStorage override
 - Sprint 8 ([Epic #104](https://github.com/malakaij/KeySprout/issues/104)): Security hardening — Super-Admin rename, bcrypt password, CSRF Origin-header check, Postgres rate limiting, threat model, COPPA statement
+- Sprint 9: Collapsible sidebars (224px ↔ 72px icon rail, 180ms); student sidebar adds Courses, Games, Settings nav with per-item accents
 
 **The app is now deployable to real classrooms** (pending CSP headers, deferred post-alpha).
 
 ---
 
-## Now — Sprint 9 (Student Redesign, step 1 of 6)
+## Now — Sprint 10 (Student Redesign, step 2 of 6)
 
-**Student experience redesign** based on design handoff — six sprints total.
-
-**Sprint 9 (current, PR open):** Sidebar refactor.
-- Both `StudentSidebar` and `TeacherSidebar` now collapsible (224px ↔ 72px icon rail, 180ms transition)
-- Student sidebar adds Courses, Games, Settings nav items with per-item accent colors
-- Placeholder pages for `/courses` and `/settings`
+**Sprint 10 (current, PR open):** Courses data model + `/courses` page.
+- `CourseEnrollment` model + migration (`userId`, `courseId`, `enrolledAt`, `lastLessonAt`)
+- `icon`, `subtitle`, `accent` fields added to `Course`
+- `/courses` page: enrolled/available cards with progress bars and enroll button
+- Enrollment API at `/api/courses/[id]/enroll`; lesson complete route updates `lastLessonAt`
+- Alice in Wonderland seeded as second course: 12 sections (one per chapter), 554 lessons covering the full public-domain text
 
 ---
 
-## Next — Sprints 10–14
+## Next — Sprints 11–14
 
 | Sprint | Work |
 |--------|------|
-| 10 | Courses data model: `CourseEnrollment`, `icon`/`subtitle`/`accent` on `Course`; seed Alice in Wonderland course (chapters → sections, paragraphs → lessons); `/courses` page |
 | 11 | `/lessons` rebuild: section accordion + lesson-dot grid + detail panel; course switcher |
 | 12 | `/dashboard` cleanup: remove Quest Map, add Up Next card + weekly streak |
 | 13 | `/settings` page: nickname reroll, class-code join, display preferences (font + contrast) |
