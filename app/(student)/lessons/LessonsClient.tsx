@@ -41,6 +41,7 @@ export interface LessonDot {
   bestWpm: number | null
   bestAccuracy: number | null
   minWpm: number | null
+  minAccuracy: number | null
   targetWpm: number | null
 }
 
@@ -136,25 +137,26 @@ function DetailPanel({ lesson, accent, sectionDescription }: DetailPanelProps) {
         <p className="text-sm font-body text-ink-muted italic">{bodyText}</p>
       )}
 
-      {(lesson.bestWpm !== null || lesson.bestAccuracy !== null) && (
+      {(lesson.minWpm || lesson.minAccuracy) && (
         <div className="flex gap-2 flex-wrap">
-          {lesson.bestWpm !== null && (
-            <span className="kq-chip bg-paper-dark text-ink text-xs">
-              ⚡ {Math.round(lesson.bestWpm)} wpm
-            </span>
+          {lesson.minWpm && (
+            <span className="kq-chip bg-mint/20 border-mint text-ink text-xs">Goal {lesson.minWpm} WPM</span>
           )}
-          {lesson.bestAccuracy !== null && (
-            <span className="kq-chip bg-paper-dark text-ink text-xs">
-              ✓ {Math.round(lesson.bestAccuracy)}%
-            </span>
+          {lesson.minAccuracy && (
+            <span className="kq-chip bg-sky/20 border-sky text-ink text-xs">Accuracy {Math.round(lesson.minAccuracy * 100)}%</span>
           )}
         </div>
       )}
 
-      {(lesson.minWpm || lesson.targetWpm) && (
-        <p className="text-xs text-ink-muted font-body">
-          Goal:{lesson.targetWpm ? ` ${lesson.targetWpm} wpm` : ''}{lesson.minWpm && lesson.targetWpm ? ' ·' : ''}{lesson.minWpm ? ` ${lesson.minWpm} wpm min` : ''}
-        </p>
+      {(lesson.bestWpm !== null || lesson.bestAccuracy !== null) && (
+        <div className="flex gap-2 flex-wrap">
+          {lesson.bestWpm !== null && (
+            <span className="kq-chip bg-paper-dark text-ink text-xs">Your best: {Math.round(lesson.bestWpm)} WPM</span>
+          )}
+          {lesson.bestAccuracy !== null && (
+            <span className="kq-chip bg-paper-dark text-ink text-xs">{Math.round(lesson.bestAccuracy * 100)}% accuracy</span>
+          )}
+        </div>
       )}
 
       {lesson.locked ? (
@@ -211,15 +213,24 @@ function SectionAccordion({
         className={`w-full flex items-center gap-3 p-4 ${c.bg} text-left cursor-pointer`}
         aria-expanded={isOpen}
       >
-        <div className="flex-1 min-w-0">
-          <p className="font-display text-base text-ink">{section.title}</p>
-          {section.description && (
-            <p className="text-sm font-body text-ink-muted mt-0.5">{section.description}</p>
-          )}
-        </div>
+        <span style={{
+          fontFamily: "'Fredoka One', cursive",
+          fontSize: 14,
+          background: c.hex,
+          color: c.accentText === 'text-white' ? 'white' : '#1a1a2e',
+          border: '2px solid #1a1a2e',
+          boxShadow: '2px 2px 0 #1a1a2e',
+          borderRadius: 8,
+          padding: '3px 10px',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        }}>
+          {section.title}
+        </span>
+        <div className="flex-1" />
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="kq-chip bg-white/70 border-ink text-ink text-xs">
-            {section.passedCount} / {section.lessons.length}
+          <span className="text-xs font-body text-ink-muted">
+            {section.passedCount} of {section.lessons.length} passed
           </span>
           <div style={{
             width: 80, height: 6, borderRadius: 9999,
@@ -429,21 +440,6 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
         }
       `}</style>
 
-      {/* Up Next card */}
-      {upNextData && activeCourse && (
-        <UpNextCard
-          courseTitle={activeCourse.title}
-          courseIcon={activeCourse.icon}
-          courseAccent={activeCourseAccent}
-          sectionTitle={upNextData.sectionTitle}
-          lessonTitle={upNextData.lesson.title}
-          lessonId={upNextData.lesson.id}
-          lessonOrder={upNextData.lesson.order + 1}
-          minWpm={upNextData.lesson.minWpm}
-          minAccuracy={null}
-        />
-      )}
-
       {/* Course switcher — dropdown button (always shown so students know which course they're in) */}
       <div ref={pickerRef} style={{ position: 'relative', alignSelf: 'flex-start' }}>
         <button
@@ -510,6 +506,21 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
       {/* Course subtitle */}
       {activeCourse?.subtitle && (
         <p className="text-sm font-body text-ink-muted -mt-3">{activeCourse.subtitle}</p>
+      )}
+
+      {/* Up Next card */}
+      {upNextData && activeCourse && (
+        <UpNextCard
+          courseTitle={activeCourse.title}
+          courseIcon={activeCourse.icon}
+          courseAccent={activeCourseAccent}
+          sectionTitle={upNextData.sectionTitle}
+          lessonTitle={upNextData.lesson.title}
+          lessonId={upNextData.lesson.id}
+          lessonOrder={upNextData.lesson.order + 1}
+          minWpm={upNextData.lesson.minWpm}
+          minAccuracy={upNextData.lesson.minAccuracy}
+        />
       )}
 
       {/* Personalized Practice card */}

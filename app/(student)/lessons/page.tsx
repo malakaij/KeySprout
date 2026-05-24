@@ -126,6 +126,7 @@ export default async function LessonsPage({
         bestWpm,
         bestAccuracy,
         minWpm: lesson.minWpm,
+        minAccuracy: lesson.minAccuracy,
         targetWpm: lesson.targetWpm,
       }
     })
