@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { StudentTable } from '@/components/teacher/StudentTable'
 import { ProgressChart } from '@/components/dashboard/ProgressChart'
-import { ArrowLeft, Copy, Check, Users, Zap, BookOpen, Clock, UserCheck, UserX } from 'lucide-react'
+import { ArrowLeft, Copy, Check, Users, Zap, BookOpen, Clock, UserCheck, UserX, Plus, X } from 'lucide-react'
 import Link from 'next/link'
 import type { StudentProgress } from '@/types'
 
@@ -13,6 +13,21 @@ interface PendingMember {
   userId: string
   joinedAt: string
   user: { id: string; name: string | null }
+}
+
+interface AssignedCourse {
+  id: string
+  courseId: string
+  title: string
+  icon: string
+  accent: string
+}
+
+interface AvailableCourse {
+  id: string
+  title: string
+  icon: string
+  accent: string
 }
 
 interface ClassDetail {
@@ -29,6 +44,8 @@ interface ClassDetail {
     lessonsCompleted: number
   }>
   pendingMembers: PendingMember[]
+  assignedCourses: AssignedCourse[]
+  availableCourses: AvailableCourse[]
 }
 
 export default function ClassDetailPage() {
@@ -38,6 +55,7 @@ export default function ClassDetailPage() {
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   const [processingId, setProcessingId] = useState<string | null>(null)
+  const [assigningCourseId, setAssigningCourseId] = useState<string | null>(null)
 
   const fetchClassroom = () => {
     if (!params.id) return
@@ -54,6 +72,32 @@ export default function ClassDetailPage() {
     await navigator.clipboard.writeText(classroom.code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleAssignCourse = async (courseId: string) => {
+    if (!classroom) return
+    setAssigningCourseId(courseId)
+    try {
+      await fetch(`/api/teacher/classes/${classroom.id}/courses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId }),
+      })
+      fetchClassroom()
+    } finally {
+      setAssigningCourseId(null)
+    }
+  }
+
+  const handleUnassignCourse = async (courseId: string) => {
+    if (!classroom) return
+    setAssigningCourseId(courseId)
+    try {
+      await fetch(`/api/teacher/classes/${classroom.id}/courses/${courseId}`, { method: 'DELETE' })
+      fetchClassroom()
+    } finally {
+      setAssigningCourseId(null)
+    }
   }
 
   const handleMemberAction = async (memberId: string, action: 'approve' | 'reject') => {
@@ -190,6 +234,55 @@ export default function ClassDetailPage() {
           </p>
           <p className="text-xs text-ink-muted font-body">Avg Lessons</p>
         </div>
+      </div>
+
+      {/* Assigned Courses */}
+      <div className="kq-card p-5 space-y-4">
+        <h2 className="font-display text-ink">Assigned Courses</h2>
+        <p className="text-sm font-body text-ink-muted -mt-2">
+          Students approved into this class are automatically enrolled in these courses.
+        </p>
+
+        {classroom.assignedCourses.length === 0 && (
+          <p className="text-sm font-body text-ink-muted italic">No courses assigned yet.</p>
+        )}
+
+        <div className="space-y-2">
+          {classroom.assignedCourses.map((c) => (
+            <div key={c.id} className="flex items-center justify-between bg-paper-dark rounded-xl px-4 py-2.5 border-2 border-ink/10">
+              <span className="flex items-center gap-2 text-sm font-body text-ink">
+                <span aria-hidden="true">{c.icon}</span>
+                {c.title}
+              </span>
+              <button
+                onClick={() => handleUnassignCourse(c.courseId)}
+                disabled={assigningCourseId === c.courseId}
+                className="text-ink-muted hover:text-coral transition-colors disabled:opacity-40"
+                aria-label={`Remove ${c.title}`}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {classroom.availableCourses.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-body text-ink-muted uppercase tracking-wide">Add a course</p>
+            {classroom.availableCourses.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => handleAssignCourse(c.id)}
+                disabled={assigningCourseId === c.id}
+                className="w-full flex items-center gap-2 bg-paper border-2 border-dashed border-ink/20 rounded-xl px-4 py-2.5 text-sm font-body text-ink-muted hover:border-ink/40 hover:text-ink transition-colors disabled:opacity-40"
+              >
+                <Plus className="w-3.5 h-3.5 shrink-0" />
+                <span aria-hidden="true">{c.icon}</span>
+                {c.title}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Students Table */}

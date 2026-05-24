@@ -44,10 +44,21 @@ export async function PATCH(
   }
 
   if (parsed.data.action === 'approve') {
-    const updated = await prisma.classMember.update({
-      where: { id: memberId },
-      data: { status: 'APPROVED' },
-    })
+    const [updated, classroomCourses] = await Promise.all([
+      prisma.classMember.update({ where: { id: memberId }, data: { status: 'APPROVED' } }),
+      prisma.classroomCourse.findMany({ where: { classroomId: id }, select: { courseId: true } }),
+    ])
+    if (classroomCourses.length > 0) {
+      await prisma.$transaction(
+        classroomCourses.map((cc) =>
+          prisma.courseEnrollment.upsert({
+            where: { userId_courseId: { userId: member.userId, courseId: cc.courseId } },
+            create: { userId: member.userId, courseId: cc.courseId },
+            update: {},
+          })
+        )
+      )
+    }
     return NextResponse.json({ member: updated })
   } else {
     await prisma.classMember.delete({ where: { id: memberId } })
