@@ -6,7 +6,7 @@ KeySprout's working plan. For project identity, constraints, and architecture, s
 
 ## Where we are
 
-Production-quality alpha deployed on Vercel. Sprints 1–11 merged (Sprint 11 PR open). Student redesign epic in progress.
+Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student redesign epic in progress.
 
 **Completed sprints:**
 - Sprint 5: Prisma migrations, Next.js 15, React 19, Tailwind v4, ESLint 9, CI on every PR
@@ -14,28 +14,27 @@ Production-quality alpha deployed on Vercel. Sprints 1–11 merged (Sprint 11 PR
 - Sprint 7 ([Epic #103](https://github.com/malakaij/KeySprout/issues/103)): Physical keyboard detection — `looksLikeNoKeyboard()` heuristic, `KeyboardGuard` blocking UI, auto-dismiss on trusted keypress, localStorage override
 - Sprint 8 ([Epic #104](https://github.com/malakaij/KeySprout/issues/104)): Security hardening — Super-Admin rename, bcrypt password, CSRF Origin-header check, Postgres rate limiting, threat model, COPPA statement
 - Sprint 9: Collapsible sidebars (224px ↔ 72px icon rail, 180ms); student sidebar adds Courses, Games, Settings nav with per-item accents
+- Sprint 10: Courses data model + enrollment; Alice in Wonderland course (554 lessons, 12 chapters); teachers can assign courses to classrooms
+- Sprint 11: `/lessons` rebuilt — section accordions, lesson-dot grid (14px, 4 states), inline detail panel, course switcher pill tabs
+- Sprint 12: `/dashboard` cleanup — Quest Map removed, Up Next card (accent color band, lesson preview, direct Start button), games moved inline, weekly streak retained
 
 **The app is now deployable to real classrooms** (pending CSP headers, deferred post-alpha).
 
 ---
 
-## Now — Sprint 11 (Student Redesign, step 3 of 6)
+## Now — Sprint 13 (Student Redesign, step 5 of 6)
 
-**Sprint 11 (current, PR open):** `/lessons` page rebuilt.
-- Server component accepts `?course=id`, fetches all enrolled courses for the switcher
-- Scrollable course-switcher pill tabs (hidden when only one course enrolled)
-- Collapsible section accordions with progress chip and rotating chevron; auto-opens section with next unstarted lesson
-- Lesson-dot grid (14px dots): passed / attempted / unlocked / locked states
-- Inline detail panel on dot click: title, content preview, best stats, goal, Start button
+**Up next:** `/settings` page.
+- Nickname reroll (with daily limit display)
+- Class-code join
+- Display preferences (font size, contrast)
 
 ---
 
-## Next — Sprints 12–14
+## Next — Sprint 14
 
 | Sprint | Work |
 |--------|------|
-| 12 | `/dashboard` cleanup: remove Quest Map, add Up Next card + weekly streak |
-| 13 | `/settings` page: nickname reroll, class-code join, display preferences (font + contrast) |
 | 14 | Lesson runner redesign: borderless text area, line clipping, font-size selector, SVG keyboard + hand overlay |
 
 ---
