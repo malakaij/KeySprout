@@ -167,7 +167,7 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
   }
 
   return (
-    <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ maxWidth: '100%' }} aria-label="Keyboard guide">
+    <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ width: '100%', maxWidth: SVG_W, height: 'auto', display: 'block' }} aria-label="Keyboard guide">
       {/* Keyboard background */}
       <rect x={2} y={2} width={SVG_W - 4} height={KB_BG_H - 2} rx={16}
         fill="#f0e8d0" stroke="rgba(26,26,46,0.2)" strokeWidth={3} />

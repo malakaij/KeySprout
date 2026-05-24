@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { TypingArea } from '@/components/typing/TypingArea'
 import { KeyboardHint } from '@/components/ui/KeyboardHint'
@@ -66,6 +66,14 @@ function formatElapsed(secs: number): string {
 export function LessonClient({ lesson, nextLesson, bestWpm }: LessonClientProps) {
   const router = useRouter()
   const { fontSize, setFontSize } = useTypingFontSize()
+
+  // Prevent the student layout's <main> from scrolling on the lesson page —
+  // the lesson runner manages its own fixed-height viewport layout.
+  useEffect(() => {
+    const main = document.getElementById('main-content')
+    if (main) { main.style.overflow = 'hidden' }
+    return () => { if (main) main.style.overflow = '' }
+  }, [])
   const [result, setResult] = useState<TypingResult | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -140,7 +148,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm }: LessonClientProps)
 
   return (
     <KeyboardGuard>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 4rem)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 4rem)', overflow: 'hidden' }}>
 
         {/* TOP BAR */}
         <div style={{ padding: '14px 24px', borderBottom: '1px solid rgba(26,26,46,0.08)', display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -197,7 +205,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm }: LessonClientProps)
         </div>
 
         {/* TEXT AREA — flex-1 */}
-        <div style={{ flex: 1, overflow: 'hidden', padding: '32px 64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ flex: 1, overflow: 'hidden', padding: '12px 64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {result ? (
             <div style={{ maxWidth: 576, width: '100%' }}>
               {/* Result card */}
@@ -298,7 +306,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm }: LessonClientProps)
 
         {/* KEYBOARD GUIDE */}
         {!result && (
-          <div style={{ padding: '12px 24px', borderTop: '1px solid rgba(26,26,46,0.08)' }}>
+          <div style={{ padding: '8px 24px', borderTop: '1px solid rgba(26,26,46,0.08)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
               <KeyboardHint nextKey={currentChar} />
             </div>

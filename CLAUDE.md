@@ -74,7 +74,7 @@ Each of these has a full ADR in [`docs/decisions/`](docs/decisions/). Read the A
 ## Workflow conventions
 
 - **Branching:** feature branches off `main`, named by change (`feat/...`, `fix/...`, `docs/...`). Squash merge. **Create a new branch at the start of every new Epic or Sprint** — never reuse a branch from a previous sprint. For small out-of-band changes (CLAUDE.md edits, doc fixes) that don't belong to an open issue, ask whether a new branch is appropriate before proceeding; when in doubt, create one.
-- **Stale branches:** delete local branches once their PR is merged. Keep the local branch list clean — one branch per active piece of work.
+- **Stale branches:** delete local branches once their PR is merged. Keep the local branch list clean — one branch per active piece of work. **Before pushing any commit, confirm the branch's PR is still open** — if it has been merged, stop, delete the local branch (`git branch -d <branch>`), create a new branch from `main`, and push there instead. Never push to a branch whose PR is already merged.
 - **Commits:** present tense, under 70 chars, body explains *why*. Never include the model identifier in commits or PR text.
 - **Before pushing:** `npm test`, `npm run build`, `npm run lint` all pass.
 - **PRs:** fill out the template. Do not create PRs unless explicitly asked.
