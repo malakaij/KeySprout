@@ -20,8 +20,14 @@ const SPACE_X = (SVG_W - SPACE_W) / 2
 const SPACE_H = 22
 const SVG_H = SPACE_Y + SPACE_H
 
-const LEFT_KEYS = new Set(['q', 'w', 'e', 'r', 't', 'a', 's', 'd', 'f', 'g', 'z', 'x', 'c', 'v', 'b'])
-const RIGHT_KEYS = new Set(['y', 'u', 'i', 'o', 'p', 'h', 'j', 'k', 'l', 'n', 'm'])
+// Per-finger color using design tokens. Sunny is reserved for the "next key" highlight.
+const FINGER_COLOR: Record<0 | 1 | 2 | 3 | 4, string> = {
+  1: 'var(--color-mint)',
+  2: 'var(--color-sky)',
+  3: 'var(--color-grape)',
+  4: 'var(--color-coral)',
+  0: 'var(--color-paper-dark)', // thumb / space
+}
 
 // Finger id: 1=index, 2=middle, 3=ring, 4=pinky, 0=thumb
 const FINGER_FOR_KEY: Record<string, { hand: 'left' | 'right' | 'both'; finger: 0 | 1 | 2 | 3 | 4 }> = {
@@ -76,11 +82,10 @@ function Hand({ side, activeFinger, active }: HandProps) {
 
   function fingerFill(id: 0 | 1 | 2 | 3 | 4) {
     if (id === activeFinger) return 'var(--color-sunny)'
-    if (side === 'left') return 'color-mix(in srgb, var(--color-mint) 45%, var(--color-paper))'
-    return 'color-mix(in srgb, var(--color-coral) 35%, var(--color-paper))'
+    return `color-mix(in srgb, ${FINGER_COLOR[id]} 55%, var(--color-paper))`
   }
 
-  const thumbFill = activeFinger === 0 ? 'var(--color-sunny)' : fingerFill(1)
+  const thumbFill = fingerFill(0)
   const palmFill = active ? 'var(--color-paper-dark)' : 'var(--color-paper)'
 
   return (
@@ -136,20 +141,16 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
               const x = offset + ki * STEP
               const y = ri * ROW_H
               const isTarget = k === target
-              const isLeft = LEFT_KEYS.has(k)
-              const isRight = RIGHT_KEYS.has(k)
-
+              const finger = FINGER_FOR_KEY[k]
               const fill = isTarget
                 ? 'var(--color-sunny)'
-                : isLeft ? 'var(--color-mint)'
-                : isRight ? 'var(--color-coral)'
-                : 'var(--color-paper-dark)'
+                : FINGER_COLOR[finger?.finger ?? 0]
 
               return (
                 <g key={k}>
                   <rect
                     x={x} y={y} width={KEY_W} height={KEY_H} rx={KEY_R}
-                    fill={fill} fillOpacity={isTarget ? 1 : 0.38}
+                    fill={fill} fillOpacity={isTarget ? 1 : 0.45}
                     stroke="var(--color-ink)"
                     strokeOpacity={isTarget ? 1 : 0.4}
                     strokeWidth={isTarget ? 2 : 1}
@@ -158,7 +159,7 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
                     x={x + KEY_W / 2} y={y + KEY_H / 2 + 1}
                     textAnchor="middle" dominantBaseline="middle"
                     fontSize={10} fontWeight={isTarget ? 700 : 500}
-                    fill="var(--color-ink)" fillOpacity={isTarget ? 1 : 0.7}
+                    fill="var(--color-ink)" fillOpacity={isTarget ? 1 : 0.75}
                     fontFamily="monospace"
                   >
                     {k.toUpperCase()}
@@ -204,28 +205,22 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mt-3 text-xs text-ink-muted font-body flex-wrap">
-        <span className="flex items-center gap-1.5">
-          <svg width={12} height={12} aria-hidden="true">
-            <rect width={12} height={12} rx={2} fill="var(--color-mint)" fillOpacity={0.38}
-              stroke="var(--color-ink)" strokeOpacity={0.4} strokeWidth={1} />
-          </svg>
-          Left hand
-        </span>
-        <span className="flex items-center gap-1.5">
-          <svg width={12} height={12} aria-hidden="true">
-            <rect width={12} height={12} rx={2} fill="var(--color-coral)" fillOpacity={0.38}
-              stroke="var(--color-ink)" strokeOpacity={0.4} strokeWidth={1} />
-          </svg>
-          Right hand
-        </span>
-        <span className="flex items-center gap-1.5">
-          <svg width={12} height={12} aria-hidden="true">
-            <rect width={12} height={12} rx={2} fill="var(--color-sunny)"
-              stroke="var(--color-ink)" strokeWidth={1} />
-          </svg>
-          Next key
-        </span>
+      <div className="flex items-center justify-center gap-3 mt-3 text-xs text-ink-muted font-body flex-wrap">
+        {([
+          { label: 'Index', color: 'var(--color-mint)' },
+          { label: 'Middle', color: 'var(--color-sky)' },
+          { label: 'Ring', color: 'var(--color-grape)' },
+          { label: 'Pinky', color: 'var(--color-coral)' },
+          { label: 'Next key', color: 'var(--color-sunny)', full: true },
+        ] as const).map(({ label, color, full }) => (
+          <span key={label} className="flex items-center gap-1.5">
+            <svg width={12} height={12} aria-hidden="true">
+              <rect width={12} height={12} rx={2} fill={color} fillOpacity={full ? 1 : 0.45}
+                stroke="var(--color-ink)" strokeOpacity={full ? 1 : 0.4} strokeWidth={1} />
+            </svg>
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   )
