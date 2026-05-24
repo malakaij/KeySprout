@@ -21,7 +21,7 @@ export default async function LessonsPage({
     orderBy: [{ lastLessonAt: { sort: 'desc', nulls: 'last' } }],
     include: {
       course: {
-        select: { id: true, title: true, icon: true, accent: true, order: true },
+        select: { id: true, title: true, subtitle: true, icon: true, accent: true, order: true },
       },
     },
   })
@@ -32,7 +32,7 @@ export default async function LessonsPage({
     const firstCourse = await prisma.course.findFirst({
       where: { isPublic: true },
       orderBy: { order: 'asc' },
-      select: { id: true, title: true, icon: true, accent: true, order: true },
+      select: { id: true, title: true, subtitle: true, icon: true, accent: true, order: true },
     })
     if (!firstCourse) redirect('/courses')
     await prisma.courseEnrollment.upsert({
@@ -53,6 +53,7 @@ export default async function LessonsPage({
   const courses: CourseTab[] = enrollments.map((e) => ({
     id: e.course.id,
     title: e.course.title,
+    subtitle: e.course.subtitle ?? null,
     icon: e.course.icon,
     accent: e.course.accent,
   }))
@@ -148,12 +149,27 @@ export default async function LessonsPage({
     }
   })
 
+  // Derive weak keys from lessons that were attempted but not passed in this course.
+  // targetKeys on those lessons represent the characters the student is struggling with.
+  const weakKeysSet = new Set<string>()
+  for (const section of courseWithSections.sections) {
+    for (const lesson of section.lessons) {
+      const la = attemptMap.get(lesson.id) ?? []
+      const passed = passedIds.has(lesson.id)
+      if (la.length > 0 && !passed) {
+        for (const k of lesson.targetKeys) weakKeysSet.add(k.toLowerCase())
+      }
+    }
+  }
+  const weakKeys = Array.from(weakKeysSet).slice(0, 5)
+
   return (
     <LessonsClient
       courses={courses}
       activeCourseId={activeCourseId}
       activeCourseAccent={activeCourse.accent}
       sections={sections}
+      weakKeys={weakKeys}
     />
   )
 }

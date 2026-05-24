@@ -24,13 +24,12 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 
 **Completed sprints (continued):**
 - Sprint 13: `/settings` page — Username (reroll/request), Class (join by code), Display (font picker + high-contrast, always-open inline). `DisplaySettings` `alwaysOpen` prop added.
-- Sprint 14: Lesson runner redesigned — `TypingArea` borderless + 3-line clip; SVG keyboard + hand overlay with per-finger highlighting; S/M/L font-size toggle (localStorage-persisted).
+- Sprint 14: Lesson runner redesigned — `TypingArea` borderless + DOM-measurement line clip; full SVG keyboard + hand overlay; S/M/L/XL font-size toggle (localStorage-persisted). Viewport fit fix (height not minHeight, overflow suppressed on main).
+- Sprint 15: `/lessons` polished to match design handoff — course subtitle below switcher, Personalized Practice card (Pip + weak-key drill), single-open accordion behavior, status chip in detail panel, dot legend.
 
 ---
 
-## Now — Post student-redesign epic
-
-The student-redesign epic (Sprints 9–14) is complete. All student-facing pages rebuilt.
+## Now
 
 **Candidate next work:**
 
