@@ -27,6 +27,7 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 - Sprint 14: Lesson runner redesigned — `TypingArea` borderless + DOM-measurement line clip; full SVG keyboard + hand overlay; S/M/L/XL font-size toggle (localStorage-persisted). Viewport fit fix (height not minHeight, overflow suppressed on main).
 - Sprint 15: `/lessons` polished to match design handoff — course subtitle below switcher, Personalized Practice card (Pip + weak-key drill), single-open accordion behavior, status chip in detail panel, dot legend.
 - Sprint 16: Remaining design-handoff gaps — 52×52 lesson dots with icons/pulse, shared `UpNextCard` on dashboard + `/lessons`, keyboard-shortcuts link in settings, NameCard footnote.
+- Sprint 17: CSP headers — per-request nonce, full `Content-Security-Policy` on all routes, companion headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`).
 
 ---
 
@@ -36,9 +37,8 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 
 | Theme | Notes |
 |-------|-------|
-| CSP headers | Last pre-launch blocker |
+| Student credentials | Username/password auth, QR login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
 | Teacher data export | CSV/PDF, bulk actions ([#105](https://github.com/malakaij/KeySprout/issues/105)) |
-| Student credentials | Username/password, QR login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
 
 ---
 
