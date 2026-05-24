@@ -212,7 +212,7 @@ export function KeyboardHint({ nextKey }: KeyboardHintProps) {
           { label: 'Ring', color: 'var(--color-grape)' },
           { label: 'Pinky', color: 'var(--color-coral)' },
           { label: 'Next key', color: 'var(--color-sunny)', full: true },
-        ] as const).map(({ label, color, full }) => (
+        ] as { label: string; color: string; full?: boolean }[]).map(({ label, color, full }) => (
           <span key={label} className="flex items-center gap-1.5">
             <svg width={12} height={12} aria-hidden="true">
               <rect width={12} height={12} rx={2} fill={color} fillOpacity={full ? 1 : 0.45}
