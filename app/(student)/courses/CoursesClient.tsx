@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { BookOpen, Clock, Calendar } from 'lucide-react'
-import { sectionColor } from '@/lib/section-colors'
 import { cn } from '@/lib/utils'
 
 const ACCENT_TEXT: Record<string, string> = {
