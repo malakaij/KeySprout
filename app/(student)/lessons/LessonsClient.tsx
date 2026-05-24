@@ -104,26 +104,36 @@ function findCurrentLessonId(sections: SectionData[]): string | null {
 interface DetailPanelProps {
   lesson: LessonDot
   accent: string
+  /** Description of the parent section, shown as body text in the panel. */
+  sectionDescription: string | null
 }
 
-function DetailPanel({ lesson, accent }: DetailPanelProps) {
-  const preview = lesson.content ? lesson.content.slice(0, 120) : null
-  const truncated = lesson.content && lesson.content.length > 120
+function DetailPanel({ lesson, accent, sectionDescription }: DetailPanelProps) {
   const { label: statusLabel, color: statusColor } = lessonStatus(lesson)
+
+  // Body text: locked message takes priority, then section description.
+  const bodyText = lesson.locked
+    ? 'Finish the lessons before this one to unlock it.'
+    : sectionDescription ?? null
 
   return (
     <div className="kq-card p-4 mt-2 space-y-3">
       <div className="flex items-start justify-between gap-2">
         <p className="font-display text-base text-ink">{lesson.title}</p>
-        <span style={{ fontSize: 11, color: statusColor, fontWeight: 700, whiteSpace: 'nowrap', fontFamily: 'Nunito, sans-serif' }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center',
+          border: `1.5px solid ${statusColor}`,
+          background: `${statusColor}1a`,
+          borderRadius: 999, padding: '2px 8px',
+          fontSize: 11, color: statusColor, fontWeight: 700,
+          whiteSpace: 'nowrap', fontFamily: 'Nunito, sans-serif',
+        }}>
           {statusLabel}
         </span>
       </div>
 
-      {preview && (
-        <p className="text-sm font-body text-ink-muted italic">
-          {preview}{truncated ? '…' : ''}
-        </p>
+      {bodyText && (
+        <p className="text-sm font-body text-ink-muted italic">{bodyText}</p>
       )}
 
       {(lesson.bestWpm !== null || lesson.bestAccuracy !== null) && (
@@ -207,9 +217,22 @@ function SectionAccordion({
             <p className="text-sm font-body text-ink-muted mt-0.5">{section.description}</p>
           )}
         </div>
-        <span className="kq-chip bg-white/70 border-ink text-ink text-xs shrink-0">
-          {section.passedCount} / {section.lessons.length}
-        </span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span className="kq-chip bg-white/70 border-ink text-ink text-xs">
+            {section.passedCount} / {section.lessons.length}
+          </span>
+          <div style={{
+            width: 80, height: 6, borderRadius: 9999,
+            background: 'rgba(26,26,46,0.12)', overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%', borderRadius: 9999,
+              width: `${section.lessons.length > 0 ? Math.round((section.passedCount / section.lessons.length) * 100) : 0}%`,
+              background: c.hex,
+              transition: 'width 300ms',
+            }} />
+          </div>
+        </div>
         <ChevronDown
           className="w-4 h-4 text-ink shrink-0 transition-transform duration-180"
           style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -316,7 +339,7 @@ function SectionAccordion({
           </div>
 
           {selectedLesson && (
-            <DetailPanel lesson={selectedLesson} accent={accent} />
+            <DetailPanel lesson={selectedLesson} accent={accent} sectionDescription={section.description} />
           )}
         </div>
       )}

@@ -49,8 +49,27 @@ export function NameCard({
 
   return (
     <div className="kq-card p-5">
-      <p className="text-xs text-ink-muted uppercase tracking-wider mb-1 font-body">Your username</p>
-      <p className="text-2xl font-display text-ink mb-4">{currentName}</p>
+      <div className="flex items-center gap-4 mb-4">
+        <div
+          style={{
+            width: 56, height: 56, borderRadius: 9999,
+            background: 'var(--color-grape)',
+            border: '3px solid #1a1a2e',
+            boxShadow: '3px 3px 0 #1a1a2e',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}
+          aria-hidden="true"
+        >
+          <span style={{ fontFamily: "'Fredoka One', cursive", fontSize: 24, color: 'white', lineHeight: 1 }}>
+            {currentName.charAt(0).toUpperCase()}
+          </span>
+        </div>
+        <div>
+          <p className="text-xs text-ink-muted uppercase tracking-wider font-body">Your username</p>
+          <p className="text-2xl font-display text-ink">{currentName}</p>
+        </div>
+      </div>
 
       {requested ? (
         <div className="flex items-center gap-2 text-sunny text-sm font-body">

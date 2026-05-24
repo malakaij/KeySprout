@@ -45,9 +45,11 @@ interface CourseCardProps {
   course: CourseData
   onEnroll: (id: string) => void
   enrolling: boolean
+  /** Whether this is the single most-recently-active enrolled course. */
+  isLatest: boolean
 }
 
-function CourseCard({ course, onEnroll, enrolling }: CourseCardProps) {
+function CourseCard({ course, onEnroll, enrolling, isLatest }: CourseCardProps) {
   const pct = course.totalLessons > 0
     ? Math.round((course.startedLessons / course.totalLessons) * 100)
     : 0
@@ -65,9 +67,9 @@ function CourseCard({ course, onEnroll, enrolling }: CourseCardProps) {
             <p className={cn('text-sm font-body mt-0.5 opacity-80', textColor)}>{course.subtitle}</p>
           )}
         </div>
-        {course.isEnrolled && course.lastLessonAt && (
+        {isLatest && (
           <span className="ml-auto shrink-0 kq-chip bg-white/90 border-ink text-ink text-xs px-2 py-0.5">
-            ★ Active
+            ★ Latest
           </span>
         )}
       </div>
@@ -153,6 +155,11 @@ export function CoursesClient({ courses }: Props) {
 
   const enrolledCount = courses.filter((c) => c.isEnrolled).length
 
+  // The single most-recently-active enrolled course gets the ★ Latest chip.
+  const latestCourseId = courses
+    .filter((c) => c.isEnrolled && c.lastLessonAt)
+    .sort((a, b) => new Date(b.lastLessonAt!).getTime() - new Date(a.lastLessonAt!).getTime())[0]?.id ?? null
+
   async function handleEnroll(courseId: string) {
     setEnrollingId(courseId)
     try {
@@ -190,6 +197,7 @@ export function CoursesClient({ courses }: Props) {
             course={course}
             onEnroll={handleEnroll}
             enrolling={enrollingId === course.id}
+            isLatest={course.id === latestCourseId}
           />
         ))}
       </div>
