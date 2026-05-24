@@ -221,7 +221,7 @@ export default async function DashboardPage() {
       {/* Weekly Streak */}
       <div className="kq-card p-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display text-lg text-ink">This Week</h2>
+          <h2 className="font-display text-lg text-ink">Weekly Streak</h2>
           <div className="flex items-center gap-2">
             <span className="text-2xl" aria-hidden="true">🔥</span>
             <span className="font-display text-2xl text-coral">{streak}</span>
