@@ -39,7 +39,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 13:** `/settings` page live. Three sections: Username (NameCard — reroll / teacher-mediated request), Class (JoinClassCard — join by code), Display (DisplaySettings always-open — high-contrast toggle, reading font picker, keyboard override clear). `DisplaySettings` gained `alwaysOpen` prop so it renders inline without the sidebar collapse toggle.
 
-**As of Sprint 14 (current):** Lesson runner redesigned. `TypingArea`: borderless (soft tinted bg, no heavy border), line clipping (3 lines at a time via word-wrap, advances with cursor), font-size prop (`sm`/`md`/`lg`). `KeyboardHint`: full SVG keyboard layout + two SVG hand diagrams with per-finger highlighting — shows which hand and which finger (index/middle/ring/pinky/thumb) to press next. `LessonClient`: S/M/L font-size toggle (persisted to localStorage via `useTypingFontSize` hook), state shared with `TypingArea`. `hooks/useTypingFontSize.ts` added.
+**As of Sprint 14:** Lesson runner redesigned. `TypingArea`: borderless, DOM-measurement line clipping (3–4 lines, advances with cursor), numeric font-size prop (18/28/40/56px). `KeyboardHint`: single SVG — full QWERTY + modifier keys + ellipse palms + 10 per-finger lines reaching to target key. `LessonClient`: S/M/L/XL segmented pill, live-stats toggle, 4px progress bar, full-height column layout. `useTypingFontSize` hook (numeric, localStorage-persisted).
+
+**As of Sprint 15 (current):** `/lessons` page polished to match design handoff. Course subtitle rendered below switcher. Personalized Practice card (Pip + weak-key callout + drill button) appears when attempted-but-not-passed lessons exist. Section accordions now single-open (only one section open at a time). Status chip (Passed / Up next / In progress / Locked) added to lesson detail panel. Dot legend added below accordions.
 
 **Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
 

@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 import { sectionColor } from '@/lib/section-colors'
+import { Pip } from '@/components/ui/Pip'
 
 export interface CourseTab {
   id: string
   title: string
+  subtitle: string | null
   icon: string
   accent: string
 }
@@ -42,6 +44,8 @@ interface Props {
   activeCourseId: string
   activeCourseAccent: string
   sections: SectionData[]
+  /** Keys from attempted-but-not-passed lessons; drives the Personalized Practice card. */
+  weakKeys: string[]
 }
 
 function accentBg(accent: string) {
@@ -56,14 +60,21 @@ function accentBg(accent: string) {
   return map[accent] ?? 'bg-mint'
 }
 
-/** Finds the index of the section that should auto-open on load. */
+/** Finds the section that should auto-open on load. */
 function findAutoOpenSectionId(sections: SectionData[]): string | null {
   for (const section of sections) {
     const firstUnstarted = section.lessons.find((l) => !l.locked && !l.attempted && !l.passed)
     if (firstUnstarted) return section.id
   }
-  // Fall back to first section if everything is passed or no unlocked+unstarted found
   return sections[0]?.id ?? null
+}
+
+/** Status label and color for a lesson dot. */
+function lessonStatus(lesson: LessonDot): { label: string; color: string } {
+  if (lesson.locked)   return { label: 'Locked',      color: 'var(--color-ink-muted)' }
+  if (lesson.passed)   return { label: 'Passed',       color: 'var(--color-mint)' }
+  if (lesson.attempted) return { label: 'In progress', color: 'var(--color-sunny)' }
+  return                       { label: 'Up next',     color: 'var(--color-coral)' }
 }
 
 interface DetailPanelProps {
@@ -74,10 +85,16 @@ interface DetailPanelProps {
 function DetailPanel({ lesson, accent }: DetailPanelProps) {
   const preview = lesson.content ? lesson.content.slice(0, 120) : null
   const truncated = lesson.content && lesson.content.length > 120
+  const { label: statusLabel, color: statusColor } = lessonStatus(lesson)
 
   return (
     <div className="kq-card p-4 mt-2 space-y-3">
-      <p className="font-display text-base text-ink">{lesson.title}</p>
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-display text-base text-ink">{lesson.title}</p>
+        <span style={{ fontSize: 11, color: statusColor, fontWeight: 700, whiteSpace: 'nowrap', fontFamily: 'Nunito, sans-serif' }}>
+          {statusLabel}
+        </span>
+      </div>
 
       {preview && (
         <p className="text-sm font-body text-ink-muted italic">
@@ -152,7 +169,6 @@ function SectionAccordion({
 
   return (
     <div className={`rounded-2xl border-[3px] ${c.border} overflow-hidden`}>
-      {/* Accordion header */}
       <button
         onClick={onToggle}
         className={`w-full flex items-center gap-3 p-4 ${c.bg} text-left cursor-pointer`}
@@ -174,7 +190,6 @@ function SectionAccordion({
         />
       </button>
 
-      {/* Accordion body */}
       {isOpen && (
         <div className="bg-paper p-4 border-t-[3px] border-inherit">
           <div className="flex flex-wrap gap-2">
@@ -220,34 +235,30 @@ function SectionAccordion({
 }
 
 /** Lessons page — course switcher tabs + section accordions with lesson dot navigation. */
-export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sections }: Props) {
+export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sections, weakKeys }: Props) {
   const router = useRouter()
 
-  const [openSections, setOpenSections] = useState<Set<string>>(() => {
-    const autoId = findAutoOpenSectionId(sections)
-    return autoId ? new Set([autoId]) : new Set()
-  })
+  const activeCourse = courses.find((c) => c.id === activeCourseId)
+
+  const [openSectionId, setOpenSectionId] = useState<string | null>(() =>
+    findAutoOpenSectionId(sections)
+  )
 
   const [selectedDot, setSelectedDot] = useState<{ sectionId: string; lessonId: string } | null>(null)
 
   // Re-compute auto-open when sections change (course switch)
   useEffect(() => {
-    const autoId = findAutoOpenSectionId(sections)
-    setOpenSections(autoId ? new Set([autoId]) : new Set())
+    setOpenSectionId(findAutoOpenSectionId(sections))
     setSelectedDot(null)
   }, [sections])
 
   function toggleSection(sectionId: string) {
-    setOpenSections((prev) => {
-      const next = new Set(prev)
-      if (next.has(sectionId)) {
-        next.delete(sectionId)
-        // Clear dot selection if it was in the closing section
+    setOpenSectionId((prev) => {
+      if (prev === sectionId) {
         if (selectedDot?.sectionId === sectionId) setSelectedDot(null)
-      } else {
-        next.add(sectionId)
+        return null
       }
-      return next
+      return sectionId
     })
   }
 
@@ -284,6 +295,43 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
         </div>
       )}
 
+      {/* Course subtitle */}
+      {activeCourse?.subtitle && (
+        <p className="text-sm font-body text-ink-muted -mt-3">{activeCourse.subtitle}</p>
+      )}
+
+      {/* Personalized Practice card */}
+      {weakKeys.length > 0 && (
+        <div className="kq-card p-5 flex items-center gap-4" style={{ background: 'rgba(77,212,172,0.12)' }}>
+          <Pip size="md" variant="wave" className="shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="font-display text-base text-ink">Personalized Practice</p>
+            <p className="text-sm font-body text-ink-muted mt-0.5">
+              Pip noticed you&apos;re working on{' '}
+              {weakKeys.map((k, i) => (
+                <span key={k}>
+                  <strong>{k}</strong>{i < weakKeys.length - 1 ? ', ' : ''}
+                </span>
+              ))}
+              {' '}— want a custom drill?
+            </p>
+          </div>
+          <button
+            onClick={async () => {
+              const res = await fetch('/api/lessons/dynamic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ weakKeys }),
+              })
+              if (res.ok) router.push('/lessons/dynamic')
+            }}
+            className="kq-btn bg-mint text-ink px-4 py-2 text-sm font-display shrink-0"
+          >
+            Practice weak keys
+          </button>
+        </div>
+      )}
+
       {/* Section accordions */}
       <div className="space-y-3">
         {sections.map((section, sectionIndex) => (
@@ -291,12 +339,27 @@ export function LessonsClient({ courses, activeCourseId, activeCourseAccent, sec
             key={section.id}
             section={section}
             sectionIndex={sectionIndex}
-            isOpen={openSections.has(section.id)}
+            isOpen={openSectionId === section.id}
             onToggle={() => toggleSection(section.id)}
             selectedDot={selectedDot}
             onSelectDot={handleSelectDot}
             accent={activeCourseAccent}
           />
+        ))}
+      </div>
+
+      {/* Dot legend */}
+      <div className="flex flex-wrap gap-4 pt-1" aria-label="Lesson status legend">
+        {[
+          { label: 'Passed',      bg: 'bg-mint',       border: 'border-mint' },
+          { label: 'Up next',     bg: 'bg-paper',      border: 'border-ink' },
+          { label: 'In progress', bg: 'bg-sunny',      border: 'border-sunny' },
+          { label: 'Locked',      bg: 'bg-paper-dark', border: 'border-ink/30' },
+        ].map(({ label, bg, border }) => (
+          <span key={label} className="flex items-center gap-1.5 text-xs text-ink-muted font-body">
+            <span className={`w-3 h-3 rounded-full border-2 ${bg} ${border} inline-block`} aria-hidden="true" />
+            {label}
+          </span>
         ))}
       </div>
     </div>
