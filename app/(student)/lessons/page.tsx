@@ -26,7 +26,29 @@ export default async function LessonsPage({
     },
   })
 
-  if (enrollments.length === 0) redirect('/courses')
+  // Auto-enroll in the first public course so /lessons always works without
+  // requiring a prior visit to /courses.
+  if (enrollments.length === 0) {
+    const firstCourse = await prisma.course.findFirst({
+      where: { isPublic: true },
+      orderBy: { order: 'asc' },
+      select: { id: true, title: true, icon: true, accent: true, order: true },
+    })
+    if (!firstCourse) redirect('/courses')
+    await prisma.courseEnrollment.upsert({
+      where: { userId_courseId: { userId, courseId: firstCourse.id } },
+      create: { userId, courseId: firstCourse.id },
+      update: {},
+    })
+    enrollments.push({
+      id: '',
+      userId,
+      courseId: firstCourse.id,
+      enrolledAt: new Date(),
+      lastLessonAt: null,
+      course: firstCourse,
+    })
+  }
 
   const courses: CourseTab[] = enrollments.map((e) => ({
     id: e.course.id,

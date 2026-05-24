@@ -17,23 +17,34 @@ export async function GET(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const classroom = await prisma.classroom.findUnique({
-    where: { id: id },
-    include: {
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              nameChangeRequested: true,
-              lessonAttempts: { orderBy: { completedAt: 'desc' }, take: 10 },
+  const [classroom, allPublicCourses] = await Promise.all([
+    prisma.classroom.findUnique({
+      where: { id: id },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                nameChangeRequested: true,
+                lessonAttempts: { orderBy: { completedAt: 'desc' }, take: 10 },
+              },
             },
           },
         },
+        courses: {
+          include: { course: { select: { id: true, title: true, icon: true, accent: true } } },
+          orderBy: { assignedAt: 'asc' },
+        },
       },
-    },
-  })
+    }),
+    prisma.course.findMany({
+      where: { isPublic: true },
+      select: { id: true, title: true, icon: true, accent: true },
+      orderBy: { order: 'asc' },
+    }),
+  ])
 
   if (!classroom) {
     return NextResponse.json({ error: 'Classroom not found' }, { status: 404 })
@@ -74,7 +85,23 @@ export async function GET(
       user: { id: member.user.id, name: member.user.name },
     }))
 
-  return NextResponse.json({ ...classroom, members: approved, pendingMembers: pending })
+  const assignedCourseIds = new Set(classroom.courses.map((c) => c.courseId))
+  const assignedCourses = classroom.courses.map((c) => ({
+    id: c.id,
+    courseId: c.courseId,
+    title: c.course.title,
+    icon: c.course.icon,
+    accent: c.course.accent,
+  }))
+  const availableCourses = allPublicCourses.filter((c) => !assignedCourseIds.has(c.id))
+
+  return NextResponse.json({
+    ...classroom,
+    members: approved,
+    pendingMembers: pending,
+    assignedCourses,
+    availableCourses,
+  })
 }
 
 export async function DELETE(
