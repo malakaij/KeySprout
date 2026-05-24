@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import './globals.css'
 import { Providers } from './providers'
 import { Navbar } from '@/components/layout/Navbar'
@@ -19,11 +19,13 @@ export default async function RootLayout({
 }) {
   // Read preference cookies set by the client hooks so SSR can apply data attributes
   // before hydration — prevents any flash of unstyled/wrong-contrast content.
-  const cookieStore = await cookies()
+  const [cookieStore, headerStore] = await Promise.all([cookies(), headers()])
   const fontCookie = cookieStore.get('kq-font')?.value
   const contrastCookie = cookieStore.get('kq-contrast')?.value
   const dataFont = fontCookie && VALID_FONTS.has(fontCookie) ? fontCookie : undefined
   const dataContrast = contrastCookie === 'high' ? 'high' : undefined
+  // Forwarded by middleware so any <Script nonce={nonce}> calls are CSP-compliant.
+  const nonce = headerStore.get('x-nonce') ?? undefined
 
   return (
     <html
@@ -32,7 +34,7 @@ export default async function RootLayout({
       {...(dataContrast ? { 'data-contrast': dataContrast } : {})}
     >
       <body className="font-body">
-        <Providers>
+        <Providers nonce={nonce}>
           <a href="#main-content" className="skip-link">Skip to main content</a>
           <Navbar />
           {children}

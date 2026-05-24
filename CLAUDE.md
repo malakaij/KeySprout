@@ -43,9 +43,11 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 15:** `/lessons` page polished to match design handoff. Course subtitle rendered below switcher. Personalized Practice card (Pip + weak-key callout + drill button) appears when attempted-but-not-passed lessons exist. Section accordions now single-open (only one section open at a time). Status chip (Passed / Up next / In progress / Locked) added to lesson detail panel. Dot legend added below accordions.
 
-**As of Sprint 16 (current):** Remaining design-handoff gaps closed. Lesson dots rebuilt to 52×52 with icons (Check/Lock/lesson number), per-state fills, correct shadows, and pulse animation on current lesson. Shared `UpNextCard` component created and used on both `/dashboard` and `/lessons`. Dashboard Up Next card now shows accent circle, gradient background, and color-coded goal chips. Settings page gains keyboard-shortcuts link section (→ `/help`). NameCard gains teacher-change footnote.
+**As of Sprint 16:** Remaining design-handoff gaps closed. Lesson dots rebuilt to 52×52 with icons (Check/Lock/lesson number), per-state fills, correct shadows, and pulse animation on current lesson. Shared `UpNextCard` component created and used on both `/dashboard` and `/lessons`. Dashboard Up Next card now shows accent circle, gradient background, and color-coded goal chips. Settings page gains keyboard-shortcuts link section (→ `/help`). NameCard gains teacher-change footnote.
 
-**Not yet ready for real classrooms.** Remaining blockers: CSP headers (deferred post-alpha).
+**As of Sprint 17 (current):** CSP headers shipped. Middleware now runs on all routes (not just `/api/*`), generates a per-request nonce, and emits `Content-Security-Policy` + `X-Frame-Options` + `X-Content-Type-Options` + `Referrer-Policy` + `Permissions-Policy` on every response. Root layout reads the nonce from `x-nonce` for use with future `<Script>` components.
+
+**The app is now ready for real classrooms.**
 
 ---
 
