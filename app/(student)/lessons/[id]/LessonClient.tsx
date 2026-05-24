@@ -9,6 +9,13 @@ import { KeyboardGuard } from '@/components/keyboard/KeyboardGuard'
 import { ArrowLeft, ArrowRight, RefreshCw, Sparkles, CheckCircle, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useTypingFontSize, type TypingFontSize } from '@/hooks/useTypingFontSize'
+
+const FONT_SIZE_LABELS: { value: TypingFontSize; label: string }[] = [
+  { value: 'sm', label: 'S' },
+  { value: 'md', label: 'M' },
+  { value: 'lg', label: 'L' },
+]
 
 interface LessonData {
   id: string
@@ -48,6 +55,7 @@ const SECTION_COLORS: Record<string, string> = {
 
 export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: LessonClientProps) {
   const router = useRouter()
+  const { fontSize, setFontSize } = useTypingFontSize()
   const [result, setResult] = useState<TypingResult | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -150,13 +158,32 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         </div>
       )}
 
-      {/* Goals */}
-      {(lesson.minWpm || lesson.minAccuracy) && (
-        <div className="flex gap-4 text-sm text-ink-muted font-body">
-          {lesson.minWpm && <span>Goal: <span className="text-mint font-bold">{lesson.minWpm} WPM</span></span>}
-          {lesson.minAccuracy && <span>Accuracy: <span className="text-sky font-bold">{Math.round(lesson.minAccuracy * 100)}%</span></span>}
+      {/* Goals + font size selector */}
+      <div className="flex items-center justify-between gap-4">
+        {(lesson.minWpm || lesson.minAccuracy) ? (
+          <div className="flex gap-4 text-sm text-ink-muted font-body">
+            {lesson.minWpm && <span>Goal: <span className="text-mint font-bold">{lesson.minWpm} WPM</span></span>}
+            {lesson.minAccuracy && <span>Accuracy: <span className="text-sky font-bold">{Math.round(lesson.minAccuracy * 100)}%</span></span>}
+          </div>
+        ) : <div />}
+        <div className="flex items-center gap-1 shrink-0" aria-label="Text size">
+          {FONT_SIZE_LABELS.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => setFontSize(value)}
+              aria-pressed={fontSize === value}
+              className={cn(
+                'w-7 h-7 rounded-lg text-xs font-bold font-body transition-all',
+                fontSize === value
+                  ? 'bg-grape text-white border-2 border-ink shadow-ink-sm'
+                  : 'bg-paper-dark text-ink-muted border-2 border-ink/20 hover:border-ink/50'
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Typing Area */}
       <TypingArea
@@ -164,6 +191,7 @@ export function LessonClient({ lesson, nextLesson, bestWpm, previouslyPassed }: 
         text={lesson.content}
         onComplete={handleComplete}
         onCurrentChar={setCurrentChar}
+        fontSize={fontSize}
       />
 
       {/* Keyboard Hint */}
