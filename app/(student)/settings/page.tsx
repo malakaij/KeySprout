@@ -1,7 +1,8 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { Settings } from 'lucide-react'
+import Link from 'next/link'
+import { Settings, Keyboard, ArrowRight } from 'lucide-react'
 import { NameCard } from '@/components/dashboard/NameCard'
 import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
 import { DisplaySettings } from '@/components/ui/DisplaySettings'
@@ -74,6 +75,22 @@ export default async function SettingsPage() {
         </h2>
         <div className="kq-card p-5">
           <DisplaySettings alwaysOpen />
+        </div>
+      </section>
+
+      {/* Keyboard shortcuts */}
+      <section aria-labelledby="settings-shortcuts-heading">
+        <div className="kq-card p-5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Keyboard className="w-5 h-5 text-ink-muted shrink-0" />
+            <div>
+              <h2 id="settings-shortcuts-heading" className="font-display text-base text-ink">Keyboard shortcuts</h2>
+              <p className="text-sm font-body text-ink-muted mt-0.5">View all keyboard shortcuts for lessons and games.</p>
+            </div>
+          </div>
+          <Link href="/help" className="kq-btn bg-paper-dark text-ink flex items-center gap-2 px-4 py-2 text-sm font-display">
+            View <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
     </div>

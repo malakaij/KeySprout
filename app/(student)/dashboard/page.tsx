@@ -3,32 +3,11 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { StatsCard } from '@/components/dashboard/StatsCard'
-import { JoinClassCard } from '@/components/dashboard/JoinClassCard'
-import { NameCard } from '@/components/dashboard/NameCard'
 import { Pip } from '@/components/ui/Pip'
-import { BookOpen, Zap, Target, Flame, ArrowRight, Gamepad2 } from 'lucide-react'
+import { UpNextCard } from '@/components/ui/UpNextCard'
+import { BookOpen, Zap, Target, Flame } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { differenceInDays } from 'date-fns'
-
-const DAILY_LIMIT = 3
-
-const ACCENT_BG: Record<string, string> = {
-  mint: 'bg-mint', sky: 'bg-sky', sunny: 'bg-sunny',
-  grape: 'bg-grape', coral: 'bg-coral', berry: 'bg-berry',
-}
-const ACCENT_TEXT: Record<string, string> = {
-  mint: 'text-ink', sky: 'text-ink', sunny: 'text-ink',
-  grape: 'text-white', coral: 'text-white', berry: 'text-white',
-}
-
-function isToday(date: Date): boolean {
-  const now = new Date()
-  return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  )
-}
 
 function getWeekDots(attempts: { completedAt: Date }[]): boolean[] {
   const today = new Date()
@@ -49,7 +28,7 @@ export default async function DashboardPage() {
 
   const userId = session.user.id
 
-  const [attempts, enrollments, userData, approvedMembership] = await Promise.all([
+  const [attempts, enrollments] = await Promise.all([
     prisma.lessonAttempt.findMany({
       where: { userId },
       include: {
@@ -76,25 +55,18 @@ export default async function DashboardPage() {
             accent: true,
             sections: {
               orderBy: { order: 'asc' },
-              include: { lessons: { orderBy: { order: 'asc' } } },
+              include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                    select: { id: true, title: true, content: true, order: true, minWpm: true, minAccuracy: true },
+                  },
+                },
             },
           },
         },
       },
     }),
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { name: true, rerollsToday: true, lastRerollDate: true, nameChangeRequested: true },
-    }),
-    prisma.classMember.findFirst({ where: { userId, status: 'APPROVED' } }),
   ])
-
-  const usedToday =
-    userData?.lastRerollDate && isToday(userData.lastRerollDate)
-      ? userData.rerollsToday
-      : 0
-  const rerollsRemaining = Math.max(0, DAILY_LIMIT - usedToday)
-  const isInClass = !!approvedMembership
 
   const avgWpm = attempts.length > 0
     ? Math.round(attempts.reduce((s, a) => s + a.wpm, 0) / attempts.length)
@@ -135,6 +107,9 @@ export default async function DashboardPage() {
     lessonId: string
     lessonTitle: string
     lessonContent: string | null
+    lessonOrder: number
+    minWpm: number | null
+    minAccuracy: number | null
     sectionTitle: string
     courseTitle: string
     courseAccent: string
@@ -153,6 +128,9 @@ export default async function DashboardPage() {
             lessonId: lesson.id,
             lessonTitle: lesson.title,
             lessonContent: lesson.content,
+            lessonOrder: lesson.order + 1,
+            minWpm: lesson.minWpm ?? null,
+            minAccuracy: lesson.minAccuracy ?? null,
             sectionTitle: section.title,
             courseTitle: course.title,
             courseAccent: course.accent,
@@ -179,59 +157,10 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Up Next */}
-      {upNext ? (
-        <div className="kq-card overflow-hidden">
-          <div className={`px-5 py-3 flex items-center gap-2 border-b-[3px] border-ink ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'}`}>
-            <span aria-hidden="true">{upNext.courseIcon}</span>
-            <span className={`text-sm font-display ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}>
-              Up Next · {upNext.courseTitle}
-            </span>
-          </div>
-          <div className="p-5 flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-xs text-ink-muted font-body mb-1">{upNext.sectionTitle}</p>
-              <h2 className="font-display text-lg text-ink leading-snug">{upNext.lessonTitle}</h2>
-              {upNext.lessonContent && (
-                <p className="text-sm font-body text-ink-muted mt-1.5 italic line-clamp-2">
-                  {upNext.lessonContent.slice(0, 120)}{upNext.lessonContent.length > 120 ? '…' : ''}
-                </p>
-              )}
-            </div>
-            <Link
-              href={`/lessons/${upNext.lessonId}`}
-              className={`shrink-0 kq-btn px-5 py-2.5 font-display text-sm flex items-center gap-2 ${ACCENT_BG[upNext.courseAccent] ?? 'bg-mint'} ${ACCENT_TEXT[upNext.courseAccent] ?? 'text-ink'}`}
-            >
-              Start <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      ) : enrollments.length === 0 ? (
-        <div className="kq-card p-5 flex items-center justify-between gap-4">
-          <p className="font-body text-ink-muted">Pick a course to start your typing journey.</p>
-          <Link href="/courses" className="kq-btn bg-mint text-ink px-4 py-2 text-sm font-display shrink-0">
-            Browse Courses
-          </Link>
-        </div>
-      ) : (
-        <div className="kq-card p-5 text-center">
-          <p className="font-display text-ink text-lg">🎉 All caught up!</p>
-          <p className="text-ink-muted font-body text-sm mt-1">You&apos;ve completed every lesson in your courses.</p>
-        </div>
-      )}
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard label="Lessons Passed" value={passedLessonIds.size} icon={<BookOpen className="w-5 h-5 text-mint" />} />
-        <StatsCard label="Average WPM" value={avgWpm} icon={<Zap className="w-5 h-5 text-sunny" />} />
-        <StatsCard label="Avg Accuracy" value={`${Math.round(avgAccuracy * 100)}%`} icon={<Target className="w-5 h-5 text-sky" />} />
-        <StatsCard label="Day Streak" value={streak} icon={<Flame className="w-5 h-5 text-coral" />} />
-      </div>
-
       {/* Weekly Streak */}
       <div className="kq-card p-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display text-lg text-ink">This Week</h2>
+          <h2 className="font-display text-lg text-ink">Weekly Streak</h2>
           <div className="flex items-center gap-2">
             <span className="text-2xl" aria-hidden="true">🔥</span>
             <span className="font-display text-2xl text-coral">{streak}</span>
@@ -248,71 +177,65 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <div className="kq-card p-5">
-          <h2 className="font-display text-lg text-ink mb-4">Recent Activity</h2>
-          <div className="space-y-3">
-            {recentAttempts.length === 0 ? (
-              <p className="text-ink-muted text-sm py-4 text-center font-body">
-                No attempts yet. Start your first lesson!
-              </p>
-            ) : (
-              recentAttempts.map((attempt) => (
-                <div key={attempt.id} className="flex items-center justify-between text-sm">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-ink font-semibold truncate">{attempt.lesson.title}</p>
-                    <p className="text-xs text-ink-muted font-body">{formatDate(attempt.completedAt)}</p>
-                  </div>
-                  <div className="flex gap-3 ml-3 shrink-0">
-                    <span className="text-mint font-bold">{Math.round(attempt.wpm)} WPM</span>
-                    <span className="text-sky font-semibold">{Math.round(attempt.accuracy * 100)}%</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Practice Games */}
-        <div className="kq-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg text-ink">Practice Games</h2>
-            <Gamepad2 className="w-5 h-5 text-sunny" aria-hidden="true" />
-          </div>
-          <div className="space-y-3">
-            <Link
-              href="/games/word-rain"
-              className="flex items-center gap-3 p-3 bg-paper-dark rounded-xl border-2 border-ink/20 hover:border-ink hover:shadow-ink-sm transition-all"
-            >
-              <span className="text-2xl" aria-hidden="true">🌧️</span>
-              <div>
-                <p className="font-display text-sm text-ink">Word Rain</p>
-                <p className="text-xs text-ink-muted font-body">Type falling words before they hit the ground</p>
-              </div>
-            </Link>
-            <Link
-              href="/games/letter-hunt"
-              className="flex items-center gap-3 p-3 bg-paper-dark rounded-xl border-2 border-ink/20 hover:border-ink hover:shadow-ink-sm transition-all"
-            >
-              <span className="text-2xl" aria-hidden="true">🎯</span>
-              <div>
-                <p className="font-display text-sm text-ink">Letter Hunt</p>
-                <p className="text-xs text-ink-muted font-body">Press the highlighted key as fast as you can</p>
-              </div>
-            </Link>
-          </div>
-        </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard label="Lessons Passed" value={passedLessonIds.size} icon={<BookOpen className="w-5 h-5 text-mint" />} />
+        <StatsCard label="Average WPM" value={avgWpm} icon={<Zap className="w-5 h-5 text-sunny" />} />
+        <StatsCard label="Avg Accuracy" value={`${Math.round(avgAccuracy * 100)}%`} icon={<Target className="w-5 h-5 text-sky" />} />
+        <StatsCard label="Day Streak" value={streak} icon={<Flame className="w-5 h-5 text-coral" />} />
       </div>
 
-      <NameCard
-        currentName={userData?.name ?? 'Unknown'}
-        rerollsRemaining={rerollsRemaining}
-        nameChangeRequested={userData?.nameChangeRequested ?? false}
-        isInClass={isInClass}
-      />
+      {/* Up Next */}
+      {upNext ? (
+        <UpNextCard
+          courseTitle={upNext.courseTitle}
+          courseIcon={upNext.courseIcon}
+          courseAccent={upNext.courseAccent}
+          sectionTitle={upNext.sectionTitle}
+          lessonTitle={upNext.lessonTitle}
+          lessonId={upNext.lessonId}
+          lessonOrder={upNext.lessonOrder}
+          minWpm={upNext.minWpm}
+          minAccuracy={upNext.minAccuracy}
+        />
+      ) : enrollments.length === 0 ? (
+        <div className="kq-card p-5 flex items-center justify-between gap-4">
+          <p className="font-body text-ink-muted">Pick a course to start your typing journey.</p>
+          <Link href="/courses" className="kq-btn bg-mint text-ink px-4 py-2 text-sm font-display shrink-0">
+            Browse Courses
+          </Link>
+        </div>
+      ) : (
+        <div className="kq-card p-5 text-center">
+          <p className="font-display text-ink text-lg">🎉 All caught up!</p>
+          <p className="text-ink-muted font-body text-sm mt-1">You&apos;ve completed every lesson in your courses.</p>
+        </div>
+      )}
 
-      <JoinClassCard />
+      {/* Recent Activity */}
+      <div className="kq-card p-5">
+        <h2 className="font-display text-lg text-ink mb-4">Recent Activity</h2>
+        <div className="space-y-3">
+          {recentAttempts.length === 0 ? (
+            <p className="text-ink-muted text-sm py-4 text-center font-body">
+              No attempts yet. Start your first lesson!
+            </p>
+          ) : (
+            recentAttempts.map((attempt) => (
+              <div key={attempt.id} className="flex items-center justify-between text-sm">
+                <div className="min-w-0 flex-1">
+                  <p className="text-ink font-semibold truncate">{attempt.lesson.title}</p>
+                  <p className="text-xs text-ink-muted font-body">{formatDate(attempt.completedAt)}</p>
+                </div>
+                <div className="flex gap-3 ml-3 shrink-0">
+                  <span className="text-mint font-bold">{Math.round(attempt.wpm)} WPM</span>
+                  <span className="text-sky font-semibold">{Math.round(attempt.accuracy * 100)}%</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   )
 }

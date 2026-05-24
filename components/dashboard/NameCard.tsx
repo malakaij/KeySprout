@@ -49,8 +49,27 @@ export function NameCard({
 
   return (
     <div className="kq-card p-5">
-      <p className="text-xs text-ink-muted uppercase tracking-wider mb-1 font-body">Your username</p>
-      <p className="text-2xl font-display text-ink mb-4">{currentName}</p>
+      <div className="flex items-center gap-4 mb-4">
+        <div
+          style={{
+            width: 56, height: 56, borderRadius: 9999,
+            background: 'var(--color-grape)',
+            border: '3px solid #1a1a2e',
+            boxShadow: '3px 3px 0 #1a1a2e',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}
+          aria-hidden="true"
+        >
+          <span style={{ fontFamily: "'Fredoka One', cursive", fontSize: 24, color: 'white', lineHeight: 1 }}>
+            {currentName.charAt(0).toUpperCase()}
+          </span>
+        </div>
+        <div>
+          <p className="text-xs text-ink-muted uppercase tracking-wider font-body">Your username</p>
+          <p className="text-2xl font-display text-ink">{currentName}</p>
+        </div>
+      </div>
 
       {requested ? (
         <div className="flex items-center gap-2 text-sunny text-sm font-body">
@@ -62,7 +81,7 @@ export function NameCard({
           <button
             onClick={handleReroll}
             disabled={loading || remaining <= 0}
-            className="kq-btn bg-paper-dark text-ink flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+            className="kq-btn bg-grape text-white flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Shuffle className="w-4 h-4" />
             {isInClass ? 'Request New Username' : 'Reroll Name'}
@@ -75,6 +94,9 @@ export function NameCard({
           {error && <p className="text-xs text-coral font-body">{error}</p>}
         </div>
       )}
+      <p className="text-xs text-ink-muted font-body mt-3">
+        Need a different name? Your teacher can change it for you.
+      </p>
     </div>
   )
 }

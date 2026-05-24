@@ -50,18 +50,9 @@ export default async function LessonsPage({
     })
   }
 
-  const courses: CourseTab[] = enrollments.map((e) => ({
-    id: e.course.id,
-    title: e.course.title,
-    subtitle: e.course.subtitle ?? null,
-    icon: e.course.icon,
-    accent: e.course.accent,
-  }))
-
-  const enrolledIds = new Set(courses.map((c) => c.id))
+  const enrolledIds = new Set(enrollments.map((e) => e.courseId))
   const activeCourseId =
-    courseParam && enrolledIds.has(courseParam) ? courseParam : courses[0].id
-  const activeCourse = courses.find((c) => c.id === activeCourseId)!
+    courseParam && enrolledIds.has(courseParam) ? courseParam : enrollments[0].courseId
 
   const courseWithSections = await prisma.course.findUnique({
     where: { id: activeCourseId },
@@ -135,6 +126,7 @@ export default async function LessonsPage({
         bestWpm,
         bestAccuracy,
         minWpm: lesson.minWpm,
+        minAccuracy: lesson.minAccuracy,
         targetWpm: lesson.targetWpm,
       }
     })
@@ -150,7 +142,6 @@ export default async function LessonsPage({
   })
 
   // Derive weak keys from lessons that were attempted but not passed in this course.
-  // targetKeys on those lessons represent the characters the student is struggling with.
   const weakKeysSet = new Set<string>()
   for (const section of courseWithSections.sections) {
     for (const lesson of section.lessons) {
@@ -162,6 +153,57 @@ export default async function LessonsPage({
     }
   }
   const weakKeys = Array.from(weakKeysSet).slice(0, 5)
+
+  // Per-course stats for the course picker dropdown (lesson counts + passed counts).
+  const allEnrolledCourseIds = enrollments.map((e) => e.courseId)
+  const allCourseLessons = await prisma.lesson.findMany({
+    where: { section: { courseId: { in: allEnrolledCourseIds } } },
+    select: {
+      id: true,
+      minWpm: true,
+      minAccuracy: true,
+      section: { select: { courseId: true } },
+    },
+  })
+  const allCourseAttempts = await prisma.lessonAttempt.findMany({
+    where: { userId, lessonId: { in: allCourseLessons.map((l) => l.id) } },
+    select: { lessonId: true, wpm: true, accuracy: true },
+  })
+  const attemptsByCourseLesson = new Map<string, { wpm: number; accuracy: number }[]>()
+  for (const a of allCourseAttempts) {
+    if (!attemptsByCourseLesson.has(a.lessonId)) attemptsByCourseLesson.set(a.lessonId, [])
+    attemptsByCourseLesson.get(a.lessonId)!.push({ wpm: a.wpm, accuracy: a.accuracy })
+  }
+  const courseStatsMap = new Map<string, { total: number; passed: number }>()
+  for (const lesson of allCourseLessons) {
+    const cid = lesson.section.courseId
+    if (!courseStatsMap.has(cid)) courseStatsMap.set(cid, { total: 0, passed: 0 })
+    const s = courseStatsMap.get(cid)!
+    s.total++
+    const la = attemptsByCourseLesson.get(lesson.id) ?? []
+    const passed = la.some(
+      (a) =>
+        (!lesson.minWpm || a.wpm >= lesson.minWpm) &&
+        (!lesson.minAccuracy || a.accuracy >= lesson.minAccuracy),
+    )
+    if (passed) s.passed++
+  }
+
+  const courses: CourseTab[] = enrollments.map((e) => {
+    const stats = courseStatsMap.get(e.courseId) ?? { total: 0, passed: 0 }
+    return {
+      id: e.course.id,
+      title: e.course.title,
+      subtitle: e.course.subtitle ?? null,
+      icon: e.course.icon,
+      accent: e.course.accent,
+      totalLessons: stats.total,
+      passedLessons: stats.passed,
+      lastLessonAt: e.lastLessonAt?.toISOString() ?? null,
+    }
+  })
+
+  const activeCourse = courses.find((c) => c.id === activeCourseId)!
 
   return (
     <LessonsClient
