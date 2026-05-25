@@ -20,6 +20,7 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 - **Schema changes require a Prisma migration.** Never run `prisma db push` against any real database. The `db:push` script was deliberately removed. Workflow: edit `schema.prisma` → `npm run db:migrate -- --name short_description` → review and commit the generated SQL.
 - **Server components fetch data; client components don't.** Pages (`page.tsx`) are server components. Interactive pieces live in `*Client.tsx` files marked `'use client'` and receive data as props.
 - **Every exported function in `lib/` gets a one-sentence JSDoc.** Every prop on a shared component that isn't self-explanatory gets a `/** ... */` comment. Inline `//` comments only for non-obvious algorithmic choices — never to narrate what the code already says.
+- **Every new `lib/` file needs tests.** Coverage thresholds are 80% lines/functions and 70% branches (`npm run test:coverage`). When adding a file to `lib/`, write a corresponding test file in `tests/` in the same PR — do not leave it for later. The Node vitest environment has no `localStorage` or `window`; stub them with `vi.stubGlobal` when testing browser-storage utilities.
 
 ---
 
