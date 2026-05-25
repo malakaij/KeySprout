@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth'
 import { redirect, notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { LoginCardsClient } from './LoginCardsClient'
@@ -39,12 +40,19 @@ export default async function LoginCardsPage({
     name: user.name ?? 'Student',
   }))
 
+  // Derive the real site URL from the incoming request host so cards
+  // show the actual domain rather than a placeholder or env variable.
+  const headerStore = await headers()
+  const host = headerStore.get('host') ?? ''
+  const proto = host.startsWith('localhost') ? 'http' : 'https'
+  const baseUrl = `${proto}://${host}`
+
   return (
     <LoginCardsClient
       classroomId={classroomId}
       classroomName={classroom.name}
       students={students}
-      baseUrl={process.env.NEXTAUTH_URL ?? ''}
+      baseUrl={baseUrl}
     />
   )
 }
