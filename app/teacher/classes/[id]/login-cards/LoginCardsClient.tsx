@@ -82,8 +82,29 @@ export function LoginCardsClient({
   // ── Print view ──────────────────────────────────────────────────────────────
   if (cards) {
     return (
-      <div className="bg-paper min-h-screen">
-        <div className="print:hidden p-6 flex items-center justify-between border-b-2 border-ink/10">
+      <div className="bg-white min-h-screen">
+        {/* Print-specific styles: black & white, no chrome, clean card grid */}
+        <style>{`
+          @media print {
+            @page { size: A4; margin: 0.6in; }
+            body { background: white !important; }
+            nav, header, footer { display: none !important; }
+            .no-print { display: none !important; }
+            .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4in; }
+            .login-card {
+              border: 1.5px solid #000 !important;
+              border-radius: 0 !important;
+              break-inside: avoid;
+              page-break-inside: avoid;
+              color: #000 !important;
+              background: white !important;
+            }
+            .login-card img { filter: grayscale(100%) contrast(150%); }
+            * { color: #000 !important; background: transparent !important;
+                box-shadow: none !important; }
+          }
+        `}</style>
+        <div className="no-print p-6 flex items-center justify-between border-b-2 border-ink/10">
           <div>
             <h1 className="text-2xl font-display text-ink">Login Cards — {classroomName}</h1>
             <p className="text-sm font-body text-ink-muted mt-1">
@@ -104,24 +125,24 @@ export function LoginCardsClient({
               className="kq-btn bg-ink text-paper flex items-center gap-2 px-4 py-2 text-sm"
             >
               <Printer className="w-4 h-4" />
-              Print
+              Save as PDF / Print
             </button>
           </div>
         </div>
 
-        <div className="p-6 grid grid-cols-2 gap-6 print:p-0 print:gap-0 print:grid-cols-2">
+        <div className="card-grid p-6 grid grid-cols-2 gap-6">
           {cards.map((card) => (
             <div
               key={card.userId}
-              className="border-2 border-ink rounded-2xl p-5 flex gap-4 items-start bg-paper print:rounded-none print:border print:border-ink/30 print:break-inside-avoid"
+              className="login-card border-2 border-ink rounded-2xl p-5 flex gap-4 items-start bg-white"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={card.qrDataUrl}
                 alt={`QR code for ${card.name}`}
-                width={100}
-                height={100}
-                className="shrink-0 rounded-xl border-2 border-ink/20"
+                width={110}
+                height={110}
+                className="shrink-0 rounded-lg border border-ink/20"
               />
               <div className="min-w-0">
                 <p className="text-xs text-ink-muted font-body uppercase tracking-wider mb-1">
@@ -131,7 +152,7 @@ export function LoginCardsClient({
                 <p className="text-xs font-body text-ink-muted mt-3 leading-relaxed">
                   Scan to sign in, or visit
                 </p>
-                <p className="text-xs font-mono text-ink">{baseUrl || 'keysprout.app'}/login</p>
+                <p className="text-xs font-mono text-ink font-bold">{baseUrl}/login</p>
                 <p className="text-xs font-body text-ink-muted mt-2">
                   Username: <span className="font-semibold text-ink">{card.name}</span>
                 </p>
