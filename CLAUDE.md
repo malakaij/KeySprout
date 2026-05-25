@@ -110,6 +110,29 @@ npm run db:migrate:status  # check migration state
 npm run db:seed            # seed the 250-lesson curriculum
 ```
 
+## Local PostgreSQL (remote execution environment)
+
+A local PostgreSQL 16 database is available for running migrations and manual testing. The cluster does not start automatically — bring it up when needed:
+
+```bash
+pg_ctlcluster 16 main start          # start the cluster (if not already running)
+pg_lsclusters                         # check status
+```
+
+Connection details (also in `.env.local`):
+- **URL**: `postgresql://keysprout:keysprout@localhost:5432/keysprout_dev`
+- **User / password**: `keysprout` / `keysprout`
+- **Database**: `keysprout_dev`
+
+The data directory (`/var/lib/postgresql/16/main`) persists across the session but is lost when the container is recycled. If the database is gone, recreate it:
+
+```bash
+pg_ctlcluster 16 main start
+sudo -u postgres psql -c "CREATE USER keysprout WITH PASSWORD 'keysprout' CREATEDB;" 2>/dev/null || true
+sudo -u postgres psql -c "CREATE DATABASE keysprout_dev OWNER keysprout;" 2>/dev/null || true
+DATABASE_URL="postgresql://keysprout:keysprout@localhost:5432/keysprout_dev" npx prisma migrate deploy
+```
+
 ---
 
 ## How to use this file
