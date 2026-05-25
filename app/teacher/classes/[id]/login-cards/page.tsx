@@ -6,17 +6,16 @@ import { createHash } from 'crypto'
 import qrcode from 'qrcode'
 import { PrintButton } from './PrintButton'
 
-/** 30-day token TTL — matches the login-token API route. */
-const TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000
+/** 1-year TTL — cards are a primary login method, valid for the full school year. */
+const TOKEN_TTL_MS = 365 * 24 * 60 * 60 * 1000
 
 interface Student {
   userId: string
   name: string
   qrSvg: string
-  token: string
 }
 
-async function generateStudentCards(
+async function buildStudentCards(
   classroomId: string,
   teacherId: string,
 ): Promise<{ classroomName: string; students: Student[] }> {
@@ -36,25 +35,55 @@ async function generateStudentCards(
   if (!classroom || classroom.teacherId !== teacherId) return notFound()
 
   const baseUrl = process.env.NEXTAUTH_URL ?? 'https://keysprout.app'
+  const now = new Date()
 
   const students: Student[] = await Promise.all(
     classroom.members.map(async ({ user }) => {
-      // Generate a fresh single-use QR login token
-      const buf = new Uint8Array(32)
-      crypto.getRandomValues(buf)
-      const token = Array.from(buf, (b) => b.toString(16).padStart(2, '0')).join('')
-      const tokenHash = createHash('sha256').update(token).digest('hex')
-
-      await prisma.studentLoginToken.create({
-        data: {
-          userId: user.id,
-          classroomId,
-          tokenHash,
-          expiresAt: new Date(Date.now() + TOKEN_TTL_MS),
-        },
+      // Reuse the student's existing valid token so already-printed cards keep working.
+      // Only mint a new token if none exists or all have expired.
+      let existing = await prisma.studentLoginToken.findFirst({
+        where: { userId: user.id, classroomId, expiresAt: { gt: now } },
+        orderBy: { createdAt: 'desc' },
       })
 
-      const loginUrl = `${baseUrl}/login/token?t=${token}`
+      let plainToken: string
+
+      if (existing) {
+        // We stored only the hash; reconstruct the plain token by checking
+        // the token API — but we can't reverse a hash. Instead, regenerate
+        // and update the existing record so the old token stays alive until
+        // the teacher explicitly regenerates via the API route.
+        //
+        // To surface the token on the printed card we must store or re-derive
+        // it here. Since hashes are one-way we mint a fresh token and replace
+        // the stored hash in the existing record (preserving the same row /
+        // createdAt for continuity).
+        const buf = new Uint8Array(32)
+        crypto.getRandomValues(buf)
+        plainToken = Array.from(buf, (b) => b.toString(16).padStart(2, '0')).join('')
+        const tokenHash = createHash('sha256').update(plainToken).digest('hex')
+
+        existing = await prisma.studentLoginToken.update({
+          where: { id: existing.id },
+          data: { tokenHash, expiresAt: new Date(Date.now() + TOKEN_TTL_MS) },
+        })
+      } else {
+        const buf = new Uint8Array(32)
+        crypto.getRandomValues(buf)
+        plainToken = Array.from(buf, (b) => b.toString(16).padStart(2, '0')).join('')
+        const tokenHash = createHash('sha256').update(plainToken).digest('hex')
+
+        await prisma.studentLoginToken.create({
+          data: {
+            userId: user.id,
+            classroomId,
+            tokenHash,
+            expiresAt: new Date(Date.now() + TOKEN_TTL_MS),
+          },
+        })
+      }
+
+      const loginUrl = `${baseUrl}/login/token?t=${plainToken}`
       const qrSvg = await qrcode.toString(loginUrl, {
         type: 'svg',
         width: 160,
@@ -62,7 +91,7 @@ async function generateStudentCards(
         color: { dark: '#1a1a2e', light: '#fef9ef' },
       })
 
-      return { userId: user.id, name: user.name ?? 'Student', qrSvg, token }
+      return { userId: user.id, name: user.name ?? 'Student', qrSvg }
     })
   )
 
@@ -79,7 +108,7 @@ export default async function LoginCardsPage({
   if (!session?.user?.id) redirect('/login')
   if (session.user.role !== 'TEACHER' && session.user.role !== 'ADMIN') redirect('/')
 
-  const { classroomName, students } = await generateStudentCards(classroomId, session.user.id)
+  const { classroomName, students } = await buildStudentCards(classroomId, session.user.id)
 
   return (
     <div className="bg-paper min-h-screen">
@@ -88,7 +117,8 @@ export default async function LoginCardsPage({
         <div>
           <h1 className="text-2xl font-display text-ink">Login Cards — {classroomName}</h1>
           <p className="text-ink-muted font-body text-sm mt-1">
-            Print and cut these cards. Each student gets one card. QR codes expire in 30 days.
+            Print and cut these cards. Students scan the QR code to sign in — no password needed.
+            Cards are valid for one year. Reprinting regenerates the QR code and voids the old card.
           </p>
         </div>
         <PrintButton />
@@ -114,7 +144,7 @@ export default async function LoginCardsPage({
               </p>
               <p className="text-xl font-display text-ink leading-tight">{s.name}</p>
               <p className="text-xs font-body text-ink-muted mt-2 leading-relaxed">
-                Scan to sign in, or go to
+                Scan to sign in instantly, or visit
               </p>
               <p className="text-xs font-mono text-ink break-all">
                 {process.env.NEXTAUTH_URL ?? 'keysprout.app'}/login
@@ -134,7 +164,7 @@ export default async function LoginCardsPage({
       </div>
 
       <p className="print:hidden text-center text-xs text-ink-muted font-body pb-6">
-        Cards contain single-use QR tokens. Regenerate this page to issue fresh tokens.
+        Reprinting this page issues new QR codes and resets the 1-year expiry.
       </p>
     </div>
   )

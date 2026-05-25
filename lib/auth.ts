@@ -50,9 +50,9 @@ export const authOptions: AuthOptions = {
             include: { user: { select: { id: true, name: true, email: true, role: true } } },
           })
           if (!record) return null
-          if (record.usedAt) return null
           if (record.expiresAt < new Date()) return null
 
+          // Record last scan time for teacher audit; token remains valid for future scans.
           await prisma.studentLoginToken.update({
             where: { id: record.id },
             data: { usedAt: new Date() },

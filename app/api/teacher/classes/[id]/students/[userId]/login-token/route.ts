@@ -5,8 +5,8 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { verifySameOrigin } from '@/lib/csrf'
 
-/** 30-day expiry — long enough for a printed card to stay usable across a school term. */
-const TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000
+/** 1-year expiry — QR cards are a primary login method, valid for the full school year. */
+const TOKEN_TTL_MS = 365 * 24 * 60 * 60 * 1000
 
 export async function POST(
   req: Request,
