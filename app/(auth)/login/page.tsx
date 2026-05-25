@@ -3,8 +3,9 @@
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Chrome, LogIn } from 'lucide-react'
+import { Chrome, LogIn, QrCode } from 'lucide-react'
 import { Pip } from '@/components/ui/Pip'
+import { QRScanner } from '@/components/auth/QRScanner'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [credError, setCredError] = useState('')
   const [showCredForm, setShowCredForm] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true)
@@ -41,6 +43,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 bg-paper">
+      {showScanner && <QRScanner onClose={() => setShowScanner(false)} />}
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -69,13 +72,22 @@ export default function LoginPage() {
           </div>
 
           {!showCredForm ? (
-            <button
-              onClick={() => setShowCredForm(true)}
-              className="w-full kq-btn bg-paper-dark text-ink flex items-center justify-center gap-3 px-4 py-3"
-            >
-              <LogIn className="w-5 h-5" />
-              Sign in with username
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={() => setShowScanner(true)}
+                className="w-full kq-btn bg-grape text-white flex items-center justify-center gap-3 px-4 py-3"
+              >
+                <QrCode className="w-5 h-5" />
+                Sign in with QR code
+              </button>
+              <button
+                onClick={() => setShowCredForm(true)}
+                className="w-full kq-btn bg-paper-dark text-ink flex items-center justify-center gap-3 px-4 py-3"
+              >
+                <LogIn className="w-5 h-5" />
+                Sign in with username
+              </button>
+            </div>
           ) : (
             <form onSubmit={handleCredentialsSignIn} className="space-y-3">
               <div>

@@ -60,6 +60,8 @@ export default function ClassDetailPage() {
   const [addCount, setAddCount] = useState(1)
   const [addLoading, setAddLoading] = useState(false)
   const [newStudents, setNewStudents] = useState<Array<{ userId: string; name: string; password: string }>>([])
+  const [passwordReveal, setPasswordReveal] = useState<Record<string, string>>({})
+  const [resettingId, setResettingId] = useState<string | null>(null)
   const [displayNames, setDisplayNames] = useState<Record<string, string>>({})
   const [nameEditing, setNameEditing] = useState<string | null>(null)
 
@@ -144,14 +146,21 @@ export default function ClassDetailPage() {
 
   const handleResetPassword = async (userId: string) => {
     if (!classroom) return
-    const res = await fetch(
-      `/api/teacher/classes/${classroom.id}/students/${userId}/reset-password`,
-      { method: 'POST' }
-    )
-    const data = await res.json() as { password: string }
-    setNewStudents((prev) =>
-      prev.map((s) => (s.userId === userId ? { ...s, password: data.password } : s))
-    )
+    setResettingId(userId)
+    try {
+      const res = await fetch(
+        `/api/teacher/classes/${classroom.id}/students/${userId}/reset-password`,
+        { method: 'POST' }
+      )
+      const data = await res.json() as { password: string }
+      // Update both the newly-created list (if present) and the general reveal map
+      setNewStudents((prev) =>
+        prev.map((s) => (s.userId === userId ? { ...s, password: data.password } : s))
+      )
+      setPasswordReveal((prev) => ({ ...prev, [userId]: data.password }))
+    } finally {
+      setResettingId(null)
+    }
   }
 
   const handleSaveDisplayName = (userId: string, displayName: string) => {
@@ -439,6 +448,43 @@ export default function ClassDetailPage() {
         </div>
         <StudentTable students={students} classroomId={classroom.id} />
       </div>
+
+      {/* Student logins — password reset for credential-based students */}
+      {students.length > 0 && (
+        <div className="kq-card p-5 space-y-3">
+          <div>
+            <h2 className="font-display text-ink">Student Logins</h2>
+            <p className="text-sm font-body text-ink-muted mt-1">
+              Reset a student&apos;s password if they&apos;ve forgotten it. The new password appears here once — note it down before navigating away.
+            </p>
+          </div>
+          <div className="space-y-1">
+            {classroom.members.map((m) => {
+              const revealed = passwordReveal[m.userId]
+              return (
+                <div key={m.userId} className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-paper-dark transition-colors">
+                  <span className="text-sm font-body text-ink">{m.user.name ?? 'Student'}</span>
+                  <div className="flex items-center gap-3">
+                    {revealed && (
+                      <span className="font-mono text-sm font-bold text-ink tracking-widest bg-sunny/30 px-2 py-0.5 rounded-lg">
+                        {revealed}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => handleResetPassword(m.userId)}
+                      disabled={resettingId === m.userId}
+                      className="kq-btn bg-paper-dark text-ink flex items-center gap-1.5 px-3 py-1.5 text-xs disabled:opacity-50"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      {resettingId === m.userId ? 'Resetting…' : revealed ? 'Reset again' : 'Reset password'}
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="kq-card p-5">
         <h2 className="font-display text-ink mb-4">Class Progress Over Time</h2>
