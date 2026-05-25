@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { generateRandomDisplayName } from '@/lib/name-generator'
 import { verifySameOrigin } from '@/lib/csrf'
+import { encryptPassword } from '@/lib/password-crypto'
 
 // Unambiguous characters: no 0/O or 1/l/I
 const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -51,6 +52,7 @@ export async function POST(
   for (let i = 0; i < count; i++) {
     const password = generatePassword()
     const passwordHash = await bcrypt.hash(password, 12)
+    const encryptedPassword = encryptPassword(password)
     const name = generateRandomDisplayName()
     // Unique synthetic email derived from cuid at creation time
     const tempId = crypto.randomUUID()
@@ -61,6 +63,7 @@ export async function POST(
         email,
         name,
         passwordHash,
+        encryptedPassword,
         role: 'STUDENT',
         classMembers: {
           create: {

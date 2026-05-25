@@ -1,26 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import bcrypt from 'bcryptjs'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { verifySameOrigin } from '@/lib/csrf'
-import { encryptPassword } from '@/lib/password-crypto'
+import { decryptPassword } from '@/lib/password-crypto'
 
-const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-
-function generatePassword(): string {
-  const buf = new Uint8Array(8)
-  crypto.getRandomValues(buf)
-  return Array.from(buf, (b) => PASSWORD_CHARS[b % PASSWORD_CHARS.length]).join('')
-}
-
-export async function POST(
-  req: Request,
+export async function GET(
+  _req: Request,
   { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
-  const csrfError = verifySameOrigin(req)
-  if (csrfError) return csrfError
-
   const { id: classroomId, userId } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) {
@@ -38,22 +25,24 @@ export async function POST(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // Confirm the student is a member of this class
   const membership = await prisma.classMember.findUnique({
     where: { classroomId_userId: { classroomId, userId } },
   })
   if (!membership) return NextResponse.json({ error: 'Student not in class' }, { status: 404 })
 
-  const password = generatePassword()
-  const [passwordHash, encryptedPassword] = await Promise.all([
-    bcrypt.hash(password, 12),
-    Promise.resolve(encryptPassword(password)),
-  ])
-
-  await prisma.user.update({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
-    data: { passwordHash, encryptedPassword },
+    select: { encryptedPassword: true },
   })
+
+  if (!user?.encryptedPassword) {
+    return NextResponse.json({ error: 'no_key' }, { status: 404 })
+  }
+
+  const password = decryptPassword(user.encryptedPassword)
+  if (!password) {
+    return NextResponse.json({ error: 'no_key' }, { status: 503 })
+  }
 
   return NextResponse.json({ password })
 }

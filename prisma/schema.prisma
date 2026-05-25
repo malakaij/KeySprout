@@ -15,6 +15,7 @@ model User {
   image               String?
   role                Role      @default(STUDENT)
   passwordHash        String?
+  encryptedPassword   String?
   rerollsToday        Int       @default(0)
   lastRerollDate      DateTime?
   nameChangeRequested Boolean   @default(false)
