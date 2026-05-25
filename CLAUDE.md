@@ -20,6 +20,7 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 - **Schema changes require a Prisma migration.** Never run `prisma db push` against any real database. The `db:push` script was deliberately removed. Workflow: edit `schema.prisma` → `npm run db:migrate -- --name short_description` → review and commit the generated SQL.
 - **Server components fetch data; client components don't.** Pages (`page.tsx`) are server components. Interactive pieces live in `*Client.tsx` files marked `'use client'` and receive data as props.
 - **Every exported function in `lib/` gets a one-sentence JSDoc.** Every prop on a shared component that isn't self-explanatory gets a `/** ... */` comment. Inline `//` comments only for non-obvious algorithmic choices — never to narrate what the code already says.
+- **Every new `lib/` file needs tests.** Coverage thresholds are 80% lines/functions and 70% branches (`npm run test:coverage`). When adding a file to `lib/`, write a corresponding test file in `tests/` in the same PR — do not leave it for later. The Node vitest environment has no `localStorage` or `window`; stub them with `vi.stubGlobal` when testing browser-storage utilities.
 
 ---
 
@@ -45,7 +46,9 @@ Audience priority order: **students first, teachers second, self-hosters third.*
 
 **As of Sprint 16:** Remaining design-handoff gaps closed. Lesson dots rebuilt to 52×52 with icons (Check/Lock/lesson number), per-state fills, correct shadows, and pulse animation on current lesson. Shared `UpNextCard` component created and used on both `/dashboard` and `/lessons`. Dashboard Up Next card now shows accent circle, gradient background, and color-coded goal chips. Settings page gains keyboard-shortcuts link section (→ `/help`). NameCard gains teacher-change footnote.
 
-**As of Sprint 17 (current):** CSP headers shipped. Middleware now runs on all routes (not just `/api/*`), generates a per-request nonce, and emits `Content-Security-Policy` + `X-Frame-Options` + `X-Content-Type-Options` + `Referrer-Policy` + `Permissions-Policy` on every response. Root layout reads the nonce from `x-nonce` for use with future `<Script>` components.
+**As of Sprint 17:** CSP headers shipped. Middleware now runs on all routes (not just `/api/*`), generates a per-request nonce, and emits `Content-Security-Policy` + `X-Frame-Options` + `X-Content-Type-Options` + `Referrer-Policy` + `Permissions-Policy` on every response. Root layout reads the nonce from `x-nonce` for use with future `<Script>` components.
+
+**As of Sprint 18 (current):** Student credentials shipped. Teachers can create student accounts directly (no Google account needed): `POST /api/teacher/classes/[id]/students` generates a nickname + unambiguous 8-char password stored as bcrypt hash. `CredentialsProvider` added to `lib/auth.ts` supporting both username+password and single-use QR token login. `StudentLoginToken` model (SHA-256-hashed, 30-day expiry, single-use) powers printed login cards at `/teacher/classes/[id]/login-cards` with server-side SVG QR codes. Login page gains a "Sign in with username" form. `GET /api/teacher/classes/[id]/roster-template` returns a CSV skeleton with UUID + nickname. `lib/name-cache.ts` stores teacher-side userId→displayName in localStorage only (ADR-0008). Classroom page gains "Add students" panel with inline password reveal, "Print login cards" link, and "Roster CSV" download.
 
 **The app is now ready for real classrooms.**
 
@@ -105,6 +108,29 @@ npm run db:migrate -- --name short_desc   # create + apply new migration
 npm run db:migrate:deploy  # apply pending migrations (prod-safe)
 npm run db:migrate:status  # check migration state
 npm run db:seed            # seed the 250-lesson curriculum
+```
+
+## Local PostgreSQL (remote execution environment)
+
+A local PostgreSQL 16 database is available for running migrations and manual testing. The cluster does not start automatically — bring it up when needed:
+
+```bash
+pg_ctlcluster 16 main start          # start the cluster (if not already running)
+pg_lsclusters                         # check status
+```
+
+Connection details (also in `.env.local`):
+- **URL**: `postgresql://keysprout:keysprout@localhost:5432/keysprout_dev`
+- **User / password**: `keysprout` / `keysprout`
+- **Database**: `keysprout_dev`
+
+The data directory (`/var/lib/postgresql/16/main`) persists across the session but is lost when the container is recycled. If the database is gone, recreate it:
+
+```bash
+pg_ctlcluster 16 main start
+sudo -u postgres psql -c "CREATE USER keysprout WITH PASSWORD 'keysprout' CREATEDB;" 2>/dev/null || true
+sudo -u postgres psql -c "CREATE DATABASE keysprout_dev OWNER keysprout;" 2>/dev/null || true
+DATABASE_URL="postgresql://keysprout:keysprout@localhost:5432/keysprout_dev" npx prisma migrate deploy
 ```
 
 ---

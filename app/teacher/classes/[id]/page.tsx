@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { StudentTable } from '@/components/teacher/StudentTable'
 import { ProgressChart } from '@/components/dashboard/ProgressChart'
-import { ArrowLeft, Copy, Check, Users, Zap, BookOpen, Clock, UserCheck, UserX, Plus, X } from 'lucide-react'
+import { ArrowLeft, Copy, Check, Users, Zap, BookOpen, Clock, UserCheck, UserX, Plus, X, UserPlus, Printer, Download, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
 import type { StudentProgress } from '@/types'
+import { getNames, setName } from '@/lib/name-cache'
 
 interface PendingMember {
   id: string
@@ -56,6 +57,11 @@ export default function ClassDetailPage() {
   const [copied, setCopied] = useState(false)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [assigningCourseId, setAssigningCourseId] = useState<string | null>(null)
+  const [addCount, setAddCount] = useState(1)
+  const [addLoading, setAddLoading] = useState(false)
+  const [newStudents, setNewStudents] = useState<Array<{ userId: string; name: string; password: string }>>([])
+  const [displayNames, setDisplayNames] = useState<Record<string, string>>({})
+  const [nameEditing, setNameEditing] = useState<string | null>(null)
 
   const fetchClassroom = () => {
     if (!params.id) return
@@ -66,6 +72,10 @@ export default function ClassDetailPage() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchClassroom() }, [params.id])
+
+  useEffect(() => {
+    if (params.id) setDisplayNames(getNames(params.id as string))
+  }, [params.id])
 
   const handleCopy = async () => {
     if (!classroom) return
@@ -113,6 +123,42 @@ export default function ClassDetailPage() {
     } finally {
       setProcessingId(null)
     }
+  }
+
+  const handleAddStudents = async () => {
+    if (!classroom || addLoading) return
+    setAddLoading(true)
+    try {
+      const res = await fetch(`/api/teacher/classes/${classroom.id}/students`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count: addCount }),
+      })
+      const data = await res.json() as { created: Array<{ userId: string; name: string; password: string }> }
+      setNewStudents(data.created)
+      fetchClassroom()
+    } finally {
+      setAddLoading(false)
+    }
+  }
+
+  const handleResetPassword = async (userId: string) => {
+    if (!classroom) return
+    const res = await fetch(
+      `/api/teacher/classes/${classroom.id}/students/${userId}/reset-password`,
+      { method: 'POST' }
+    )
+    const data = await res.json() as { password: string }
+    setNewStudents((prev) =>
+      prev.map((s) => (s.userId === userId ? { ...s, password: data.password } : s))
+    )
+  }
+
+  const handleSaveDisplayName = (userId: string, displayName: string) => {
+    if (!classroom) return
+    setName(classroom.id, userId, displayName)
+    setDisplayNames((prev) => ({ ...prev, [userId]: displayName }))
+    setNameEditing(null)
   }
 
   if (loading) return <div className="p-6 text-ink-muted font-body">Loading...</div>
@@ -285,9 +331,112 @@ export default function ClassDetailPage() {
         )}
       </div>
 
+      {/* Add students */}
+      <div className="kq-card p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <UserPlus className="w-4 h-4 text-sky" />
+          <h2 className="font-display text-ink">Add Students</h2>
+        </div>
+        <p className="text-sm font-body text-ink-muted -mt-2">
+          Create student accounts directly — no Google account needed. You&apos;ll receive a username and temporary password for each student.
+        </p>
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-body text-ink-muted shrink-0">Create</label>
+          <input
+            type="number"
+            min={1}
+            max={50}
+            value={addCount}
+            onChange={(e) => setAddCount(Math.max(1, Math.min(50, Number(e.target.value))))}
+            className="w-20 px-3 py-1.5 rounded-xl border-2 border-ink/20 bg-paper text-ink font-body text-sm focus:outline-none focus:border-sky"
+          />
+          <label className="text-sm font-body text-ink-muted shrink-0">student{addCount !== 1 ? 's' : ''}</label>
+          <button
+            onClick={handleAddStudents}
+            disabled={addLoading}
+            className="kq-btn bg-sky text-white flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
+          >
+            <Plus className="w-4 h-4" />
+            {addLoading ? 'Creating…' : 'Create'}
+          </button>
+        </div>
+
+        {newStudents.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-body text-ink-muted uppercase tracking-wide">New accounts — save these passwords now</p>
+            {newStudents.map((s) => (
+              <div key={s.userId} className="flex items-center justify-between bg-paper-dark rounded-xl px-4 py-3 border-2 border-ink/10">
+                <div>
+                  <p className="text-sm font-semibold text-ink">{s.name}</p>
+                  {nameEditing === s.userId ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        const val = (e.currentTarget.elements.namedItem('dn') as HTMLInputElement).value.trim()
+                        if (val) handleSaveDisplayName(s.userId, val)
+                      }}
+                      className="flex items-center gap-2 mt-1"
+                    >
+                      <input
+                        name="dn"
+                        defaultValue={displayNames[s.userId] ?? ''}
+                        placeholder="Student's real name (local only)"
+                        className="px-2 py-1 rounded-lg border border-ink/20 bg-paper text-ink text-xs font-body focus:outline-none focus:border-sky"
+                        autoFocus
+                      />
+                      <button type="submit" className="text-xs text-mint font-body">Save</button>
+                      <button type="button" onClick={() => setNameEditing(null)} className="text-xs text-ink-muted font-body">Cancel</button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => setNameEditing(s.userId)}
+                      className="text-xs text-ink-muted font-body hover:text-ink transition-colors mt-0.5"
+                    >
+                      {displayNames[s.userId] ? `Display: ${displayNames[s.userId]}` : '+ Add display name (saved locally)'}
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-xs text-ink-muted font-body">Password</p>
+                    <p className="font-mono text-sm font-bold text-ink tracking-widest">{s.password}</p>
+                  </div>
+                  <button
+                    onClick={() => handleResetPassword(s.userId)}
+                    title="Generate new password"
+                    className="text-ink-muted hover:text-coral transition-colors"
+                    aria-label="Reset password"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Students Table */}
       <div className="kq-card p-5">
-        <h2 className="font-display text-ink mb-4">Students</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-ink">Students</h2>
+          <div className="flex items-center gap-2">
+            <a
+              href={`/api/teacher/classes/${classroom.id}/roster-template`}
+              className="kq-btn bg-paper-dark text-ink flex items-center gap-2 px-3 py-1.5 text-sm"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Roster CSV
+            </a>
+            <Link
+              href={`/teacher/classes/${classroom.id}/login-cards`}
+              className="kq-btn bg-ink text-paper flex items-center gap-2 px-3 py-1.5 text-sm"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              Print login cards
+            </Link>
+          </div>
+        </div>
         <StudentTable students={students} classroomId={classroom.id} />
       </div>
 

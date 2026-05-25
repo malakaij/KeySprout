@@ -18,7 +18,7 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 - Sprint 11: `/lessons` rebuilt — section accordions, lesson-dot grid (14px, 4 states), inline detail panel, course switcher pill tabs
 - Sprint 12: `/dashboard` cleanup — Quest Map removed, Up Next card (accent color band, lesson preview, direct Start button), games moved inline, weekly streak retained
 
-**The app is now deployable to real classrooms** (pending CSP headers, deferred post-alpha).
+**The app is now deployable to real classrooms.**
 
 ---
 
@@ -28,6 +28,7 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 - Sprint 15: `/lessons` polished to match design handoff — course subtitle below switcher, Personalized Practice card (Pip + weak-key drill), single-open accordion behavior, status chip in detail panel, dot legend.
 - Sprint 16: Remaining design-handoff gaps — 52×52 lesson dots with icons/pulse, shared `UpNextCard` on dashboard + `/lessons`, keyboard-shortcuts link in settings, NameCard footnote.
 - Sprint 17: CSP headers — per-request nonce, full `Content-Security-Policy` on all routes, companion headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`).
+- Sprint 18: Student credentials — `CredentialsProvider` (username+password + QR token), teacher creates accounts directly, printed login cards with SVG QR codes, roster CSV template, localStorage name cache.
 
 ---
 
@@ -37,8 +38,8 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 
 | Theme | Notes |
 |-------|-------|
-| Student credentials | Username/password auth, QR login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
 | Teacher data export | CSV/PDF, bulk actions ([#105](https://github.com/malakaij/KeySprout/issues/105)) |
+| Student engagement | Achievements, streaks, XP ([#106](https://github.com/malakaij/KeySprout/issues/106)) |
 
 ---
 
@@ -47,8 +48,7 @@ Production-quality alpha deployed on Vercel. Sprints 1–12 merged. Student rede
 | Theme | Notes |
 |-------|-------|
 | Teacher data export | CSV/PDF, bulk actions, weekly digests ([#105](https://github.com/malakaij/KeySprout/issues/105)) |
-| Student credentials | Username/password auth, QR code login cards ([#123](https://github.com/malakaij/KeySprout/issues/123)) |
-| CSP headers | Final blocker before real-classroom launch |
+| Student engagement | Achievements, streaks, XP ([#106](https://github.com/malakaij/KeySprout/issues/106)) |
 
 ---
 
