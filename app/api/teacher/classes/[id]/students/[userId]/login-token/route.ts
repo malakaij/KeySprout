@@ -43,6 +43,10 @@ export async function POST(
   const token = Array.from(buf, (b) => b.toString(16).padStart(2, '0')).join('')
   const tokenHash = createHash('sha256').update(token).digest('hex')
 
+  // Delete any existing tokens for this student+classroom so reprinting
+  // a card voids the previous one — the new QR is the only valid login.
+  await prisma.studentLoginToken.deleteMany({ where: { userId, classroomId } })
+
   await prisma.studentLoginToken.create({
     data: {
       userId,
